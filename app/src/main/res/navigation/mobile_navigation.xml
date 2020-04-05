@@ -7,22 +7,21 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="us.master.acme_explorer.ui.home.HomeFragment"
+        android:name="us.master.acme_explorer.ui.main_menu.MainMenuFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
-
+        tools:layout="@layout/fragment_main_menu">
         <action
-            android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
-            app:destination="@id/nav_home_second" />
+            android:id="@+id/action_nav_home_to_nav_slideshow2"
+            app:destination="@id/nav_slideshow" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_gallery2"
+            app:destination="@id/nav_gallery" />
     </fragment>
     <fragment
         android:id="@+id/nav_home_second"
-        android:name="us.master.acme_explorer.ui.home.HomeSecondFragment"
+        android:name="us.master.acme_explorer.ui.main_menu.HomeSecondFragment"
         android:label="@string/home_second"
         tools:layout="@layout/fragment_home_second">
-        <action
-            android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-            app:destination="@id/nav_home" />
 
         <argument
             android:name="myArg"
@@ -33,11 +32,19 @@
         android:id="@+id/nav_gallery"
         android:name="us.master.acme_explorer.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_gallery" >
+        <action
+            android:id="@+id/action_nav_gallery_to_nav_home2"
+            app:popUpTo="@id/nav_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="us.master.acme_explorer.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_slideshow" >
+        <action
+            android:id="@+id/action_nav_slideshow_to_nav_home2"
+            app:popUpTo="@id/nav_home" />
+    </fragment>
 </navigation>

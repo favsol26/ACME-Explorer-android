@@ -1,4 +1,4 @@
-package us.master.acme_explorer.ui.home;
+package us.master.acme_explorer.ui.main_menu;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
