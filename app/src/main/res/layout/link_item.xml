@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5sp">
+    android:paddingStart="10sp"
+    android:paddingTop="11sp"
+    android:paddingEnd="10sp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/my_link_card_view"
@@ -18,19 +20,17 @@
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:layout_margin="5dp"
                 android:layout_width="wrap_content"
-                app:cardCornerRadius="50dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:cardCornerRadius="50dp">
 
                 <ImageView
                     android:id="@+id/my_link_image_view"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:contentDescription="@string/app_name"
-                    android:scaleType="centerInside" />
+                    android:contentDescription="@string/app_name" />
             </androidx.cardview.widget.CardView>
-
 
             <TextView
                 android:id="@+id/my_link_text_view"

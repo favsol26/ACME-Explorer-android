@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_main_menu">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_main_menu"
         android:name="us.master.acme_explorer.ui.main_menu.MainMenuFragment"
-        android:label="@string/menu_home"
+        android:label="@string/menu_main_menu"
         tools:layout="@layout/fragment_main_menu">
         <action
-            android:id="@+id/action_nav_home_to_nav_gallery2"
+            android:id="@+id/action_nav_home_to_nav_gallery"
             app:destination="@id/nav_gallery_trips" />
         <action
             android:id="@+id/action_nav_home_to_nav_selected_trips"
@@ -34,8 +34,8 @@
         android:label="@string/menu_gallery_trips"
         tools:layout="@layout/fragment_trips_base_view">
         <action
-            android:id="@+id/action_nav_gallery_to_nav_home2"
-            app:popUpTo="@id/nav_home" />
+            android:id="@+id/action_nav_gallery_to_nav_home"
+            app:popUpTo="@id/nav_main_menu" />
     </fragment>
 
     <fragment
@@ -45,15 +45,15 @@
         tools:layout="@layout/fragment_trips_base_view">
         <action
             android:id="@+id/action_nav_selected_trips_to_nav_home"
-            app:popUpTo="@id/nav_home" />
+            app:popUpTo="@id/nav_main_menu" />
     </fragment>
     <fragment
-        android:id="@+id/activeTripFragment"
+        android:id="@+id/nav_active_trip_fragment"
         android:name="us.master.acme_explorer.ui.active_trip.ActiveTripFragment"
         android:label="@string/trips_details" >
         <action
             android:id="@+id/action_activeTripFragment_pop"
-            app:popUpTo="@id/activeTripFragment"
+            app:popUpTo="@id/nav_active_trip_fragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

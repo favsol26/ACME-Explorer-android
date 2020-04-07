@@ -1,6 +1,12 @@
 package us.master.acme_explorer.common;
 
+import java.util.List;
+
+import us.master.acme_explorer.entity.Trip;
+
 public final class Constants {
+    public static  List<Trip> tripList;
+
     public final static String[] cities = {"Tirana", "Berlín", "Andorra La Vieja", "Ereván",
             "Viena", "Bakú", "Bruselas", "Minsk", "Sarajevo", "Sofía", "Praga", "Zagreb",
             "Copenhague", "Bratislava", "Lublijana", "Madrid", "Tallín", "Helsinki", "París",

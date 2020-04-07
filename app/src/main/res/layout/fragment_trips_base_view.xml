@@ -53,6 +53,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_trips_base_view_recyclerview"
+        android:background="@color/colorShadow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/myFilterSettings"

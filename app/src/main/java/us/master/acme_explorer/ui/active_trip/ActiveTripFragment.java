@@ -16,7 +16,7 @@ public class ActiveTripFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.active_trip_fragment, container, false);
+        View root = inflater.inflate(R.layout.fragment_active_trip, container, false);
 
 
 
