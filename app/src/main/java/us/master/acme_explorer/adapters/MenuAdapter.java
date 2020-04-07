@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -49,32 +49,22 @@ public class MenuAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context)
                     .inflate(R.layout.link_item, parent, false);
 
-        CardView mCardView = convertView.findViewById(R.id.my_link_card_view);
         TextView mTextView = convertView.findViewById(R.id.my_link_text_view);
-        ImageView mImageView = convertView.findViewById(R.id.my_link_image_view);
-
         mTextView.setText(link.getDescription());
-        mImageView.setImageResource(link.getResourceImageView());
-        mCardView.setOnClickListener(v -> {
 
-            if (context instanceof FragmentActivity) {
-                Toast.makeText(context, link.getNextFragment().toString(), Toast.LENGTH_SHORT).show();
+        ImageView mImageView = convertView.findViewById(R.id.my_link_image_view);
+        Picasso.get()
+                .load(link.getImageURL())
+                .placeholder(android.R.drawable.ic_menu_myplaces)
+                .error(android.R.drawable.ic_menu_myplaces)
+                .fit()
+                .into(mImageView);
 
-                FragmentTransaction fragmentTransaction =
-                        ((FragmentActivity) context).getSupportFragmentManager()
-                                .beginTransaction();
+        CardView mCardView = convertView.findViewById(R.id.my_link_card_view);
+        mCardView.setOnClickListener(
+                v -> Navigation.findNavController(v).navigate(link.getNextView())
+        );
 
-//                fragmentTransaction.remove(convertView.get);
-                fragmentTransaction.replace(R.id.nav_host_fragment, link.getNextFragment());
-
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                //            context.startActivity(new Intent(context, link.getNextClass()));
-
-            }
-
-
-        });
         return convertView;
     }
 }

@@ -1,37 +1,39 @@
 package us.master.acme_explorer.entity;
 
-import androidx.fragment.app.Fragment;
+import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import us.master.acme_explorer.R;
-import us.master.acme_explorer.ui.gallery.GalleryFragment;
-import us.master.acme_explorer.ui.slideshow.SlideshowFragment;
+import us.master.acme_explorer.common.Constants;
 
 public class links {
     private String description;
-    private int resourceImageView;
-    private Fragment nextFragment;
+    private String imageURL;
+    private int nextView;
 
-    private links(String description, int resourceImageView, Fragment nextFragment) {
+    private links(String description, String imageURL, int nextView) {
         this.description = description;
-        this.resourceImageView = resourceImageView;
-        this.nextFragment = nextFragment;
+        this.imageURL = imageURL;
+        this.nextView = nextView;
     }
 
-    public static List<links> generateLinks() {
+    public static List<links> generateLinks(Context context) {
         List<links> linksList = new ArrayList<>();
-        linksList.add(
-                new links("Viajes disponibles ",
-                        R.mipmap.ic_launcher,
-                        new GalleryFragment()
+
+        linksList.add(new links(
+                        context.getString(R.string.menu_gallery_trips),
+                        Constants.urlImages[0],
+                        R.id.nav_gallery_trips
                 )
         );
-        linksList.add(
-                new links("Viajes seleccionados",
-                        R.mipmap.ic_launcher_round,
-                        new SlideshowFragment()));
+        linksList.add(new links(
+                        context.getString(R.string.menu_selected_trips),
+                        Constants.urlImages[1],
+                        R.id.nav_selected_trips
+                )
+        );
         return linksList;
     }
 
@@ -39,23 +41,24 @@ public class links {
         return description;
     }
 
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public int getNextView() {
+        return nextView;
+    }
+/*
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public int getResourceImageView() {
-        return resourceImageView;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
-    public void setResourceImageView(int resourceImageView) {
-        this.resourceImageView = resourceImageView;
+    public void setNextView(int nextView) {
+        this.nextView = nextView;
     }
-
-    public Fragment getNextFragment() {
-        return nextFragment;
-    }
-
-    public void setNextFragment(Fragment nextFragment) {
-        this.nextFragment = nextFragment;
-    }
+*/
 }
