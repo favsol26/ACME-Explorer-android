@@ -5,8 +5,6 @@ import java.util.List;
 import us.master.acme_explorer.entity.Trip;
 
 public final class Constants {
-    public static  List<Trip> tripList;
-
     public final static String[] cities = {"Tirana", "Berlín", "Andorra La Vieja", "Ereván",
             "Viena", "Bakú", "Bruselas", "Minsk", "Sarajevo", "Sofía", "Praga", "Zagreb",
             "Copenhague", "Bratislava", "Lublijana", "Madrid", "Tallín", "Helsinki", "París",
@@ -15,13 +13,10 @@ public final class Constants {
             "Oslo", "Amsterdam", "Varsovia", "Lisboa", "Londres", "Bucarest", "Moscú",
             "Ciudad De San Marino", "Belgrado", "Estocolmo", "Berna", "Kiev",
             "Ciudad Del Vaticano"};
-
     public final static String[] departurePlace = {"Sevilla", "Málaga", "Faro", "Barcelona",
             "Madrid", "Valencia"};
-
     public final static String filterPreferences = "Filter", dateStart = "dateStart",
             dateEnd = "dateEnd";
-
     public final static String[] urlImages = {
             "https://static.wixstatic.com/media/a6b425_48880d306dd5487ab1f9fed9a4ab7f91~mv2.jpg",
             "https://www.lavanguardia.com/r/GODO/LV/p5/WebSite/2018/06/15/Recortada/img_lberna" +
@@ -35,4 +30,5 @@ public final class Constants {
             "https://png.pngtree.com/element_pic/00/00/00/0056a3602a2cf41.jpg",
             "https://png.pngtree.com/element_our/sm/20180416/sm_5ad452dbaaf09.png"};
     public static final String IntentTravel = "Travel";
+    public static List<Trip> tripList;
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -45,8 +46,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     @Override
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
         Trip trip = trips.get(position);
-        if (column == 2)
-            holder.mArrivalPlaceTxv.setTextSize(13);
 
         Glide.with(context)
                 .load(trip.getUrlImage())
@@ -67,15 +66,33 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         holder.mBuyTripImv.setOnClickListener(
                 V -> Toast.makeText(
                         context,
-                        String.format("Viaje %s comprado", trip.getId()),
+                        String.format("%s %s %s",
+                                context.getString(R.string.trip_tag),
+                                trip.getId(),
+                                context.getString(R.string.bought_tag)),
                         Toast.LENGTH_SHORT)
                         .show()
         );
 
-        holder.mPriceTxv.setText(String.valueOf(trip.getPrice()));
+        textSize(holder, (column == 2) ? 19 : 27);
+
+        holder.mPriceTxv.setText(String.valueOf(trip.getPrice()).concat(" $"));
         holder.mArrivalPlaceTxv.setText(trip.getArrivePlace());
-        holder.mDepartureDateTxv.setText(Util.dateFormatter(trip.getDepartureDate()));
-        holder.mArrivalDateTxv.setText(Util.dateFormatter(trip.getArrivalDate()));
+        holder.mDepartureDateTxv.setText(
+                context.getString(R.string.departure)
+                        .concat("\n" + Util.dateFormatter(trip.getDepartureDate()))
+        );
+        holder.mArrivalDateTxv.setText(
+                context.getString(R.string.arrival)
+                        .concat("\n" + Util.dateFormatter(trip.getArrivalDate()))
+        );
+    }
+
+    private void textSize(TripViewHolder holder, int i) {
+        holder.mArrivalPlaceTxv.setTextSize(i);
+//        holder.mPriceTxv.setTextSize(i );
+//        holder.mArrivalDateTxv.setTextSize(i );
+//        holder.mDepartureDateTxv.setTextSize(i);
     }
 
     @Override
@@ -86,9 +103,12 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     static class TripViewHolder extends RecyclerView.ViewHolder {
         ImageView mFlagImv, mSelectedImv, mBuyTripImv;
         TextView mPriceTxv, mDepartureDateTxv, mArrivalDateTxv, mArrivalPlaceTxv;
+        CardView mCardView;
 
         TripViewHolder(@NonNull View itemView) {
             super(itemView);
+            mCardView = itemView.findViewById(R.id.my_trip_card_view);
+
             mFlagImv = itemView.findViewById(R.id.my_trip_image_view);
             mArrivalPlaceTxv = itemView.findViewById(R.id.my_trip_arrival_place_text_view);
 

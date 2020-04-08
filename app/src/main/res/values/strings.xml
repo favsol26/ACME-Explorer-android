@@ -16,4 +16,8 @@
     <string name="switch_column">Columnas</string>
     <string name="filter">Filtrar</string>
     <string name="trips_details">Detalles del Viaje</string>
+    <string name="departure">Salida:</string>
+    <string name="arrival">Llegada:</string>
+    <string name="trip_tag">Viaje</string>
+    <string name="bought_tag">comprado</string>
 </resources>

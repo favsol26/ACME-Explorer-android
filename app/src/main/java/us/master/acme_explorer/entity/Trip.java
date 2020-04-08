@@ -27,8 +27,8 @@ public class Trip {
         for (int i = 0; i < amount; i++) {
             //TODO make dynamic the trips's creation
             trips.add(
-                    new Trip(i, 1, i % 2 == 0, 11,
-                            111, "departure", "departure",
+                    new Trip(i + 1, 10000, i % 2 == 0, i * 1000011,
+                            i * 111000, "departure", "departure",
                             "description", "url")
             );
         }

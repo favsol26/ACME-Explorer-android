@@ -13,27 +13,31 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import us.master.acme_explorer.R;
-import us.master.acme_explorer.adapters.TripAdapter;
 import us.master.acme_explorer.common.Constants;
+import us.master.acme_explorer.common.Util;
 
 public class AvailableTripsFragment extends Fragment {
 
+    private static final String TAG = AvailableTripsFragment.class.getSimpleName();
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_trips_base_view, container, false);
+        View root = inflater.inflate(R.layout.fragment_trips_base_view,
+                container, false);
 
-        Switch mySwitch = root.findViewById(R.id.my_trips_base_view_switch);
         RelativeLayout myLayout = root.findViewById(R.id.my_trips_base_view_filter);
-        RecyclerView myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
-        myRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 2));
-        myRecyclerView.setAdapter(
-                new TripAdapter(
-                        Constants.tripList,
-                        AvailableTripsFragment.class.getSimpleName(),
-                        2
-                )
-        );
+        myLayout.setOnClickListener(Util.getLayoutOnClickListener(container));
 
+        RecyclerView myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
+        Switch mySwitch = root.findViewById(R.id.my_trips_base_view_switch);
+        myRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 2));
+
+        Util.setRecyclerView(container, mySwitch,
+                Constants.tripList, myRecyclerView, TAG);
+        mySwitch.setOnClickListener(
+                Util.getSwitchOnClickListener(container, mySwitch,
+                        myRecyclerView, Constants.tripList, TAG)
+        );
         return root;
     }
 }
