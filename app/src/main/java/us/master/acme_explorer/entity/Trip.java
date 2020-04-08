@@ -3,6 +3,8 @@ package us.master.acme_explorer.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import us.master.acme_explorer.common.Constants;
+
 public class Trip {
     private int price, id;
     private boolean selected;
@@ -29,7 +31,7 @@ public class Trip {
             trips.add(
                     new Trip(i + 1, 10000, i % 2 == 0, i * 1000011,
                             i * 111000, "departure", "departure",
-                            "description", "url")
+                            "description", Constants.urlImages[i])
             );
         }
         return trips;

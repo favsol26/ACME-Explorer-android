@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -65,26 +66,29 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
         holder.mBuyTripImv.setOnClickListener(
                 V -> Toast.makeText(
-                        context,
-                        String.format("%s %s %s",
+                        context, String.format("%s %s %s",
                                 context.getString(R.string.trip_tag),
                                 trip.getId(),
-                                context.getString(R.string.bought_tag)),
-                        Toast.LENGTH_SHORT)
-                        .show()
+                                context.getString(R.string.bought_tag)), Toast.LENGTH_SHORT).show()
         );
 
         textSize(holder, (column == 2) ? 19 : 27);
 
         holder.mPriceTxv.setText(String.valueOf(trip.getPrice()).concat(" $"));
         holder.mArrivalPlaceTxv.setText(trip.getArrivePlace());
-        holder.mDepartureDateTxv.setText(
-                context.getString(R.string.departure)
-                        .concat("\n" + Util.dateFormatter(trip.getDepartureDate()))
-        );
-        holder.mArrivalDateTxv.setText(
-                context.getString(R.string.arrival)
-                        .concat("\n" + Util.dateFormatter(trip.getArrivalDate()))
+
+        holder.mDepartureDateTxv.setText(String.format("%s%s%s",
+                context.getString(R.string.departure),
+                ((column == 2) ? "\n" : "  "),
+                Util.dateFormatter(trip.getDepartureDate())));
+
+        holder.mArrivalDateTxv.setText(String.format("%s%s%s",
+                context.getString(R.string.arrival),
+                ((column == 2) ? "\n" : "  "),
+                Util.dateFormatter(trip.getArrivalDate())));
+
+        holder.mCardView.setOnClickListener(
+                V -> Navigation.findNavController(V).navigate(R.id.nav_active_trip_fragment)
         );
     }
 
@@ -107,7 +111,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
         TripViewHolder(@NonNull View itemView) {
             super(itemView);
-            mCardView = itemView.findViewById(R.id.my_trip_card_view);
+            mCardView = itemView.findViewById(R.id.my_content_trip_card_view);
 
             mFlagImv = itemView.findViewById(R.id.my_trip_image_view);
             mArrivalPlaceTxv = itemView.findViewById(R.id.my_trip_arrival_place_text_view);

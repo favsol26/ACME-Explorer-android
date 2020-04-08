@@ -8,6 +8,7 @@
     android:paddingEnd="5sp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/my_content_trip_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="10sp">
@@ -78,6 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/my_trip_arrival_place_text_view"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_toEndOf="@id/my_trip_card_view"
@@ -86,21 +88,24 @@
 
                 <TextView
                     android:id="@+id/my_trip_price_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:text="@string/app_name"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/my_trip_departure_date_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:text="@string/app_name"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/my_trip_arrival_date_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:text="@string/app_name"
+                    android:textAlignment="center" />
             </LinearLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
