@@ -47,12 +47,12 @@ public class Util {
                                        List<Trip> Trips, RecyclerView myRecyclerView, String aClass) {
         myRecyclerView.setLayoutManager(
                 new GridLayoutManager(container.getContext(),
-                        (mySwitch.isChecked()) ? 2 : 1));
+                        mySwitch.isChecked() ? 2 : 1));
 
         myRecyclerView.setAdapter(
                 new TripAdapter(Trips,
                         aClass,
-                        (mySwitch.isChecked()) ? 2 : 1));
+                        mySwitch.isChecked() ? 2 : 1, container.getContext()));
     }
 
     public static View.OnClickListener getLayoutOnClickListener(ViewGroup container) {
@@ -63,8 +63,9 @@ public class Util {
     }
 
     public static View.OnClickListener getSwitchOnClickListener(ViewGroup container, Switch mySwitch,
-                                                          RecyclerView myRecyclerView,
-                                                          List<Trip> selectedTrips, String aClass) {
+                                                                RecyclerView myRecyclerView,
+                                                                List<Trip> selectedTrips, String aClass) {
         return V -> setRecyclerView(container, mySwitch, selectedTrips, myRecyclerView, aClass);
     }
+
 }

@@ -9,7 +9,6 @@ import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import us.master.acme_explorer.R;
@@ -30,13 +29,11 @@ public class AvailableTripsFragment extends Fragment {
 
         RecyclerView myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
         Switch mySwitch = root.findViewById(R.id.my_trips_base_view_switch);
-        myRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 2));
 
-        Util.setRecyclerView(container, mySwitch,
-                Constants.tripList, myRecyclerView, TAG);
+        Util.setRecyclerView(container, mySwitch, Constants.tripList, myRecyclerView, TAG);
         mySwitch.setOnClickListener(
-                Util.getSwitchOnClickListener(container, mySwitch,
-                        myRecyclerView, Constants.tripList, TAG)
+                Util.getSwitchOnClickListener(container, mySwitch, myRecyclerView,
+                        Constants.tripList, TAG)
         );
         return root;
     }

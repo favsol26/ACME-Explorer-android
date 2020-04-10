@@ -20,4 +20,10 @@
     <string name="arrival">Llegada:</string>
     <string name="trip_tag">Viaje</string>
     <string name="bought_tag">comprado</string>
+    <string name="choose">Seleccionar</string>
+    <string name="price">Precio:</string>
+    <string name="departure_date">Fecha de salida:</string>
+    <string name="arrival_date">Fecha de llegada:</string>
+    <string name="departure_place">Lugar de salida:</string>
+    <string name="filter_message">viajes con las condiciones de filtro</string>
 </resources>

@@ -12,7 +12,7 @@ public final class Constants {
             "Vilna", "Luxemburgo", "Skopje", "La Valeta", "Chisinau", "Mónaco", "Podgorica",
             "Oslo", "Amsterdam", "Varsovia", "Lisboa", "Londres", "Bucarest", "Moscú",
             "Ciudad De San Marino", "Belgrado", "Estocolmo", "Berna", "Kiev",
-            "Ciudad Del Vaticano"};
+            "Ciudad Del Vaticano","San Juan De La Maguana", "Santiago De Los Caballeros"};
     public final static String[] departurePlace = {"Sevilla", "Málaga", "Faro", "Barcelona",
             "Madrid", "Valencia"};
     public final static String filterPreferences = "Filter", dateStart = "dateStart",
@@ -28,7 +28,8 @@ public final class Constants {
             "https://png.pngtree.com/element_pic/20/16/01/3156adb71123719.jpg",
             "https://png.pngtree.com/element_pic/30/03/20/1656fbd4b4641fc.jpg",
             "https://png.pngtree.com/element_pic/00/00/00/0056a3602a2cf41.jpg",
-            "https://png.pngtree.com/element_our/sm/20180416/sm_5ad452dbaaf09.png"};
+            "https://png.pngtree.com/element_our/sm/20180416/sm_5ad452dbaaf09.png"
+    };
     public static final String IntentTravel = "Travel";
     public static List<Trip> tripList;
 }

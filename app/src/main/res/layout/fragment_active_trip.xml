@@ -1,134 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.active_trip.ActiveTripFragment">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/my_active_layout_trip_image"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/my_active_trip_c_v"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:orientation="vertical">
+            android:layout_marginTop="25sp"
+            app:cardCornerRadius="75dp">
 
             <ImageView
-                android:id="@+id/my_active_trip_image_view"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:contentDescription="@string/app_name"
-                android:padding="5dp"
-                android:src="@mipmap/ic_launcher_round" />
+                android:id="@+id/my_trip_flag_i_v"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:contentDescription="@string/arrival" />
 
-            <TextView
-                android:id="@+id/my_active_trip_arrival_place_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="@string/app_name" />
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/my_arrival_place_trip_t_v"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/my_active_layout_trip_image"
-            android:layout_marginTop="15sp"
-            android:orientation="vertical">
+            android:layout_below="@id/my_active_trip_c_v"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/my_active_trip_l_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_arrival_place_trip_t_v"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginEnd="30sp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:padding="5dp"
+                    android:text="@string/price" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:padding="5dp"
+                    android:text="@string/departure_date" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/arrival_date" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/departure_place" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/choose" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="3"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/my_price_trip_t_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:padding="5dp"
+                    android:textAlignment="center" />
 
                 <TextView
+                    android:id="@+id/my_departure_date_trip_t_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    android:padding="5dp"
+                    android:textAlignment="center" />
 
                 <TextView
+                    android:id="@+id/my_arrival_date_trip_t_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:padding="5dp"
+                    android:textAlignment="center" />
 
                 <TextView
+                    android:id="@+id/my_departure_place_trip_t_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name" />
+                    android:padding="5dp"
+                    android:textAlignment="center" />
 
                 <ImageView
-                    android:layout_width="0dp"
+                    android:id="@+id/my_active_selected_trip_i_v"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/app_name"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/arrival"
                     android:src="@android:drawable/btn_star_big_off" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/my_description_trip_t_v"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_active_trip_l_l"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
-
-</RelativeLayout>
+</ScrollView>

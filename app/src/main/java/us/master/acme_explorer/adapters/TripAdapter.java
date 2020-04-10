@@ -1,6 +1,7 @@
 package us.master.acme_explorer.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import us.master.acme_explorer.R;
+import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
@@ -27,18 +29,17 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     private String aClass;
     private Context context;
 
-    public TripAdapter(List<Trip> trips, String aClass, int column) {
+    public TripAdapter(List<Trip> trips, String aClass, int column, Context mContext) {
         this.trips = trips;
         this.aClass = aClass;
         this.column = column;
+        this.context = mContext;
     }
 
     @NonNull
     @Override
     public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View tripView = inflater.inflate(R.layout.trip_item, parent, false);
 
         return new TripViewHolder(tripView);
@@ -72,10 +73,10 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
                                 context.getString(R.string.bought_tag)), Toast.LENGTH_SHORT).show()
         );
 
-        textSize(holder, (column == 2) ? 19 : 27);
+        textSize(holder, (column == 2) ? 19 : 22);
 
         holder.mPriceTxv.setText(String.valueOf(trip.getPrice()).concat(" $"));
-        holder.mArrivalPlaceTxv.setText(trip.getArrivePlace());
+        holder.mArrivalPlaceTxv.setText(trip.getArrivalPlace());
 
         holder.mDepartureDateTxv.setText(String.format("%s%s%s",
                 context.getString(R.string.departure),
@@ -88,15 +89,20 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
                 Util.dateFormatter(trip.getArrivalDate())));
 
         holder.mCardView.setOnClickListener(
-                V -> Navigation.findNavController(V).navigate(R.id.nav_active_trip_fragment)
+                V -> {
+                    Bundle args = new Bundle();
+                    args.putInt(Constants.IntentTravel, trip.getId());
+                    Navigation.findNavController(V).navigate(R.id.nav_active_trip_fragment, args);
+                }
         );
+
     }
 
     private void textSize(TripViewHolder holder, int i) {
-        holder.mArrivalPlaceTxv.setTextSize(i);
-//        holder.mPriceTxv.setTextSize(i );
-//        holder.mArrivalDateTxv.setTextSize(i );
-//        holder.mDepartureDateTxv.setTextSize(i);
+        holder.mArrivalPlaceTxv.setTextSize(i + 4);
+        holder.mPriceTxv.setTextSize(i - 4);
+        holder.mArrivalDateTxv.setTextSize(i - 4);
+        holder.mDepartureDateTxv.setTextSize(i - 4);
     }
 
     @Override
@@ -111,6 +117,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
         TripViewHolder(@NonNull View itemView) {
             super(itemView);
+
             mCardView = itemView.findViewById(R.id.my_content_trip_card_view);
 
             mFlagImv = itemView.findViewById(R.id.my_trip_image_view);

@@ -21,7 +21,7 @@
         android:id="@+id/nav_home_second"
         android:name="us.master.acme_explorer.ui.main_menu.HomeSecondFragment"
         android:label="@string/home_second"
-        tools:layout="@layout/fragment_home_second">
+        tools:layout="@layout/fragment_gallery">
 
         <argument
             android:name="myArg"
@@ -50,7 +50,8 @@
     <fragment
         android:id="@+id/nav_active_trip_fragment"
         android:name="us.master.acme_explorer.ui.active_trip.ActiveTripFragment"
-        android:label="@string/trips_details" >
+        android:label="@string/trips_details"
+        tools:layout="@layout/fragment_active_trip">
         <action
             android:id="@+id/action_activeTripFragment_pop"
             app:popUpTo="@id/nav_active_trip_fragment"
