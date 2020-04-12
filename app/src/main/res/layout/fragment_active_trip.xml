@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,31 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/my_active_trip_c_v"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/my_trip_flag_i_v"
+            android:layout_width="260dp"
+            android:layout_marginTop="35dp"
+            android:layout_height="130dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="25sp"
-            app:cardCornerRadius="75dp">
-
-            <ImageView
-                android:id="@+id/my_trip_flag_i_v"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:contentDescription="@string/arrival" />
-
-        </androidx.cardview.widget.CardView>
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/arrival" />
 
         <TextView
             android:id="@+id/my_arrival_place_trip_t_v"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/my_active_trip_c_v"
+            android:layout_below="@id/my_trip_flag_i_v"
             android:layout_centerHorizontal="true"
+            android:textAlignment="center"
             android:layout_marginTop="5dp"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="30sp" />
 
         <LinearLayout
             android:id="@+id/my_active_trip_l_l"
@@ -50,7 +43,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="30sp"
-                android:layout_weight="1"
                 android:orientation="vertical"
                 android:padding="5dp">
 
@@ -58,37 +50,42 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="@string/price" />
+                    android:text="@string/price"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="@string/departure_date" />
+                    android:text="@string/departure_date"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="@string/arrival_date" />
+                    android:text="@string/arrival_date"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="@string/departure_place" />
+                    android:text="@string/departure_place"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="@string/choose" />
+                    android:text="@string/choose"
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="5dp">
 
@@ -97,35 +94,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/my_departure_date_trip_t_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/my_arrival_date_trip_t_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/my_departure_place_trip_t_v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:id="@+id/my_active_selected_trip_i_v"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_gravity="center"
-                    android:contentDescription="@string/arrival"
+                    android:contentDescription="@string/app_name"
                     android:src="@android:drawable/btn_star_big_off" />
             </LinearLayout>
         </LinearLayout>
@@ -135,6 +136,8 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_active_trip_l_l"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15sp"
+            android:textSize="20sp" />
     </RelativeLayout>
 </ScrollView>

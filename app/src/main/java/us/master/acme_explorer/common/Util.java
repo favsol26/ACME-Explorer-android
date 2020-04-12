@@ -1,10 +1,8 @@
 package us.master.acme_explorer.common;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +16,11 @@ import java.util.Locale;
 import us.master.acme_explorer.adapters.TripAdapter;
 import us.master.acme_explorer.entity.Trip;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 public class Util {
+
+    public static List<Trip> tripList;
 
     public static String dateFormatter(Calendar calendar) {
         int yy = calendar.get(Calendar.YEAR);
@@ -44,28 +46,19 @@ public class Util {
     }
 
     public static void setRecyclerView(ViewGroup container, Switch mySwitch,
-                                       List<Trip> Trips, RecyclerView myRecyclerView, String aClass) {
-        myRecyclerView.setLayoutManager(
-                new GridLayoutManager(container.getContext(),
-                        mySwitch.isChecked() ? 2 : 1));
-
-        myRecyclerView.setAdapter(
-                new TripAdapter(Trips,
-                        aClass,
-                        mySwitch.isChecked() ? 2 : 1, container.getContext()));
-    }
-
-    public static View.OnClickListener getLayoutOnClickListener(ViewGroup container) {
-        return v -> {
-            Log.d("onCreateView: ", "");
-            Toast.makeText(container.getContext(), "filter", Toast.LENGTH_SHORT).show();
-        };
+                                       RecyclerView myRecyclerView, TripAdapter tripAdapter) {
+        int ort = container.getResources().getConfiguration().orientation;
+        int column = mySwitch.isChecked()
+                ? ort == ORIENTATION_LANDSCAPE ? 4 : 2
+                : ort == ORIENTATION_LANDSCAPE ? 3 : 1;
+        tripAdapter.setColumn(column);
+        myRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), column));
+        myRecyclerView.setAdapter(tripAdapter);
     }
 
     public static View.OnClickListener getSwitchOnClickListener(ViewGroup container, Switch mySwitch,
                                                                 RecyclerView myRecyclerView,
-                                                                List<Trip> selectedTrips, String aClass) {
-        return V -> setRecyclerView(container, mySwitch, selectedTrips, myRecyclerView, aClass);
+                                                                TripAdapter tripAdapter) {
+        return V -> setRecyclerView(container, mySwitch, myRecyclerView, tripAdapter);
     }
-
 }

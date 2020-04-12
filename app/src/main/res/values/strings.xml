@@ -26,4 +26,5 @@
     <string name="arrival_date">Fecha de llegada:</string>
     <string name="departure_place">Lugar de salida:</string>
     <string name="filter_message">viajes con las condiciones de filtro</string>
+    <string name="filter_trips">Filtrar viajes</string>
 </resources>

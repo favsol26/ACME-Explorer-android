@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Date;
 
-import us.master.acme_explorer.common.Constants;
+import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
 public class SplashActivity extends AppCompatActivity {
@@ -22,8 +22,14 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         Date date = new Date();
         long n = date.getTime();
+        long max = n % 10000;
         Log.d(TAG, "onCreate: " + n);
-        Constants.tripList = Trip.generateTrips(2 + n % 100);
+
+        Util.tripList = Trip.generateTrips(
+                2 + n % 100,
+                n % 100,
+                max < 1000 ? 1000 + max : max);
+
         new Handler().postDelayed(() -> {
             startActivity(
                     new Intent(SplashActivity.this, MainActivity.class)

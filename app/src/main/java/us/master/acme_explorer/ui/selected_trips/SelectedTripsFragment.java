@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import java.util.List;
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.adapters.TripAdapter;
 import us.master.acme_explorer.common.Constants;
+import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
 public class SelectedTripsFragment extends Fragment {
@@ -35,12 +36,12 @@ public class SelectedTripsFragment extends Fragment {
         RecyclerView myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
 
         List<Trip> selectedTrips = new ArrayList<>();
-        for (Trip trip : Constants.tripList) {
+        for (Trip trip : Util.tripList) {
             if (trip.isSelected())
                 selectedTrips.add(trip);
         }
         myRecyclerView.setLayoutManager(
-                new GridLayoutManager(container.getContext(), 1));
+                new LinearLayoutManager(container.getContext()));
         myRecyclerView.setAdapter(
                 new TripAdapter(selectedTrips, TAG, 1, container.getContext()));
         return root;

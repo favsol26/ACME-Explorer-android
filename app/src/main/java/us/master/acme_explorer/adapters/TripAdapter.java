@@ -14,7 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -29,11 +29,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     private String aClass;
     private Context context;
 
-    public TripAdapter(List<Trip> trips, String aClass, int column, Context mContext) {
+    public TripAdapter(List<Trip> trips, String aClass, int column, Context context) {
         this.trips = trips;
         this.aClass = aClass;
         this.column = column;
-        this.context = mContext;
+        this.context = context;
     }
 
     @NonNull
@@ -49,10 +49,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
         Trip trip = trips.get(position);
 
-        Glide.with(context)
+        Picasso.get()
                 .load(trip.getUrlImage())
                 .placeholder(android.R.drawable.ic_menu_myplaces)
                 .error(android.R.drawable.ic_menu_myplaces)
+                .fit()
                 .into(holder.mFlagImv);
 
         if (aClass.equals("SelectedTripsFragment"))
@@ -69,45 +70,50 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
                 V -> Toast.makeText(
                         context, String.format("%s %s %s",
                                 context.getString(R.string.trip_tag),
-                                trip.getId(),
+                                trip.getId() + 1,
                                 context.getString(R.string.bought_tag)), Toast.LENGTH_SHORT).show()
         );
 
-        textSize(holder, (column == 2) ? 19 : 22);
+        textSize(holder, (column % 2 == 0) ? 19 : 22);
 
         holder.mPriceTxv.setText(String.valueOf(trip.getPrice()).concat(" $"));
         holder.mArrivalPlaceTxv.setText(trip.getArrivalPlace());
 
         holder.mDepartureDateTxv.setText(String.format("%s%s%s",
                 context.getString(R.string.departure),
-                ((column == 2) ? "\n" : "  "),
+                ((column % 2 == 0) ? "\n" : "  "),
                 Util.dateFormatter(trip.getDepartureDate())));
 
         holder.mArrivalDateTxv.setText(String.format("%s%s%s",
                 context.getString(R.string.arrival),
-                ((column == 2) ? "\n" : "  "),
+                ((column % 2 == 0) ? "\n" : "  "),
                 Util.dateFormatter(trip.getArrivalDate())));
 
         holder.mCardView.setOnClickListener(
                 V -> {
                     Bundle args = new Bundle();
                     args.putInt(Constants.IntentTravel, trip.getId());
-                    Navigation.findNavController(V).navigate(R.id.nav_active_trip_fragment, args);
+                    Navigation.findNavController(V)
+                            .navigate(R.id.nav_active_trip_fragment, args);
                 }
         );
 
     }
 
-    private void textSize(TripViewHolder holder, int i) {
-        holder.mArrivalPlaceTxv.setTextSize(i + 4);
-        holder.mPriceTxv.setTextSize(i - 4);
-        holder.mArrivalDateTxv.setTextSize(i - 4);
-        holder.mDepartureDateTxv.setTextSize(i - 4);
-    }
-
     @Override
     public int getItemCount() {
         return trips.size();
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    private void textSize(TripViewHolder holder, int i) {
+        holder.mArrivalPlaceTxv.setTextSize(i + 2);
+        holder.mPriceTxv.setTextSize(i - 4);
+        holder.mArrivalDateTxv.setTextSize(i - 4);
+        holder.mDepartureDateTxv.setTextSize(i - 4);
     }
 
     static class TripViewHolder extends RecyclerView.ViewHolder {
