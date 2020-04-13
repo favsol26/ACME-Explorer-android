@@ -4,10 +4,10 @@ import java.util.Hashtable;
 
 public final class Constants {
     public final static String[] departurePlace = {"Sevilla", "Punta Cana",
-            "Málaga", "Faro", "Barcelona", "Madrid", "Valencia", "Oporto", "Huelva"};
+            "Cáldiz", "Zaragoza", "Barcelona", "Granada", "Valencia", "Oporto", "Huelva"};
 
     public final static String filterPreferences = "Filter", dateStart = "dateStart",
-            dateEnd = "dateEnd";
+            dateEnd = "dateEnd", maxPrice = "maxPrice", minPrice = "minPrice";
 
     public final static String[] urlImages = {
             "https://static.wixstatic.com/media/a6b425_48880d306dd5487ab1f9fed9a4ab7f91~mv2.jpg",
@@ -25,7 +25,7 @@ public final class Constants {
             "Tiflis-Georgia", "Atenas-Greece", "Budapest-Hungary", "Dublín-Ireland", "Reikiavik-Iceland",
             "Washington-US", "Roma-Italy", "Estocolmo-Sweden", "Lisboa-Portugal", "Oslo-Norway",
             "Londres-United Kingdom", "San Juan De La Maguana-Rep. Dom.", "Santo Domingo-Rep. Dom.",
-            "Concepción De La Vega-Rep. Dom.", "Santiago De Los Caballeros-Rep. Dom.", "Sevilla-Spain",
+            "Concepción De La Vega-Rep. Dom.", "Santiago De Los Caballeros-Rep. Dom.", "Segovia-Spain",
             "Málaga-Spain", "Ciudad Del Vaticano-Vatican City", "Luxemburgo-Luxembourg", "Mónaco-Monaco",
             "Podgorica-Montenegro", "Ciudad De San Marino-San Marino", "Kiev-Ukraine", "Chisinau-Moldova",
             "Moscú-Russia", "Varsovia-Poland", "Berna-Switzerland", "Belgrado-Serbia", "La Valeta-Malta",

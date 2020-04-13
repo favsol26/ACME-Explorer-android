@@ -41,12 +41,11 @@ public class AvailableTripsFragment extends Fragment {
         myLayout.setOnClickListener(getLayoutOnClickListener(container));
         this.container = container;
         this.tripAdapter = new TripAdapter(Util.tripList, TAG,
-                mySwitch.isChecked() ? 2 : 1, container.getContext());
+                mySwitch.isChecked() ? 2 : 1, this.container.getContext());
 
         Util.setRecyclerView(container, mySwitch, myRecyclerView, tripAdapter);
         mySwitch.setOnClickListener(
-                Util.getSwitchOnClickListener(container, mySwitch, myRecyclerView,
-                        this.tripAdapter)
+                V -> Util.setRecyclerView(container, mySwitch, myRecyclerView, tripAdapter)
         );
 
         return root;

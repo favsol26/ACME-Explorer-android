@@ -56,7 +56,7 @@ public class ActiveTripFragment extends Fragment {
             setState(trip, mSelectedImageView);
         });
 
-        mTextViewArrivalPlace.setText(String.format("%s (%s)",trip.getArrivalPlace(),trip.getCountry()));
+        mTextViewArrivalPlace.setText(String.format("%s \n(%s)",trip.getArrivalPlace(),trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
         mTextViewPrice.setText(String.valueOf(trip.getPrice()).concat(" $"));
         mTextViewDepartureDate.setText(Util.dateFormatter(trip.getDepartureDate()));

@@ -1,6 +1,5 @@
 package us.master.acme_explorer.common;
 
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 
@@ -56,9 +55,4 @@ public class Util {
         myRecyclerView.setAdapter(tripAdapter);
     }
 
-    public static View.OnClickListener getSwitchOnClickListener(ViewGroup container, Switch mySwitch,
-                                                                RecyclerView myRecyclerView,
-                                                                TripAdapter tripAdapter) {
-        return V -> setRecyclerView(container, mySwitch, myRecyclerView, tripAdapter);
-    }
 }

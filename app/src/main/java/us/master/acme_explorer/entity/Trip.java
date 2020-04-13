@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import us.master.acme_explorer.common.Constants;
+import us.master.acme_explorer.common.Util;
 
 public class Trip {
     private static final String TAG = Trip.class.getSimpleName();
@@ -17,79 +18,65 @@ public class Trip {
     private String arrivalPlace;
     private String departurePlace;
     private String description;
-    private String urlImage;
     private String country;
+    private String urlImage;
 
-    private Trip(int id, long price, boolean selected, long departureDate, long arrivalDate,
-                 String arrivalPlace, String departurePlace, String urlImage, String country, String description) {
-        this.id = id;
-        this.price = price;
+    private Trip(boolean selected, int id, long departureDate, long arrivalDate, long price,
+                 String arrivalPlace, String departurePlace, String description, String country,
+                 String urlImage) {
         this.selected = selected;
+        this.id = id;
         this.departureDate = departureDate;
         this.arrivalDate = arrivalDate;
+        this.price = price;
         this.arrivalPlace = arrivalPlace;
         this.departurePlace = departurePlace;
         this.description = description;
-        this.urlImage = urlImage;
         this.country = country;
+        this.urlImage = urlImage;
     }
 
     public static List<Trip> generateTrips(long amount, long min, long max) {
-        Log.d(TAG, min + " generate " + max + " Trips: " + amount);
         List<Trip> trips = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < amount; i++) {
-            //TODO make dynamic the trips's creation
+        Calendar departureDate, arrivalDate, calendarBase = Calendar.getInstance();
 
-            String arrivalCity = Constants.cities[
-                    (int) ThreadLocalRandom.current().nextLong(min, max) % Constants.cities.length
-                    ];
-            arrivalCity = arrivalCity.substring(0, arrivalCity.indexOf("-"));
+        for (int i = 0; i < amount; i++) {
+            departureDate = (Calendar) calendarBase.clone();
+            departureDate.add(
+                    Calendar.DAY_OF_MONTH,
+                    (int) (ThreadLocalRandom.current().nextLong(min, max) % max / 30)
+            );
+
+            arrivalDate = (Calendar) departureDate.clone();
+            arrivalDate.add(
+                    Calendar.DAY_OF_MONTH,
+                    3 + (int) (ThreadLocalRandom.current().nextLong(min, max) % min)
+            );
+
+            String arrivalPlace = Constants.cities[
+                    (int) ThreadLocalRandom.current().nextLong(min, max) % Constants.cities.length];
+
+            arrivalPlace = arrivalPlace.substring(0, arrivalPlace.indexOf("-"));
 
             String departurePlace = Constants.departurePlace[
                     (int) ThreadLocalRandom.current().nextLong(min, max) % Constants.departurePlace.length
                     ];
 
             trips.add(
-                    new Trip(i, ThreadLocalRandom.current().nextLong(min, max), false,
-                            i * 1000011,
-                            i * 111000,
-                            arrivalCity, departurePlace,
-                            Constants.flagsLinks.get(Constants.citiesToCountry.get(arrivalCity)),
-                            Constants.citiesToCountry.get(arrivalCity),
-                            "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalCity)
+                    new Trip(
+                            false, i, Util.Calendar2long(departureDate),
+                            Util.Calendar2long(arrivalDate),
+                            ThreadLocalRandom.current().nextLong(min, max),
+                            arrivalPlace, departurePlace,
+                            "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalPlace),
+                            Constants.citiesToCountry.get(arrivalPlace),
+                            Constants.flagsLinks.get(Constants.citiesToCountry.get(arrivalPlace))
                     )
             );
         }
+        Log.d(TAG, min + " generate " + max + " Trips: " + amount);
         return trips;
     }
-
-    /*public static List<Trip> generaViajes(int numViajes) {
-        List<Trip> trips = new ArrayList<>();
-        int min = 75, max = 2050, aleatorio, precio;
-        String lugarSalida, lugarDestino, descripcion, url;
-        Calendar fechaSalida, fechaLlegada, fechaActual = Calendar.getInstance();
-        long fsal, flle;
-        boolean seleccionado;
-        for (int i = 0; i < numViajes; i++) {
-            aleatorio = ThreadLocalRandom.current().nextInt(min, max);
-
-            lugarSalida = Constantes.lugarSalida[aleatorio % Constantes.lugarSalida.length];
-            lugarDestino = Constantes.ciudades[aleatorio % Constantes.ciudades.length];
-            url = Constantes.urlImagenes[aleatorio % Constantes.urlImagenes.length];
-            descripcion = "Viaje precioso por " + lugarDestino;
-            fechaSalida = (Calendar) fechaActual.clone();
-            fechaSalida.add(Calendar.DAY_OF_MONTH, aleatorio % 10);
-            fsal = fechaSalida.getTimeInMillis() / 1000;
-            fechaLlegada = (Calendar) fechaSalida.clone();
-            fechaLlegada.add(Calendar.DAY_OF_MONTH, 3 + aleatorio % 2);
-            flle = fechaLlegada.getTimeInMillis() / 1000;
-            precio = aleatorio;
-            seleccionado = aleatorio % 2 == 0 ? true : false;
-            trips.add(new Trip(lugarSalida, lugarDestino, descripcion, fsal, flle, precio, url, seleccionado));
-        }
-        return trips;
-    }*/
 
     public long getPrice() {
         return price;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,31 +10,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/my_trip_flag_i_v"
-            android:layout_width="260dp"
-            android:layout_marginTop="35dp"
-            android:layout_height="130dp"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/arrival" />
-
-        <TextView
-            android:id="@+id/my_arrival_place_trip_t_v"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/my_active_trip_c_v"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/my_trip_flag_i_v"
             android:layout_centerHorizontal="true"
-            android:textAlignment="center"
-            android:layout_marginTop="5dp"
-            android:textColor="@android:color/black"
-            android:textSize="30sp" />
+            android:layout_marginTop="25sp"
+            app:cardCornerRadius="70dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorShadow"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/my_trip_flag_i_v"
+                    android:layout_width="250dp"
+                    android:layout_height="130dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/arrival" />
+
+                <TextView
+                    android:id="@+id/my_arrival_place_trip_t_v"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:id="@+id/my_active_trip_l_l"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/my_arrival_place_trip_t_v"
+            android:layout_below="@id/my_active_trip_c_v"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:baselineAligned="false"
@@ -138,6 +154,7 @@
             android:layout_below="@id/my_active_trip_l_l"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15sp"
+            android:layout_marginBottom="15sp"
             android:textSize="20sp" />
     </RelativeLayout>
 </ScrollView>
