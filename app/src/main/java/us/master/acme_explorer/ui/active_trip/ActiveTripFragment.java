@@ -2,6 +2,7 @@ package us.master.acme_explorer.ui.active_trip;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,13 +57,14 @@ public class ActiveTripFragment extends Fragment {
             setState(trip, mSelectedImageView);
         });
 
-        mTextViewArrivalPlace.setText(String.format("%s \n(%s)",trip.getArrivalPlace(),trip.getCountry()));
+        mTextViewArrivalPlace.setText(String.format("%s \n(%s)", trip.getArrivalPlace(), trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
         mTextViewPrice.setText(String.valueOf(trip.getPrice()).concat(" $"));
         mTextViewDepartureDate.setText(Util.dateFormatter(trip.getDepartureDate()));
         mTextViewArrivalDate.setText(Util.dateFormatter(trip.getArrivalDate()));
         mTextViewDeparturePlace.setText(trip.getDeparturePlace());
         mTextViewDescription.setText(trip.getDescription());
+        Log.d(TAG, "onCreateView: " + trip.getId());
         return root;
     }
 

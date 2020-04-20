@@ -43,14 +43,16 @@ public class Trip {
         for (int i = 0; i < amount; i++) {
             departureDate = (Calendar) calendarBase.clone();
             departureDate.add(
-                    Calendar.DAY_OF_MONTH,
-                    (int) (ThreadLocalRandom.current().nextLong(min, max) % max / 30)
-            );
+                    Calendar.DAY_OF_MONTH, (int) (
+                            ThreadLocalRandom
+                                    .current()
+                                    .nextLong(min % 10, (max * 2 / 80) - 15)
+                    ));
 
             arrivalDate = (Calendar) departureDate.clone();
             arrivalDate.add(
                     Calendar.DAY_OF_MONTH,
-                    3 + (int) (ThreadLocalRandom.current().nextLong(min, max) % min)
+                    1 + (int) (ThreadLocalRandom.current().nextLong(min, max) % min)
             );
 
             String arrivalPlace = Constants.cities[
@@ -64,8 +66,8 @@ public class Trip {
 
             trips.add(
                     new Trip(
-                            false, i, Util.Calendar2long(departureDate),
-                            Util.Calendar2long(arrivalDate),
+                            false, i, Util.CalendarToLong(departureDate),
+                            Util.CalendarToLong(arrivalDate),
                             ThreadLocalRandom.current().nextLong(min, max),
                             arrivalPlace, departurePlace,
                             "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalPlace),

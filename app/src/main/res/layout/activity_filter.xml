@@ -1,22 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FilterActivity">
 
-    <TextView
-        android:id="@+id/text_slideshow"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:padding="10sp">
+
+        <RelativeLayout
+            android:id="@+id/my_rl_departure_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/my_txv_filter_date_start"
+                android:gravity="center"
+                android:text="@string/begin_date"
+                android:textColor="@android:color/black"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/my_txv_filter_date_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/date"
+                android:textColor="@android:color/white"
+                android:textSize="19sp" />
+
+            <ImageView
+                android:id="@+id/my_imv_filter_departure_date"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/my_txv_filter_date_start"
+                android:contentDescription="@string/app_name"
+                android:onClick="getPickOneDate"
+                android:src="@drawable/ic_event_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/my_rl_arrival_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_rl_departure_date"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/my_txv_filter_date_end"
+                android:gravity="center"
+                android:text="@string/end_date"
+                android:textColor="@android:color/black"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/my_txv_filter_date_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/date"
+                android:textColor="@android:color/white"
+                android:textSize="19sp" />
+
+            <ImageView
+                android:id="@+id/my_imv_filter_arrival_date"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/my_txv_filter_date_end"
+                android:contentDescription="@string/app_name"
+                android:onClick="getPickOneDate"
+                android:src="@drawable/ic_event_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/my_rl_min_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_rl_arrival_date"
+            android:layout_centerHorizontal="true"
+            android:padding="2dp">
+
+            <EditText
+                android:id="@+id/my_edt_min_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="@string/min_price"
+                android:importantForAutofill="no"
+                android:inputType="number" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/my_rl_max_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_rl_min_price"
+            android:layout_centerHorizontal="true">
+
+            <EditText
+                android:id="@+id/my_edt_max_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="@string/max_price"
+                android:importantForAutofill="no"
+                android:inputType="number" />
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_rl_max_price"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15sp"
+            android:onClick="applyFilters"
+            android:text="@string/apply_filters" />
+    </RelativeLayout>
+</ScrollView>

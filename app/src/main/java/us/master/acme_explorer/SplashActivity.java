@@ -27,8 +27,8 @@ public class SplashActivity extends AppCompatActivity {
 
         Util.tripList = Trip.generateTrips(
                 2 + n % 100,
-                n % 100,
-                max < 1000 ? 1000 + max : max);
+                 n % 100,
+                max < 1000 ? max + 1000 : max);
 
         new Handler().postDelayed(() -> {
             startActivity(

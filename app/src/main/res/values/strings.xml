@@ -27,4 +27,12 @@
     <string name="departure_place">Lugar de salida:</string>
     <string name="filter_message">viajes con las condiciones de filtro</string>
     <string name="filter_trips">Filtrar viajes</string>
+    <string name="date">13 abr 2020</string>
+    <string name="begin_date">Fecha de inicio:</string>
+    <string name="end_date">Fecha de fin:</string>
+    <string name="max_price">Precio máximo</string>
+    <string name="min_price">Precio mínimo</string>
+
+    <string name="apply_filters">Aplicar Filtros</string>
+    <string name="date_message">Por favor elegir una fecha mayor o igual a la actual</string>
 </resources>

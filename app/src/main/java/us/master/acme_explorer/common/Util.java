@@ -40,7 +40,7 @@ public class Util {
         return (dateFormat.format(chosenDate));
     }
 
-    public static long Calendar2long(Calendar date) {
+    public static long CalendarToLong(Calendar date) {
         return (date.getTimeInMillis() / 1000);
     }
 
