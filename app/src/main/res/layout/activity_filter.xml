@@ -48,7 +48,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_toEndOf="@id/my_txv_filter_date_start"
                 android:contentDescription="@string/app_name"
-                android:onClick="getPickOneDate"
+                android:onClick="pickOneDate"
                 android:src="@drawable/ic_event_24dp" />
         </RelativeLayout>
 
@@ -89,7 +89,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_toEndOf="@id/my_txv_filter_date_end"
                 android:contentDescription="@string/app_name"
-                android:onClick="getPickOneDate"
+                android:onClick="pickOneDate"
                 android:src="@drawable/ic_event_24dp" />
         </RelativeLayout>
 

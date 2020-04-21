@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import us.master.acme_explorer.FilterActivity;
@@ -94,13 +93,23 @@ public class AvailableTripsFragment extends Fragment {
         outState.putBoolean(Constants.controlFilter, controlFilter);
     }
 
+    private void saveSharePreferFilters(int minPrice, int maxPrice, long dateStart, long dateEnd) {
+        sharedPreferences = context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(Constants.minPrice, minPrice);
+        editor.putInt(Constants.maxPrice, maxPrice);
+        editor.putLong(Constants.dateStart, dateStart);
+        editor.putLong(Constants.dateEnd, dateEnd);
+        editor.apply();
+    }
+
     private List<Trip> verificationFilters(List<Trip> tripList, Intent data) {
-        int maxPrice = Integer.parseInt(getValue(Constants.maxPrice, data));
-        int minPrice = Integer.parseInt(getValue(Constants.minPrice, data));
+        int minPrice = data.getIntExtra(Constants.minPrice, 0);
+        int maxPrice = data.getIntExtra(Constants.maxPrice, 0);
         long dateStartToFilter = data.getLongExtra(Constants.dateStart, 0);
         long dateEndToFilter = data.getLongExtra(Constants.dateEnd, 0);
 
-        savePreferencesFilters(minPrice, maxPrice, dateStartToFilter, dateEndToFilter);
+        saveSharePreferFilters(minPrice, maxPrice, dateStartToFilter, dateEndToFilter);
 
         if (minPrice > 0 || maxPrice > 0)
             tripList = filterByPrice(tripList, minPrice, maxPrice);
@@ -135,16 +144,6 @@ public class AvailableTripsFragment extends Fragment {
                 dateStartToFilter, dateEndToFilter, minPrice, maxPrice
         ));
         return tripList;
-    }
-
-    private void savePreferencesFilters(int minPrice, int maxPrice, long dateStart, long dateEnd) {
-        sharedPreferences = context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(Constants.minPrice, minPrice);
-        editor.putInt(Constants.maxPrice, maxPrice);
-        editor.putLong(Constants.dateStart, dateStart);
-        editor.putLong(Constants.dateStart, dateEnd);
-        editor.apply();
     }
 
     private List<Trip> filterByDate(List<Trip> trips, long dateStartFilter, long dateEndFilter) {
@@ -186,7 +185,4 @@ public class AvailableTripsFragment extends Fragment {
         return filteredTrips;
     }
 
-    private String getValue(String tag, Intent data) {
-        return !Objects.equals(data.getStringExtra(tag), "") ? data.getStringExtra(tag) : "0";
-    }
 }

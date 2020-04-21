@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
@@ -41,21 +42,33 @@ public class FilterActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        Intent intent = new Intent();
-        intent.putExtra(Constants.minPrice, mEditTextMinPrice.getText().toString());
-        intent.putExtra(Constants.maxPrice, mEditTextMaxPrice.getText().toString());
-        intent.putExtra(Constants.dateStart, dateStartToFilter);
-        intent.putExtra(Constants.dateEnd, dateEndToFilter);
-        Log.d(TAG, "onBackPressed: applying filters");
-        setResult(RESULT_OK, intent);
-        finish();
+        int maxPrice = Integer.parseInt(getValue(mEditTextMaxPrice.getText().toString()));
+        int minPrice = Integer.parseInt(getValue(mEditTextMinPrice.getText().toString()));
+        if (isInControl(minPrice, maxPrice) && isInControl(dateStartToFilter, dateEndToFilter)) {
+            Intent intent = new Intent();
+            intent.putExtra(Constants.minPrice, minPrice);
+            intent.putExtra(Constants.maxPrice, maxPrice);
+            intent.putExtra(Constants.dateStart, dateStartToFilter);
+            intent.putExtra(Constants.dateEnd, dateEndToFilter);
+            setResult(RESULT_OK, intent);
+            finish();
+        } else
+            Toast.makeText(this, getString(R.string.filter_alert), Toast.LENGTH_LONG).show();
+    }
+
+    private boolean isInControl(long min, long max) {
+        if (max > 0) {                   // if (min > 0) {
+            if (!(min > 0)) {            //    if (max > 0) {
+                return true;             //       return min < max;
+            } else return max > min;     //    } else return true;
+        } else return true;              // } else return true;
     }
 
     public void applyFilters(View view) {
         onBackPressed();
     }
 
-    public void getPickOneDate(View view) {
+    public void pickOneDate(View view) {
         int yy = calendar.get(Calendar.YEAR);
         int mm = calendar.get(Calendar.MONTH);
         int dd = calendar.get(Calendar.DAY_OF_MONTH);
@@ -89,5 +102,10 @@ public class FilterActivity extends AppCompatActivity {
 
         }, yy, mm, dd);
         dialog.show();
+    }
+
+
+    private String getValue(String data) {
+        return !Objects.equals(data, "") ? data : "0";
     }
 }

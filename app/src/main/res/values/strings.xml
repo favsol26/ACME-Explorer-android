@@ -35,4 +35,5 @@
 
     <string name="apply_filters">Aplicar Filtros</string>
     <string name="date_message">Por favor elegir una fecha mayor o igual a la actual</string>
+    <string name="filter_alert">Error al aplicar filtros, por favor verificar los filtros y vuelva  a intentarlo</string>
 </resources>
