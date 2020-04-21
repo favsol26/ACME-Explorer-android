@@ -79,22 +79,18 @@ public class FilterActivity extends AppCompatActivity {
             calendarDate.set(Calendar.YEAR, year);
             calendarDate.set(Calendar.MONTH, month);
             calendarDate.set(Calendar.DAY_OF_MONTH, day);
-            //TODO enable control of departure date greater than arrival date
             if (calendarDate.getTimeInMillis() > (new Date().getTime() - 86400)) {
-
                 if (view.getId() == R.id.my_imv_filter_departure_date) {
                     mTextViewDateStart.setTextColor(
                             getColor(android.R.color.black));
                     mTextViewDateStart.setText(Util.dateFormatter(calendarDate));
                     dateStartToFilter = Util.CalendarToLong(calendarDate);
-
                 } else {
                     mTextViewDateEnd.setTextColor(
                             getColor(android.R.color.black));
                     mTextViewDateEnd.setText(Util.dateFormatter(calendarDate));
                     dateEndToFilter = Util.CalendarToLong(calendarDate);
                 }
-
             } else
                 Toast.makeText(this,
                         getResources().getString(R.string.date_message),
