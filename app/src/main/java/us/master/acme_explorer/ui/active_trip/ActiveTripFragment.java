@@ -15,8 +15,6 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 
-import java.util.Objects;
-
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
@@ -30,9 +28,7 @@ public class ActiveTripFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_active_trip, container, false);
-        Trip trip = Util.tripList.get(
-                Objects.requireNonNull(getArguments()).getInt(Constants.IntentTravel)
-        );
+        Trip trip = Util.tripList.get(requireArguments().getInt(Constants.IntentTravel));
 
         ImageView mImageView = root.findViewById(R.id.my_trip_flag_i_v);
         TextView mTextViewPrice = root.findViewById(R.id.my_price_trip_t_v);

@@ -46,7 +46,7 @@ public class FilterActivity extends AppCompatActivity {
         intent.putExtra(Constants.maxPrice, mEditTextMaxPrice.getText().toString());
         intent.putExtra(Constants.dateStart, dateStartToFilter);
         intent.putExtra(Constants.dateEnd, dateEndToFilter);
-        Log.d(TAG, "onBackPressed: " + intent.toString());
+        Log.d(TAG, "onBackPressed: applying filters");
         setResult(RESULT_OK, intent);
         finish();
     }

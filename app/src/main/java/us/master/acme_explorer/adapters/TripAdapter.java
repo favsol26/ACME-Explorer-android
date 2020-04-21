@@ -74,7 +74,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
                                 context.getString(R.string.bought_tag)), Toast.LENGTH_SHORT).show()
         );
 
-        textSize(holder, (column % 2 == 0) ? 19 : 22);
+        setTextSize(holder, (column % 2 == 0) ? 19 : 22);
 
         holder.mPriceTxv.setText(String.valueOf(trip.getPrice()).concat(" $"));
         holder.mArrivalPlaceTxv.setText(trip.getArrivalPlace());
@@ -109,7 +109,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         this.column = column;
     }
 
-    private void textSize(TripViewHolder holder, int i) {
+    private void setTextSize(TripViewHolder holder, int i) {
         holder.mArrivalPlaceTxv.setTextSize(i + 2);
         holder.mPriceTxv.setTextSize(i - 4);
         holder.mArrivalDateTxv.setTextSize(i - 4);

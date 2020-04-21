@@ -1,7 +1,9 @@
 package us.master.acme_explorer.common;
 
+import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +44,12 @@ public class Util {
 
     public static long CalendarToLong(Calendar date) {
         return (date.getTimeInMillis() / 1000);
+    }
+
+    public static void getToast(Context context, int size, int message) {
+        String text1 = String.format("Hay %s %s", size, context.getString(message));
+        String text2 = String.format(" No hay %s", context.getString(message));
+        Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
     }
 
     public static void setRecyclerView(ViewGroup container, Switch mySwitch,

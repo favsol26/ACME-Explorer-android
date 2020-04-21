@@ -4,9 +4,9 @@ import java.util.Hashtable;
 
 public final class Constants {
     public final static String[] departurePlace = {"Sevilla", "Punta Cana",
-            "Cáldiz", "Zaragoza", "Barcelona", "Granada", "Valencia", "Oporto", "Huelva"};
+            "Cádiz", "Zaragoza", "Barcelona", "Granada", "Valencia", "Oporto", "Huelva"};
 
-    public final static String filterPreferences = "Filter", dateStart = "dateStart",
+    public final static String controlFilter = "controlFilter", filterPreferences = "Filters", dateStart = "dateStart",
             dateEnd = "dateEnd", maxPrice = "maxPrice", minPrice = "minPrice";
 
     public final static String[] urlImages = {

@@ -40,6 +40,7 @@ public class SelectedTripsFragment extends Fragment {
             if (trip.isSelected())
                 selectedTrips.add(trip);
         }
+        Util.getToast(container.getContext(),selectedTrips.size(),R.string.menu_selected_trips);
         myRecyclerView.setLayoutManager(
                 new LinearLayoutManager(container.getContext()));
         myRecyclerView.setAdapter(
