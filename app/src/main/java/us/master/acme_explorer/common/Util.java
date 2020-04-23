@@ -1,7 +1,6 @@
 package us.master.acme_explorer.common;
 
 import android.content.Context;
-import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -52,14 +51,20 @@ public class Util {
         Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
     }
 
-    public static void setRecyclerView(ViewGroup container, Switch mySwitch,
+    public static void setRecyclerView(Context context, Switch mySwitch,
                                        RecyclerView myRecyclerView, TripAdapter tripAdapter) {
-        int ort = container.getResources().getConfiguration().orientation;
+        int ort = context.getResources().getConfiguration().orientation;
         int column = mySwitch.isChecked()
-                ? ort == ORIENTATION_LANDSCAPE ? 4 : 2
-                : ort == ORIENTATION_LANDSCAPE ? 3 : 1;
+                ? ort == ORIENTATION_LANDSCAPE ? 3 : 2
+                : ort != ORIENTATION_LANDSCAPE ? 1 : 2;
+
+        String text = mySwitch.isChecked()
+                ? ort == ORIENTATION_LANDSCAPE ? "\n" : "\n"
+                : ort != ORIENTATION_LANDSCAPE ? " " : " ";
         tripAdapter.setColumn(column);
-        myRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), column));
+        tripAdapter.setFormatText(text);
+        GridLayoutManager layoutManager = new GridLayoutManager(context, column);
+        myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setAdapter(tripAdapter);
     }
 

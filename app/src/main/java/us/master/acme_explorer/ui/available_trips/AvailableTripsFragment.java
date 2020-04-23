@@ -3,6 +3,7 @@ package us.master.acme_explorer.ui.available_trips;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +45,30 @@ public class AvailableTripsFragment extends Fragment {
     private boolean controlFilter = false;
     private Context context;
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Toast.makeText(context, "pause", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Toast.makeText(context, "start", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Toast.makeText(context, "detach", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Toast.makeText(context, "attach", Toast.LENGTH_SHORT).show();
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.context = container.getContext();
@@ -58,12 +85,12 @@ public class AvailableTripsFragment extends Fragment {
         this.tripAdapter = new TripAdapter(this.tripListToShow, TAG, mySwitch.isChecked() ? 2 : 1,
                 this.context);
         Util.getToast(this.context, this.tripListToShow.size(), R.string.menu_gallery_trips);
-        Util.setRecyclerView(container, mySwitch, myRecyclerView, this.tripAdapter);
+        Util.setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
         myLayout.setOnClickListener(v -> {
             startActivityForResult(new Intent(this.context, FilterActivity.class), PICK_FILTERS);
             this.tripListToShow.clear();
         });
-        mySwitch.setOnClickListener(v -> Util.setRecyclerView(container, mySwitch, myRecyclerView,
+        mySwitch.setOnClickListener(v -> Util.setRecyclerView(this.context, mySwitch, myRecyclerView,
                 this.tripAdapter));
         return root;
     }
@@ -84,7 +111,8 @@ public class AvailableTripsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mySwitch.setChecked(false);
+        Toast.makeText(context, "resume", Toast.LENGTH_SHORT).show();
+        Util.setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
     }
 
     @Override
@@ -147,6 +175,30 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     private List<Trip> filterByDate(List<Trip> trips, long dateStartFilter, long dateEndFilter) {
+        List<Trip> filteredTrips = new ArrayList<>();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            /*with only departure filter*/
+            if ((dateStartFilter > 0) && (dateEndFilter == 0)) for (Trip trip : trips) {
+                if (trip.getDepartureDate() >= dateStartFilter) filteredTrips.add(trip);
+            }
+            else /*with only arrival filter*/
+                if (dateStartFilter == 0 && dateEndFilter > 0) for (Trip trip : trips) {
+                    if (trip.getArrivalDate() <= dateEndFilter) filteredTrips.add(trip);
+                }
+                else /*with both filters*/ for (Trip trip : trips) {
+                    if (trip.getDepartureDate() >= dateStartFilter
+                            && trip.getDepartureDate() < dateEndFilter
+                            && trip.getArrivalDate() > dateStartFilter
+                            && trip.getDepartureDate() <= dateEndFilter) filteredTrips.add(trip);
+                }
+        } else {
+            filteredTrips = filterDateStream(trips, dateStartFilter, dateEndFilter);
+        }
+        return filteredTrips;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private List<Trip> filterDateStream(List<Trip> trips, long dateStartFilter, long dateEndFilter) {
         List<Trip> filteredTrips;
         /*with only departure filter*/
         if (dateStartFilter > 0 && dateEndFilter == 0) {

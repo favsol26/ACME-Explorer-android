@@ -25,7 +25,7 @@ public class links {
         linksList.add(new links(
                         context.getString(R.string.menu_gallery_trips),
                         Constants.urlImages[0],
-                        R.id.nav_gallery_trips
+                        R.id.nav_available_trips
                 )
         );
         linksList.add(new links(

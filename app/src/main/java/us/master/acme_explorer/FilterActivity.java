@@ -53,15 +53,17 @@ public class FilterActivity extends AppCompatActivity {
             setResult(RESULT_OK, intent);
             finish();
         } else
-            Toast.makeText(this, getString(R.string.filter_alert), Toast.LENGTH_LONG).show();
+            Toast.makeText(this,
+                    getString(R.string.filter_alert),
+                    Toast.LENGTH_LONG).show();
     }
 
     private boolean isInControl(long min, long max) {
-        if (max > 0) {                   // if (min > 0) {
-            if (!(min > 0)) {            //    if (max > 0) {
-                return true;             //       return min < max;
-            } else return max > min;     //    } else return true;
-        } else return true;              // } else return true;
+        if (max > 0)                 // if (min > 0) {
+            if (min > 0)             //    if (max > 0) {
+                return max > min;    //       return min < max;
+            else return true;        //    } else return true;
+        else return true;            // } else return true;
     }
 
     public void applyFilters(View view) {
@@ -72,7 +74,6 @@ public class FilterActivity extends AppCompatActivity {
         int yy = calendar.get(Calendar.YEAR);
         int mm = calendar.get(Calendar.MONTH);
         int dd = calendar.get(Calendar.DAY_OF_MONTH);
-
         DatePickerDialog dialog = new DatePickerDialog(
                 this, (datePicker, year, month, day) -> {
             Calendar calendarDate = Calendar.getInstance();
@@ -81,13 +82,11 @@ public class FilterActivity extends AppCompatActivity {
             calendarDate.set(Calendar.DAY_OF_MONTH, day);
             if (calendarDate.getTimeInMillis() > (new Date().getTime() - 86400)) {
                 if (view.getId() == R.id.my_imv_filter_departure_date) {
-                    mTextViewDateStart.setTextColor(
-                            getColor(android.R.color.black));
+                    mTextViewDateStart.setTextColor(getResources().getColor(android.R.color.black));
                     mTextViewDateStart.setText(Util.dateFormatter(calendarDate));
                     dateStartToFilter = Util.CalendarToLong(calendarDate);
                 } else {
-                    mTextViewDateEnd.setTextColor(
-                            getColor(android.R.color.black));
+                    mTextViewDateEnd.setTextColor(getResources().getColor(android.R.color.black));
                     mTextViewDateEnd.setText(Util.dateFormatter(calendarDate));
                     dateEndToFilter = Util.CalendarToLong(calendarDate);
                 }
@@ -95,7 +94,6 @@ public class FilterActivity extends AppCompatActivity {
                 Toast.makeText(this,
                         getResources().getString(R.string.date_message),
                         Toast.LENGTH_SHORT).show();
-
         }, yy, mm, dd);
         dialog.show();
     }

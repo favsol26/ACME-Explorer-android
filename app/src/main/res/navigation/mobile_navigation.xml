@@ -12,16 +12,16 @@
         tools:layout="@layout/fragment_main_menu">
         <action
             android:id="@+id/action_nav_home_to_nav_gallery"
-            app:destination="@id/nav_gallery_trips" />
+            app:destination="@id/nav_available_trips" />
         <action
             android:id="@+id/action_nav_home_to_nav_selected_trips"
             app:destination="@id/nav_selected_trips" />
     </fragment>
     <fragment
-        android:id="@+id/nav_home_second"
-        android:name="us.master.acme_explorer.ui.main_menu.HomeSecondFragment"
-        android:label="@string/home_second"
-        tools:layout="@layout/fragment_gallery">
+        android:id="@+id/nav_home_log_in"
+        android:name="us.master.acme_explorer.ui.log_in.LogInFragment"
+        android:label="@string/log_in"
+        tools:layout="@layout/fragment_log_in">
 
         <argument
             android:name="myArg"
@@ -29,12 +29,12 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery_trips"
+        android:id="@+id/nav_available_trips"
         android:name="us.master.acme_explorer.ui.available_trips.AvailableTripsFragment"
         android:label="@string/menu_gallery_trips"
         tools:layout="@layout/fragment_trips_base_view">
         <action
-            android:id="@+id/action_nav_gallery_to_nav_home"
+            android:id="@+id/action_nav_available_to_nav_home"
             app:popUpTo="@id/nav_main_menu" />
     </fragment>
 

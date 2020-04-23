@@ -28,6 +28,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     private List<Trip> trips;
     private String aClass;
     private Context context;
+    private String formatText;
 
     public TripAdapter(List<Trip> trips, String aClass, int column, Context context) {
         this.trips = trips;
@@ -67,26 +68,21 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         );
 
         holder.mBuyTripImv.setOnClickListener(
-                V -> Toast.makeText(
-                        context, String.format("%s %s %s",
-                                context.getString(R.string.trip_tag),
-                                trip.getId() + 1,
-                                context.getString(R.string.bought_tag)), Toast.LENGTH_SHORT).show()
+                V -> Toast.makeText(context, String.format("%s %s %s",
+                        context.getString(R.string.trip_tag),
+                        trip.getId() + 1, context.getString(R.string.bought_tag)),
+                        Toast.LENGTH_SHORT).show()
         );
 
-        setTextSize(holder, (column % 2 == 0) ? 19 : 22);
+        setTextSize(holder, (column % 2 == 0) ? 17 : 20);
 
         holder.mPriceTxv.setText(String.valueOf(trip.getPrice()).concat(" $"));
         holder.mArrivalPlaceTxv.setText(trip.getArrivalPlace());
 
-        holder.mDepartureDateTxv.setText(String.format("%s%s%s",
-                context.getString(R.string.departure),
-                ((column % 2 == 0) ? "\n" : "  "),
+        holder.mDepartureDateTxv.setText(String.format("%s%s%s", context.getString(R.string.departure), formatText,
                 Util.dateFormatter(trip.getDepartureDate())));
 
-        holder.mArrivalDateTxv.setText(String.format("%s%s%s",
-                context.getString(R.string.arrival),
-                ((column % 2 == 0) ? "\n" : "  "),
+        holder.mArrivalDateTxv.setText(String.format("%s%s%s", context.getString(R.string.arrival), formatText,
                 Util.dateFormatter(trip.getArrivalDate())));
 
         holder.mCardView.setOnClickListener(
@@ -111,9 +107,13 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
     private void setTextSize(TripViewHolder holder, int i) {
         holder.mArrivalPlaceTxv.setTextSize(i + 2);
-        holder.mPriceTxv.setTextSize(i - 4);
-        holder.mArrivalDateTxv.setTextSize(i - 4);
-        holder.mDepartureDateTxv.setTextSize(i - 4);
+        holder.mPriceTxv.setTextSize(i - 2);
+        holder.mArrivalDateTxv.setTextSize(i - 2);
+        holder.mDepartureDateTxv.setTextSize(i - 2);
+    }
+
+    public void setFormatText(String formatText) {
+        this.formatText = formatText;
     }
 
     static class TripViewHolder extends RecyclerView.ViewHolder {

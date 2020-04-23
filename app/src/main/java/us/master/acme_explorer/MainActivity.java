@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration =
                 new AppBarConfiguration.Builder(
                         R.id.nav_main_menu,
-                        R.id.nav_gallery_trips,
+                        R.id.nav_available_trips,
                         R.id.nav_selected_trips
                 ).setDrawerLayout(drawer)
                         .build();
