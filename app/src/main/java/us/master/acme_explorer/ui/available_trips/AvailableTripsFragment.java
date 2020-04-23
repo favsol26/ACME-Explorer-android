@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,30 +44,6 @@ public class AvailableTripsFragment extends Fragment {
     private boolean controlFilter = false;
     private Context context;
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Toast.makeText(context, "pause", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Toast.makeText(context, "start", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Toast.makeText(context, "detach", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Toast.makeText(context, "attach", Toast.LENGTH_SHORT).show();
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.context = container.getContext();
@@ -85,6 +60,7 @@ public class AvailableTripsFragment extends Fragment {
         this.tripAdapter = new TripAdapter(this.tripListToShow, TAG, mySwitch.isChecked() ? 2 : 1,
                 this.context);
         Util.getToast(this.context, this.tripListToShow.size(), R.string.menu_gallery_trips);
+        //TODO optimize recycler layout manager state
         Util.setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
         myLayout.setOnClickListener(v -> {
             startActivityForResult(new Intent(this.context, FilterActivity.class), PICK_FILTERS);
@@ -109,16 +85,15 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Toast.makeText(context, "resume", Toast.LENGTH_SHORT).show();
-        Util.setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(Constants.controlFilter, controlFilter);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        mySwitch.setChecked(false);
     }
 
     private void saveSharePreferFilters(int minPrice, int maxPrice, long dateStart, long dateEnd) {
@@ -149,7 +124,6 @@ public class AvailableTripsFragment extends Fragment {
                 + String.format("date start = %s, date end = %s, min = %s y max = %s",
                 dateStartToFilter, dateEndToFilter, minPrice, maxPrice
         ));
-
         return tripList;
     }
 
@@ -192,13 +166,13 @@ public class AvailableTripsFragment extends Fragment {
                             && trip.getDepartureDate() <= dateEndFilter) filteredTrips.add(trip);
                 }
         } else {
-            filteredTrips = filterDateStream(trips, dateStartFilter, dateEndFilter);
+            filteredTrips = filterByDateStream(trips, dateStartFilter, dateEndFilter);
         }
         return filteredTrips;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private List<Trip> filterDateStream(List<Trip> trips, long dateStartFilter, long dateEndFilter) {
+    private List<Trip> filterByDateStream(List<Trip> trips, long dateStartFilter, long dateEndFilter) {
         List<Trip> filteredTrips;
         /*with only departure filter*/
         if (dateStartFilter > 0 && dateEndFilter == 0) {
@@ -236,5 +210,4 @@ public class AvailableTripsFragment extends Fragment {
                 filteredTrips.add(trip);
         return filteredTrips;
     }
-
 }
