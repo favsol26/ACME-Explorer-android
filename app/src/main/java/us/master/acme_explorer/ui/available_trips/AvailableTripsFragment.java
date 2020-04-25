@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,6 @@ public class AvailableTripsFragment extends Fragment {
 
     private static final String TAG = AvailableTripsFragment.class.getSimpleName();
     private static final int PICK_FILTERS = 29;
-    private SharedPreferences sharedPreferences;
     private RecyclerView myRecyclerView;
     private Switch mySwitch;
     private TripAdapter tripAdapter;
@@ -97,7 +97,8 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     private void saveSharePreferFilters(int minPrice, int maxPrice, long dateStart, long dateEnd) {
-        sharedPreferences = context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
+        SharedPreferences sharedPreferences =
+                context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(Constants.minPrice, minPrice);
         editor.putInt(Constants.maxPrice, maxPrice);
@@ -128,23 +129,18 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     private List<Trip> verificationFilters(List<Trip> tripList) {
-        sharedPreferences = context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
+        HashMap filterSaved = Util.getSharedPreferenceFilters(context);
 
-        int maxPrice = sharedPreferences.getInt(Constants.maxPrice, 0);
-        int minPrice = sharedPreferences.getInt(Constants.minPrice, 0);
-        long dateStartToFilter = sharedPreferences.getLong(Constants.dateStart, 0);
-        long dateEndToFilter = sharedPreferences.getLong(Constants.dateEnd, 0);
+        if ((long) filterSaved.get(Constants.minPrice) > 0 || (long) filterSaved.get(Constants.maxPrice) > 0)
+            tripList = filterByPrice(tripList,
+                    (int) (long) filterSaved.get(Constants.minPrice),
+                    (int) (long) filterSaved.get(Constants.maxPrice));
 
-        if (minPrice > 0 || maxPrice > 0)
-            tripList = filterByPrice(tripList, minPrice, maxPrice);
+        if ((long) filterSaved.get(Constants.dateStart) > 0 || (long) filterSaved.get(Constants.dateEnd) > 0)
+            tripList = filterByDate(tripList,
+                    (long) filterSaved.get(Constants.dateStart),
+                    (long) filterSaved.get(Constants.dateEnd));
 
-        if (dateStartToFilter > 0 || dateEndToFilter > 0)
-            tripList = filterByDate(tripList, dateStartToFilter, dateEndToFilter);
-
-        Log.d(TAG, "verificationSharePreferencesFilters: "
-                + String.format("date start = %s, date end = %s, min = %s y max = %s",
-                dateStartToFilter, dateEndToFilter, minPrice, maxPrice
-        ));
         return tripList;
     }
 
@@ -163,7 +159,7 @@ public class AvailableTripsFragment extends Fragment {
                     if (trip.getDepartureDate() >= dateStartFilter
                             && trip.getDepartureDate() < dateEndFilter
                             && trip.getArrivalDate() > dateStartFilter
-                            && trip.getDepartureDate() <= dateEndFilter) filteredTrips.add(trip);
+                            && trip.getArrivalDate() <= dateEndFilter) filteredTrips.add(trip);
                 }
         } else {
             filteredTrips = filterByDateStream(trips, dateStartFilter, dateEndFilter);
@@ -189,7 +185,7 @@ public class AvailableTripsFragment extends Fragment {
                         (trip) -> trip.getDepartureDate() >= dateStartFilter
                                 && trip.getDepartureDate() < dateEndFilter
                                 && trip.getArrivalDate() > dateStartFilter
-                                && trip.getDepartureDate() <= dateEndFilter
+                                && trip.getArrivalDate() <= dateEndFilter
                 ).collect(Collectors.toList());
             }
         return filteredTrips;

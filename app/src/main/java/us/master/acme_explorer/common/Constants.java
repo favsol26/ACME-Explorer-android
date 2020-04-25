@@ -3,11 +3,31 @@ package us.master.acme_explorer.common;
 import java.util.Hashtable;
 
 public final class Constants {
+
+    public final static String[] cities = {
+            "Tirana-Albania", "Berlín-Germany", "Andorra La Vieja-Andorra", "Ereván-Armenia",
+            "Viena-Austria", "Bakú-Azerbaijan", "Bruselas-Belgium", "Minsk-Belarus",
+            "Sarajevo-Bosnia and Herzegovina", "Sofía-Bulgaria", "Praga-Czech Republic",
+            "Zagreb-Croatia", "Copenhague-Denmark", "Bratislava-Slovakia", "New York-US",
+            "Lublijana-Slovenia", "Madrid-Spain", "Tallín-Estonia", "Helsinki-Finland",
+            "París-France", "Tiflis-Georgia", "Atenas-Greece", "Budapest-Hungary", "Kiev-Ukraine",
+            "Reikiavik-Iceland", "Washington-US", "Roma-Italy", "Estocolmo-Sweden",
+            "Oslo-Norway", "Londres-United Kingdom", "San Juan De La Maguana-Rep. Dom.",
+            "Santo Domingo-Rep. Dom.", "Concepción De La Vega-Rep. Dom.", "Dublín-Ireland",
+            "Santiago De Los Caballeros-Rep. Dom.", "Segovia-Spain", "Málaga-Spain",
+            "Ciudad Del Vaticano-Vatican City", "Luxemburgo-Luxembourg", "Mónaco-Monaco",
+            "Podgorica-Montenegro", "Ciudad De San Marino-San Marino", "Lisboa-Portugal",
+            "Chisinau-Moldova", "Moscú-Russia", "Varsovia-Poland", "Berna-Switzerland",
+            "Belgrado-Serbia", "La Valeta-Malta", "Amsterdam-Netherlands", "Bucarest-Romania",
+            "Riga-Latvia", "Vaduz-Liechtenstein", "Vilna-Lithuania", "Skopje-North Macedonia"
+    };
+
+    public final static String controlFilter = "controlFilter", filterPreferences = "Filters",
+            dateStart = "dateStart", dateEnd = "dateEnd", maxPrice = "maxPrice",
+            minPrice = "minPrice", IntentTravel = "Travel";
+
     public final static String[] departurePlace = {"Sevilla", "Punta Cana",
             "Cádiz", "Zaragoza", "Barcelona", "Granada", "Valencia", "Oporto", "Huelva"};
-
-    public final static String controlFilter = "controlFilter", filterPreferences = "Filters", dateStart = "dateStart",
-            dateEnd = "dateEnd", maxPrice = "maxPrice", minPrice = "minPrice";
 
     public final static String[] urlImages = {
             "https://static.wixstatic.com/media/a6b425_48880d306dd5487ab1f9fed9a4ab7f91~mv2.jpg",
@@ -16,21 +36,12 @@ public final class Constants {
                     "kn3E-U45119239404E0-992x558@LaVanguardia-Web.jpg"
     };
 
-    public final static String[] cities = {
-            "Tirana-Albania", "Berlín-Germany", "Andorra La Vieja-Andorra", "Ereván-Armenia",
-            "Viena-Austria", "Bakú-Azerbaijan", "Bruselas-Belgium", "Minsk-Belarus",
-            "Sarajevo-Bosnia and Herzegovina", "Sofía-Bulgaria", "Praga-Czech Republic",
-            "Zagreb-Croatia", "Copenhague-Denmark", "Bratislava-Slovakia", "New York-US",
-            "Lublijana-Slovenia", "Madrid-Spain", "Tallín-Estonia", "Helsinki-Finland", "París-France",
-            "Tiflis-Georgia", "Atenas-Greece", "Budapest-Hungary", "Dublín-Ireland", "Reikiavik-Iceland",
-            "Washington-US", "Roma-Italy", "Estocolmo-Sweden", "Lisboa-Portugal", "Oslo-Norway",
-            "Londres-United Kingdom", "San Juan De La Maguana-Rep. Dom.", "Santo Domingo-Rep. Dom.",
-            "Concepción De La Vega-Rep. Dom.", "Santiago De Los Caballeros-Rep. Dom.", "Segovia-Spain",
-            "Málaga-Spain", "Ciudad Del Vaticano-Vatican City", "Luxemburgo-Luxembourg", "Mónaco-Monaco",
-            "Podgorica-Montenegro", "Ciudad De San Marino-San Marino", "Kiev-Ukraine", "Chisinau-Moldova",
-            "Moscú-Russia", "Varsovia-Poland", "Berna-Switzerland", "Belgrado-Serbia", "La Valeta-Malta",
-            "Amsterdam-Netherlands", "Bucarest-Romania", "Riga-Latvia", "Vaduz-Liechtenstein",
-            "Vilna-Lithuania", "Skopje-North Macedonia"
+    public static final Hashtable<String, String> citiesToCountry = new Hashtable<String, String>() {
+        {
+            for (String item : cities) {
+                put(item.substring(0, item.indexOf("-")), item.substring(item.indexOf("-") + 1));
+            }
+        }
     };
 
     public static final Hashtable<String, String> flagsLinks = new Hashtable<String, String>() {
@@ -96,14 +107,4 @@ public final class Constants {
                     "Flag_of_the_Dominican_Republic.svg.png"));
         }
     };
-
-    public static final Hashtable<String, String> citiesToCountry = new Hashtable<String, String>() {
-        {
-            for (String item : cities) {
-                put(item.substring(0, item.indexOf("-")), item.substring(item.indexOf("-") + 1));
-            }
-        }
-    };
-
-    public static final String IntentTravel = "Travel";
 }

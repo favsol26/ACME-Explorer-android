@@ -1,6 +1,8 @@
 package us.master.acme_explorer.common;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -10,16 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import us.master.acme_explorer.adapters.TripAdapter;
 import us.master.acme_explorer.entity.Trip;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class Util {
 
+    private static final String TAG = Util.class.getSimpleName();
     public static List<Trip> tripList;
 
     public static String dateFormatter(Calendar calendar) {
@@ -49,6 +54,27 @@ public class Util {
         String text1 = String.format("Hay %s %s", size, context.getString(message));
         String text2 = String.format(" No hay %s", context.getString(message));
         Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
+    }
+
+    public static HashMap getSharedPreferenceFilters(Context context) {
+        SharedPreferences sharedPreferences =
+                context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
+
+        int vMinPrice = sharedPreferences.getInt(Constants.minPrice, 0);
+        int vMaxPrice = sharedPreferences.getInt(Constants.maxPrice, 0);
+        long vDateStartToFilter = sharedPreferences.getLong(Constants.dateStart, 0);
+        long vDateEndToFilter = sharedPreferences.getLong(Constants.dateEnd, 0);
+
+        HashMap<String, Long> sharePreferenceData = new HashMap<>();
+        sharePreferenceData.put(Constants.minPrice, (long) vMinPrice);
+        sharePreferenceData.put(Constants.maxPrice, (long) vMaxPrice);
+        sharePreferenceData.put(Constants.dateStart, vDateStartToFilter);
+        sharePreferenceData.put(Constants.dateEnd, vDateEndToFilter);
+
+        Log.d(TAG, "getSharePreferencesFilters: "
+                + String.format("%s", sharePreferenceData.toString()));
+
+        return sharePreferenceData;
     }
 
     public static void setRecyclerView(Context context, Switch mySwitch,

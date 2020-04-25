@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:padding="10sp">
 
@@ -132,14 +132,33 @@
                 android:inputType="number" />
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/center_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_rl_max_price"
+            android:layout_centerHorizontal="true" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_rl_max_price"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="15sp"
+            android:layout_margin="15sp"
+            android:layout_toStartOf="@id/center_buttons"
             android:onClick="applyFilters"
             android:text="@string/apply_filters" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/center_buttons"
+            android:layout_below="@id/my_rl_max_price"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="15sp"
+            android:onClick="clearFilters"
+            android:text="@string/clear_filters" />
     </RelativeLayout>
 </ScrollView>

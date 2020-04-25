@@ -1,5 +1,6 @@
 package us.master.acme_explorer.ui.main_menu;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,10 @@ import androidx.fragment.app.Fragment;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.adapters.MenuAdapter;
+import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.entity.links;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class MainMenuFragment extends Fragment {
 
@@ -25,6 +29,10 @@ public class MainMenuFragment extends Fragment {
                 container.getContext());
 
         mGridView.setAdapter(menuAdapter);
+        SharedPreferences sharedPreferences = container.getContext()
+                .getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.clear().apply();
         return root;
     }
 }
