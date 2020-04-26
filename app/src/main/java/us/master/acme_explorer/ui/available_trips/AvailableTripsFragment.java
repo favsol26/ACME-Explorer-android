@@ -59,7 +59,7 @@ public class AvailableTripsFragment extends Fragment {
                     : Util.tripList);
         this.tripAdapter = new TripAdapter(this.tripListToShow, TAG, mySwitch.isChecked() ? 2 : 1,
                 this.context);
-        Util.getToast(this.context, this.tripListToShow.size(), R.string.menu_gallery_trips);
+        Util.getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
         //TODO optimize recycler layout manager state
         Util.setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
         myLayout.setOnClickListener(v -> {

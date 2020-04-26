@@ -28,7 +28,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     private List<Trip> trips;
     private String aClass;
     private Context context;
-    private String formatText;
+    private String formatText = " ";
 
     public TripAdapter(List<Trip> trips, String aClass, int column, Context context) {
         this.trips = trips;

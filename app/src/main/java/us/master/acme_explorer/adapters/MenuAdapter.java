@@ -62,7 +62,7 @@ public class MenuAdapter extends BaseAdapter {
 
         CardView mCardView = convertView.findViewById(R.id.my_link_card_view);
         mCardView.setOnClickListener(
-                v -> Navigation.findNavController(v).navigate(link.getNextView())
+                v -> Navigation.findNavController(v).navigate(link.getAction())
         );
 
         return convertView;

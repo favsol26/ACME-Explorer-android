@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_main_menu">
+    app:startDestination="@id/nav_main_menu">
 
     <fragment
         android:id="@+id/nav_main_menu"
@@ -11,30 +11,37 @@
         android:label="@string/menu_main_menu"
         tools:layout="@layout/fragment_main_menu">
         <action
-            android:id="@+id/action_nav_home_to_nav_gallery"
+            android:id="@+id/action_nav_home_to_nav_available"
             app:destination="@id/nav_available_trips" />
         <action
             android:id="@+id/action_nav_home_to_nav_selected_trips"
             app:destination="@id/nav_selected_trips" />
+        <action
+            android:id="@+id/action_nav_main_menu_to_nav_home_log_in"
+            app:destination="@id/nav_home_log_in"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/nav_home_log_in"
         android:name="us.master.acme_explorer.ui.log_in.LogInFragment"
         android:label="@string/log_in"
         tools:layout="@layout/fragment_log_in">
-
-        <argument
-            android:name="myArg"
-            app:argType="string" />
+        <action
+            android:id="@+id/action_nav_home_log_in_to_nav_main_menu2"
+            app:destination="@id/nav_main_menu" />
+        <action
+            android:id="@+id/action_nav_home_log_in_to_nav_sign_up_fragment"
+            app:destination="@id/nav_sign_up_fragment" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_available_trips"
         android:name="us.master.acme_explorer.ui.available_trips.AvailableTripsFragment"
-        android:label="@string/menu_gallery_trips"
+        android:label="@string/menu_available_trips"
         tools:layout="@layout/fragment_trips_base_view">
         <action
             android:id="@+id/action_nav_available_to_nav_home"
+            app:destination="@id/nav_main_menu"
             app:popUpTo="@id/nav_main_menu" />
     </fragment>
 
@@ -45,16 +52,26 @@
         tools:layout="@layout/fragment_trips_base_view">
         <action
             android:id="@+id/action_nav_selected_trips_to_nav_home"
-            app:popUpTo="@id/nav_main_menu" />
+            app:destination="@id/nav_main_menu"
+            app:popUpTo="@id/nav_active_trip_fragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_sign_up_fragment"
+        android:name="us.master.acme_explorer.ui.sign_up.SignUpFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signInFragment_to_nav_home_log_in"
+            app:destination="@id/nav_home_log_in" />
+        <action
+            android:id="@+id/action_signInFragment_to_nav_main_menu"
+            app:destination="@id/nav_main_menu" />
+    </fragment>
+
     <fragment
         android:id="@+id/nav_active_trip_fragment"
         android:name="us.master.acme_explorer.ui.active_trip.ActiveTripFragment"
         android:label="@string/trips_details"
-        tools:layout="@layout/fragment_active_trip">
-        <action
-            android:id="@+id/action_activeTripFragment_pop"
-            app:popUpTo="@id/nav_active_trip_fragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_active_trip" />
 </navigation>

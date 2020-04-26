@@ -9,7 +9,7 @@
 
     <string name="log_in">Iniciar Sesión</string>
     <string name="menu_main_menu">Menu Principal</string>
-    <string name="menu_gallery_trips">Viajes Disponibles</string>
+    <string name="menu_available_trips">Viajes Disponibles</string>
     <string name="menu_selected_trips">Viajes Seleccionados</string>
     <string name="menu_slideshow">Slideshow</string>
 
@@ -33,8 +33,11 @@
     <string name="max_price">Precio máximo</string>
     <string name="min_price">Precio mínimo</string>
 
-    <string name="apply_filters">Aplicar Filtros</string>
+    <string name="apply_filters">Aplicar</string>
     <string name="date_message">Por favor elegir una fecha mayor o igual a la actual</string>
     <string name="filter_alert">Error al aplicar filtros, por favor verificar los filtros y vuelva  a intentarlo</string>
-    <string name="clear_filters">Limpiar filtros</string>
+    <string name="clear_filters">Limpiar</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

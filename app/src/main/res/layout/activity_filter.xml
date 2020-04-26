@@ -132,6 +132,21 @@
                 android:inputType="number" />
         </RelativeLayout>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_rl_max_price"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="15sp"
+            android:layout_toStartOf="@id/center_buttons"
+            android:background="@android:color/holo_red_light"
+            android:onClick="clearFilters"
+            android:paddingStart="@dimen/padding_button_filter"
+            android:paddingEnd="@dimen/padding_button_filter"
+            android:text="@string/clear_filters"
+            android:textColor="@android:color/white" />
+
         <TextView
             android:id="@+id/center_buttons"
             android:layout_width="wrap_content"
@@ -146,19 +161,13 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="15sp"
-            android:layout_toStartOf="@id/center_buttons"
-            android:onClick="applyFilters"
-            android:text="@string/apply_filters" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_toEndOf="@id/center_buttons"
-            android:layout_below="@id/my_rl_max_price"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="15sp"
-            android:onClick="clearFilters"
-            android:text="@string/clear_filters" />
+            android:background="@android:color/holo_green_light"
+            android:onClick="applyFilters"
+            android:paddingStart="@dimen/padding_button_filter"
+            android:paddingEnd="@dimen/padding_button_filter"
+            android:text="@string/apply_filters"
+            android:textColor="@android:color/white" />
+
     </RelativeLayout>
 </ScrollView>

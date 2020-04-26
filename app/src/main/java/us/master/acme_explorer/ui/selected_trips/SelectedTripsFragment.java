@@ -16,7 +16,6 @@ import java.util.List;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.adapters.TripAdapter;
-import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
@@ -40,7 +39,7 @@ public class SelectedTripsFragment extends Fragment {
             if (trip.isSelected())
                 selectedTrips.add(trip);
         }
-        Util.getToast(container.getContext(),selectedTrips.size(),R.string.menu_selected_trips);
+        Util.getToast(container.getContext(), selectedTrips.size(), R.string.menu_selected_trips);
         myRecyclerView.setLayoutManager(
                 new LinearLayoutManager(container.getContext()));
         myRecyclerView.setAdapter(

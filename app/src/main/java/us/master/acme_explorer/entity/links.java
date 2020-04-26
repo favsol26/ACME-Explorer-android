@@ -11,27 +11,27 @@ import us.master.acme_explorer.common.Constants;
 public class links {
     private String description;
     private String imageURL;
-    private int nextView;
+    private int action;
 
-    private links(String description, String imageURL, int nextView) {
+    private links(String description, String imageURL, int action) {
         this.description = description;
         this.imageURL = imageURL;
-        this.nextView = nextView;
+        this.action = action;
     }
 
     public static List<links> generateLinks(Context context) {
         List<links> linksList = new ArrayList<>();
 
         linksList.add(new links(
-                        context.getString(R.string.menu_gallery_trips),
+                        context.getString(R.string.menu_available_trips),
                         Constants.urlImages[0],
-                        R.id.nav_available_trips
+                        R.id.action_nav_home_to_nav_available
                 )
         );
         linksList.add(new links(
                         context.getString(R.string.menu_selected_trips),
                         Constants.urlImages[1],
-                        R.id.nav_selected_trips
+                        R.id.action_nav_home_to_nav_selected_trips
                 )
         );
         return linksList;
@@ -45,8 +45,8 @@ public class links {
         return imageURL;
     }
 
-    public int getNextView() {
-        return nextView;
+    public int getAction() {
+        return action;
     }
 /*
     public void setDescription(String description) {
