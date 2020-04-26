@@ -25,13 +25,13 @@ public class links {
         linksList.add(new links(
                         context.getString(R.string.menu_available_trips),
                         Constants.urlImages[0],
-                        R.id.action_nav_home_to_nav_available
+                        R.id.nav_available_trips
                 )
         );
         linksList.add(new links(
                         context.getString(R.string.menu_selected_trips),
                         Constants.urlImages[1],
-                        R.id.action_nav_home_to_nav_selected_trips
+                        R.id.nav_selected_trips
                 )
         );
         return linksList;

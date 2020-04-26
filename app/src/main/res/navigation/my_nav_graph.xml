@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav_graph"
+    app:startDestination="@id/nav_log_in_fragment">
+
+    <fragment
+        android:id="@+id/nav_sign_up_fragment"
+        android:name="us.master.acme_explorer.ui.sign_up.SignUpFragment"
+        android:label="@string/log_in"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_nav_sign_up_fragment_to_nav_log_in_fragment"
+            app:destination="@id/nav_log_in_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_log_in_fragment"
+        android:name="us.master.acme_explorer.ui.log_in.LogInFragment"
+        android:label="@string/log_in"
+        tools:layout="@layout/fragment_log_in" >
+        <action
+            android:id="@+id/action_nav_log_in_fragment_to_nav_sign_up_fragment"
+            app:destination="@id/nav_sign_up_fragment" />
+    </fragment>
+
+</navigation>

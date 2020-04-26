@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -89,8 +88,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
                 V -> {
                     Bundle args = new Bundle();
                     args.putInt(Constants.IntentTravel, trip.getId());
-                    Navigation.findNavController(V)
-                            .navigate(R.id.nav_active_trip_fragment, args);
+                    Util.navigateTo(V, R.id.nav_active_trip_fragment, args);
                 }
         );
 

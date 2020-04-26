@@ -9,13 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.navigation.Navigation;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import us.master.acme_explorer.R;
+import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.links;
 
 public class MenuAdapter extends BaseAdapter {
@@ -62,7 +62,7 @@ public class MenuAdapter extends BaseAdapter {
 
         CardView mCardView = convertView.findViewById(R.id.my_link_card_view);
         mCardView.setOnClickListener(
-                v -> Navigation.findNavController(v).navigate(link.getAction())
+                v -> Util.navigateTo(v, link.getAction(), null)
         );
 
         return convertView;

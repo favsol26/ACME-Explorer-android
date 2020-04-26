@@ -2,10 +2,14 @@ package us.master.acme_explorer.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,6 +79,11 @@ public class Util {
                 + String.format("%s", sharePreferenceData.toString()));
 
         return sharePreferenceData;
+    }
+
+    public static void navigateTo(View V, int direction, @Nullable Bundle bundle) {
+        if (bundle == null) Navigation.findNavController(V).navigate(direction);
+        else Navigation.findNavController(V).navigate(direction, bundle);
     }
 
     public static void setRecyclerView(Context context, Switch mySwitch,
