@@ -8,6 +8,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="log_in">Iniciar Sesión</string>
+    <string name="log_in_google">Continuar con Google</string>
+    <string name="sign_up">¿Todavía no tienes cuenta? \n¡Regístrate!</string>
     <string name="menu_main_menu">Menu Principal</string>
     <string name="menu_available_trips">Viajes Disponibles</string>
     <string name="menu_selected_trips">Viajes Seleccionados</string>
