@@ -36,7 +36,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class AvailableTripsFragment extends Fragment {
 
     private static final String TAG = AvailableTripsFragment.class.getSimpleName();
-    private static final int PICK_FILTERS = 29;
+    private static final int PICK_FILTERS = 0x1d;
     private RecyclerView myRecyclerView;
     private Switch mySwitch;
     private TripAdapter tripAdapter;

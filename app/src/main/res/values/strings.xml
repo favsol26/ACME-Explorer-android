@@ -37,11 +37,24 @@
 
     <string name="apply_filters">Aplicar</string>
     <string name="date_message">Por favor elegir una fecha mayor o igual a la actual</string>
-    <string name="filter_alert">Error al aplicar filtros, por favor verificar los filtros y vuelva  a intentarlo</string>
+    <string name="filter_alert">Error al aplicar filtros,
+        por favor verificar los filtros y vuelva  a intentarlo</string>
     <string name="clear_filters">Limpiar</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_email">Correo</string>
     <string name="hint_password">Contraseña</string>
+    <string name="login_error_message_1">¡¡El correo electrónico no puede estar vacío!!</string>
+    <string name="login_error_message_2">¡¡La contraseña no puede estar vacía!!</string>
+    <string name="login_mail_access_error">Se ha producido un error al acceder</string>
+    <string name="login_verified_mail_error">¿¡Aún no has validado tu cuenta!?
+        \n¿Quieres que te enviemos un correo de verificación? </string>
+    <string name="log_in_google_play_services_error">Debes actualizar Google Play Services antes de continuar.</string>
+    <string name="log_in_download_gps">Actualizar</string>
+    <string name="login_verified_mail_error_ok">Enviar correo</string>
+    <string name="login_verified_mail_error_cancel">Cancelar</string>
+    <string name="login_verified_mail_error_sent">Hemos enviado un correo de verificación a tu dirección</string>
+    <string name="login_verified_mail_error_no_sent">No se ha podido enviar un correo de verificación a tu cuenta</string>
+    <string name="default_client_id">cambiar ID</string>
+    <string name="gps_download_url">market://details?id=com.google.android.gms</string>
+    <string name="market_download_url">https://play.google.com/store/apps/details?id=com.google.android.gms</string>
 </resources>

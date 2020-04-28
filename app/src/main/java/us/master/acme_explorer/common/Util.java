@@ -1,6 +1,8 @@
 package us.master.acme_explorer.common;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -30,6 +34,7 @@ public class Util {
 
     private static final String TAG = Util.class.getSimpleName();
     public static List<Trip> tripList;
+    public static FirebaseAuth mAuth;
 
     public static String dateFormatter(Calendar calendar) {
         int yy = calendar.get(Calendar.YEAR);
@@ -101,6 +106,16 @@ public class Util {
         GridLayoutManager layoutManager = new GridLayoutManager(context, column);
         myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setAdapter(tripAdapter);
+    }
+
+    public static void showDialogMessage(Context context, int msg, int posMsg, int negMsg,
+                                         DialogInterface.OnClickListener positiveListener,
+                                         DialogInterface.OnClickListener negativeListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(msg)
+                .setPositiveButton(posMsg, positiveListener)
+                .setNegativeButton(negMsg, negativeListener)
+                .show();
     }
 
 }
