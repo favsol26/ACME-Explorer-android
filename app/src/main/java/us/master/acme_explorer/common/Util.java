@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -15,6 +14,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DateFormat;
@@ -32,7 +32,7 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class Util {
 
-    private static final String TAG = Util.class.getSimpleName();
+//    private static final String TAG = Util.class.getSimpleName();
     public static List<Trip> tripList;
     public static FirebaseAuth mAuth;
 
@@ -65,6 +65,10 @@ public class Util {
         Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
     }
 
+    public static void mSnackBar(View v, Context context, int text, int length) {
+        Snackbar.make(v, context.getString(text), length).show();
+    }
+
     public static HashMap getSharedPreferenceFilters(Context context) {
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
@@ -80,8 +84,8 @@ public class Util {
         sharePreferenceData.put(Constants.dateStart, vDateStartToFilter);
         sharePreferenceData.put(Constants.dateEnd, vDateEndToFilter);
 
-        Log.d(TAG, "getSharePreferencesFilters: "
-                + String.format("%s", sharePreferenceData.toString()));
+//        Log.d(TAG, "getSharePreferencesFilters: "
+//                + String.format("%s", sharePreferenceData.toString()));
 
         return sharePreferenceData;
     }

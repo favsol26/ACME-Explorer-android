@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,10 +120,10 @@ public class AvailableTripsFragment extends Fragment {
         if (dateStartToFilter > 0 || dateEndToFilter > 0)
             tripList = filterByDate(tripList, dateStartToFilter, dateEndToFilter);
 
-        Log.d(TAG, "verificationFilters: "
-                + String.format("date start = %s, date end = %s, min = %s y max = %s",
-                dateStartToFilter, dateEndToFilter, minPrice, maxPrice
-        ));
+//        Log.d(TAG, "verificationFilters: "
+//                + String.format("date start = %s, date end = %s, min = %s y max = %s",
+//                dateStartToFilter, dateEndToFilter, minPrice, maxPrice
+//        ));
         return tripList;
     }
 

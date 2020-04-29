@@ -3,7 +3,6 @@ package us.master.acme_explorer;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,7 +21,7 @@ import us.master.acme_explorer.common.Util;
 
 public class FilterActivity extends AppCompatActivity {
 
-    private static final String TAG = FilterActivity.class.getSimpleName();
+    //    private static final String TAG = FilterActivity.class.getSimpleName();
     private TextView mTextViewDateStart, mTextViewDateEnd;
     private EditText mEditTextMaxPrice, mEditTextMinPrice;
     private Calendar calendar = Calendar.getInstance();
@@ -45,7 +44,7 @@ public class FilterActivity extends AppCompatActivity {
         initView(filterSaved, Constants.minPrice, mEditTextMinPrice);
         initView(filterSaved, Constants.maxPrice, mEditTextMaxPrice);
 
-        Log.d(TAG, "onCreate: filter" + filterSaved.toString());
+//        Log.d(TAG, "onCreate: filter" + filterSaved.toString());
     }
 
     @Override
@@ -95,7 +94,7 @@ public class FilterActivity extends AppCompatActivity {
             } else Toast.makeText(this,
                     getResources().getString(R.string.date_message),
                     Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "pickOneDate: " + Util.dateFormatter(calendarDate));
+//            Log.d(TAG, "pickOneDate: " + Util.dateFormatter(calendarDate));
         }, yy, mm, dd);
         dialog.show();
     }

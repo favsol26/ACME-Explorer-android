@@ -57,4 +57,11 @@
     <string name="default_client_id">cambiar ID</string>
     <string name="gps_download_url">market://details?id=com.google.android.gms</string>
     <string name="market_download_url">https://play.google.com/store/apps/details?id=com.google.android.gms</string>
+    <string name="user_no_found_error">No hay registro de usuario correspondiente a esta cuenta</string>
+    <string name="wrong_password_error">Contraseña incorrecta</string>
+    <string name="device_temporaly_blocked_error">Hemos bloqueado todas las solicitudes de este dispositivo debido a una actividad inusual. Intenta nuevamente más tarde.</string>
+    <string name="network_error">Error de red, por favor verifica tu conexión de internet.</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="user_disabled_error">La cuenta de usuario ha sido deshabilitada por un ADMINISTRADOR</string>
+    <string name="email_batly_formatted_error">Dirección de correo electrónico mal escrita</string>
 </resources>
