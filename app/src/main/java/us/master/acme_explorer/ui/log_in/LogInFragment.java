@@ -19,32 +19,35 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import us.master.acme_explorer.MainActivity;
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Util;
 
-import static android.app.Activity.RESULT_OK;
 import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE;
 import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG;
 import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT;
 import static java.util.Objects.requireNonNull;
+import static us.master.acme_explorer.common.Util.mAuth;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = LogInFragment.class.getSimpleName();
@@ -62,13 +65,13 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.container = container;
-        View root = inflater.inflate(R.layout.fragment_log_in, container, false);
         this.context = container.getContext();
+        View root = inflater.inflate(R.layout.fragment_log_in, container, false);
         setView(root);
 
         googleSignInOptions = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.default_client_id))
+                .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -147,59 +150,61 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
     private void loginWithEmail(Editable email, Editable password) {
         checkInstance();
-        if (Util.mAuth != null) {
+        if (mAuth != null) {
             showLoginForm(false);
-            Util.mAuth.signInWithEmailAndPassword(email.toString(), password.toString())
-                    .addOnCompleteListener(requireActivity(), task -> {
-                        try {
-                            AuthResult taskResult = requireNonNull(task.getResult());
-                            if (!task.isSuccessful() || taskResult.getUser() == null) {
-                                showErrorDialogMail();
-                            } else if (!taskResult.getUser().isEmailVerified()) {
-                                showErrorEmailVerified(taskResult.getUser());
-                            } else {
-                                FirebaseUser user = task.getResult().getUser();
-                                assert user != null;
-                                checkUserDataBaseLogin(user);
-                            }
-                        } catch (Exception e) {
-                            showLoginForm(true);
-                            showErrorMessage(task);
-                        }
-                    });
+            mAuth.signInWithEmailAndPassword(email.toString(), password.toString())
+                    .addOnCompleteListener(requireActivity(), this::verifyTask);
         } else {
             googlePlayServicesError();
         }
     }
 
-    private void showErrorMessage(Task<AuthResult> task) {
-        int errorCode = requireNonNull(requireNonNull(task.getException()).getMessage()).hashCode();
-        Log.d(TAG, errorCode + " loginWithEmail: " + task.getException().getMessage());
+    private void verifyTask(Task<AuthResult> task) {
+        try {
+            AuthResult taskResult = requireNonNull(task.getResult());
+            if (!task.isSuccessful() || taskResult.getUser() == null) {
+                showErrorDialogMail();
+            } else if (!taskResult.getUser().isEmailVerified()) {
+                showErrorEmailVerified(taskResult.getUser());
+            } else {
+                FirebaseUser user = task.getResult().getUser();
+                assert user != null;
+                checkUserDataBaseLogin(user);
+            }
+        } catch (Exception e) {
+            showLoginForm(true);
+            showErrorMessage(task);
+        }
+    }
 
-        switch (errorCode) {
+    private void showErrorMessage(Task<AuthResult> task) {
+        int stringId = 0;
+        int errCod = requireNonNull(requireNonNull(task.getException()).getMessage()).hashCode();
+        Log.d(TAG, errCod + " loginWithEmail: " + task.getException().getMessage());
+        switch (errCod) {
             case 787766007:
-                mInputEditTextEmail.setError(context.getString(R.string.email_batly_formatted_error));
+                mInputEditTextEmail.setError(context.getString(R.string.email_badly_formatted_error));
                 break;
             case -1710700802:
                 mInputEditTextPassword.setError(context.getString(R.string.wrong_password_error));
                 break;
             case -1446840658:
-                Util.mSnackBar(mProgressBar, context, R.string.user_no_found_error, LENGTH_SHORT);
+                stringId = R.string.user_no_found_error;
                 break;
             case -1501900565:
-                Util.mSnackBar(mProgressBar, context, R.string.device_temporaly_blocked_error,
-                        LENGTH_LONG);
+                stringId = R.string.device_temporaly_blocked_error;
                 break;
             case 1054830334:
-                Util.mSnackBar(mProgressBar, context, R.string.network_error, LENGTH_LONG);
+                stringId = R.string.network_error;
                 break;
             case -1760623302:
-                Util.mSnackBar(mProgressBar, context, R.string.user_disabled_error, LENGTH_LONG);
+                stringId = R.string.user_disabled_error;
                 break;
             default:
-                Snackbar.make(mProgressBar, "unhandled error, code:" + errorCode,
+                Snackbar.make(mProgressBar, "unhandled error, code:" + errCod,
                         LENGTH_LONG).show();
         }
+        if (stringId != 0) Util.mSnackBar(mProgressBar, context, stringId, LENGTH_LONG);
     }
 
     private void checkUserDataBaseLogin(FirebaseUser user) {
@@ -253,10 +258,21 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
+        GoogleSignInAccount account;
+        AuthCredential credential;
         if (requestCode == LOGIN_GOOGLE) {
-            Toast.makeText(context, "google", Toast.LENGTH_SHORT).show();
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(context, "goo", Toast.LENGTH_SHORT).show();
+            Task<GoogleSignInAccount> result = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                account = result.getResult(ApiException.class);
+                assert account != null;
+                credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                checkInstance();
+                if (mAuth != null)
+                    mAuth.signInWithCredential(credential)
+                            .addOnCompleteListener(requireActivity(), this::verifyTask);
+                else googlePlayServicesError();
+            } catch (ApiException e) {
+                Log.w(TAG, "Google sign in failed", e);
             }
         }
     }
@@ -283,8 +299,8 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     }
 
     private void checkInstance() {
-        if (Util.mAuth == null) {
-            Util.mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
         }
     }
 
@@ -293,8 +309,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         new Handler().postDelayed(() -> {
                     startActivity(new Intent(context, MainActivity.class));
                     requireActivity().finish();
-                },
-                500
+                }, 1000
         );
     }
 }

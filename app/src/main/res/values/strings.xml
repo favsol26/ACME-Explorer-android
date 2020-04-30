@@ -54,7 +54,6 @@
     <string name="login_verified_mail_error_cancel">Cancelar</string>
     <string name="login_verified_mail_error_sent">Hemos enviado un correo de verificación a tu dirección</string>
     <string name="login_verified_mail_error_no_sent">No se ha podido enviar un correo de verificación a tu cuenta</string>
-    <string name="default_client_id">cambiar ID</string>
     <string name="gps_download_url">market://details?id=com.google.android.gms</string>
     <string name="market_download_url">https://play.google.com/store/apps/details?id=com.google.android.gms</string>
     <string name="user_no_found_error">No hay registro de usuario correspondiente a esta cuenta</string>
@@ -63,5 +62,5 @@
     <string name="network_error">Error de red, por favor verifica tu conexión de internet.</string>
     <string name="welcome">Bienvenido</string>
     <string name="user_disabled_error">La cuenta de usuario ha sido deshabilitada por un ADMINISTRADOR</string>
-    <string name="email_batly_formatted_error">Dirección de correo electrónico mal escrita</string>
+    <string name="email_badly_formatted_error">Dirección de correo electrónico mal escrita</string>
 </resources>
