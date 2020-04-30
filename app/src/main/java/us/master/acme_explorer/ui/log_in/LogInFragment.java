@@ -35,7 +35,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -47,6 +46,7 @@ import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH
 import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG;
 import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT;
 import static java.util.Objects.requireNonNull;
+import static us.master.acme_explorer.common.Util.checkInstance;
 import static us.master.acme_explorer.common.Util.mAuth;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
@@ -59,24 +59,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     private TextInputEditText mInputEditTextEmail;
     private TextInputEditText mInputEditTextPassword;
     private Context context;
-    private GoogleSignInOptions googleSignInOptions;
     private ViewGroup container;
-
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        this.container = container;
-        this.context = container.getContext();
-        View root = inflater.inflate(R.layout.fragment_log_in, container, false);
-        setView(root);
-
-        googleSignInOptions = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        return root;
-    }
 
     private void setView(View root) {
         Button mBtnLogin = root.findViewById(R.id.login_button_email);
@@ -97,7 +80,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         mInputEditTextPassword.addTextChangedListener(mTxtChdLnr(mInputEditTextPassword));
     }
 
-    private TextWatcher mTxtChdLnr(TextInputEditText mInputEditTextEmail) {
+    private TextWatcher mTxtChdLnr(TextInputEditText mInputEditText) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -106,7 +89,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mInputEditTextEmail.getId() == R.id.login_email_et) {
+                if (mInputEditText.getId() == R.id.login_email_et) {
                     mTextInputLayoutEmail.setError(null);
                 } else {
                     mTextInputLayoutPassword.setError(null);
@@ -120,6 +103,15 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         };
     }
 
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_log_in, container, false);
+        setView(root);
+        this.container = container;
+        this.context = container.getContext();
+        return root;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -127,12 +119,33 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 attemptLogin();
                 break;
             case R.id.login_button_google:
-                attemptLoginGoogle(googleSignInOptions);
+                attemptLoginGoogle(Util.googleSignInOptions);
                 break;
             case R.id.login_button_sign_up:
                 Util.navigateTo(v, R.id.action_nav_log_in_fragment_to_nav_sign_up_fragment,
                         null);
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == LOGIN_GOOGLE) {
+            try {
+                Task<GoogleSignInAccount> result = GoogleSignIn.getSignedInAccountFromIntent(data);
+                GoogleSignInAccount account = result.getResult(ApiException.class);
+                assert account != null;
+                AuthCredential credential
+                        = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                checkInstance();
+                if (mAuth != null)
+                    mAuth.signInWithCredential(credential)
+                            .addOnCompleteListener(requireActivity(), this::verifyTask);
+                else googlePlayServicesError();
+            } catch (ApiException e) {
+                Log.w(TAG, "Google sign in failed -> " + resultCode, e);
+                showLoginForm(true);
+            }
         }
     }
 
@@ -146,6 +159,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         if (user && pass)
             loginWithEmail(requireNonNull(mInputEditTextEmail.getText()),
                     requireNonNull(mInputEditTextPassword.getText()));
+//        else showLoginForm(true);
     }
 
     private void loginWithEmail(Editable email, Editable password) {
@@ -157,6 +171,13 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         } else {
             googlePlayServicesError();
         }
+    }
+
+    private void attemptLoginGoogle(GoogleSignInOptions googleSignInOptions) {
+        showLoginForm(false);
+        GoogleSignInClient signIn = GoogleSignIn.getClient(context, googleSignInOptions);
+        Intent signInIntent = signIn.getSignInIntent();
+        startActivityForResult(signInIntent, LOGIN_GOOGLE);
     }
 
     private void verifyTask(Task<AuthResult> task) {
@@ -209,12 +230,12 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
     private void checkUserDataBaseLogin(FirebaseUser user) {
 //        TODO complete
+        Util.currentUser = user;
         Log.d(TAG, "checkUserDataBaseLogin: user -> " + user.getUid());
         loginSucceeded();
     }
 
     private void showErrorEmailVerified(FirebaseUser user) {
-        showLoginForm(true);
         DialogInterface.OnClickListener posBtn = (dialog, which) ->
                 user.sendEmailVerification().addOnCompleteListener(task -> {
                     String text = context.getString(task.isSuccessful()
@@ -231,7 +252,6 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showErrorDialogMail() {
-        showLoginForm(true);
         Util.mSnackBar(mProgressBar, context, R.string.login_mail_access_error, LENGTH_LONG);
     }
 
@@ -249,42 +269,14 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 }).show();
     }
 
-    private void attemptLoginGoogle(GoogleSignInOptions googleSignInOptions) {
-        GoogleSignInClient signIn = GoogleSignIn.getClient(context, googleSignInOptions);
-        Intent signInIntent = signIn.getSignInIntent();
-        startActivityForResult(signInIntent, LOGIN_GOOGLE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-        GoogleSignInAccount account;
-        AuthCredential credential;
-        if (requestCode == LOGIN_GOOGLE) {
-            Task<GoogleSignInAccount> result = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                account = result.getResult(ApiException.class);
-                assert account != null;
-                credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                checkInstance();
-                if (mAuth != null)
-                    mAuth.signInWithCredential(credential)
-                            .addOnCompleteListener(requireActivity(), this::verifyTask);
-                else googlePlayServicesError();
-            } catch (ApiException e) {
-                Log.w(TAG, "Google sign in failed", e);
-            }
-        }
-    }
-
     private void showLoginForm(boolean show) {
         TransitionSet transitionSet = new TransitionSet();
         Transition layoutFade = new AutoTransition();
         layoutFade.setDuration(500);
         transitionSet.addTransition(layoutFade);
         TransitionManager.beginDelayedTransition(this.container, transitionSet);
-        mLayoutFormLogin.setVisibility(show ? View.VISIBLE : View.GONE);
         mProgressBar.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLayoutFormLogin.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private boolean alertLoginUser(TextInputLayout layout, TextInputEditText mTextView) {
@@ -298,18 +290,12 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         return !validate;
     }
 
-    private void checkInstance() {
-        if (mAuth == null) {
-            mAuth = FirebaseAuth.getInstance();
-        }
-    }
-
     private void loginSucceeded() {
-        Util.mSnackBar(mProgressBar, context, R.string.welcome, LENGTH_SHORT);
         new Handler().postDelayed(() -> {
-                    startActivity(new Intent(context, MainActivity.class));
+            Util.mSnackBar(mProgressBar, context, R.string.welcome, LENGTH_SHORT);
+            startActivity(new Intent(context, MainActivity.class));
                     requireActivity().finish();
-                }, 1000
+                }, 1500
         );
     }
 }

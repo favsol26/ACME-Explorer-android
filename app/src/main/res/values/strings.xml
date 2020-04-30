@@ -2,10 +2,10 @@
     <string name="app_name">ACME-Explorer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Faustino Ayala</string>
-    <string name="nav_header_subtitle">Fauayaver</string>
+    <string name="nav_header_title">Faustino Ayala Veras</string>
+    <string name="nav_header_subtitle">Fauayaver@alum.us.es</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_log_out">Cerrar sesión</string>
 
     <string name="log_in">Iniciar Sesión</string>
     <string name="log_in_google">Continuar con Google</string>

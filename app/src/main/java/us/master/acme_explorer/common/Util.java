@@ -14,8 +14,10 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -32,9 +34,12 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class Util {
 
-//    private static final String TAG = Util.class.getSimpleName();
+    //    private static final String TAG = Util.class.getSimpleName();
     public static List<Trip> tripList;
     public static FirebaseAuth mAuth;
+    public static GoogleSignInOptions googleSignInOptions;
+    public static FirebaseUser currentUser;
+
 
     public static String dateFormatter(Calendar calendar) {
         int yy = calendar.get(Calendar.YEAR);
@@ -63,6 +68,12 @@ public class Util {
         String text1 = String.format("Hay %s %s", size, context.getString(message));
         String text2 = String.format(" No hay %s", context.getString(message));
         Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
+    }
+
+    public static void checkInstance() {
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
     }
 
     public static void mSnackBar(View v, Context context, int text, int length) {

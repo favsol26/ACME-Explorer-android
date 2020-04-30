@@ -9,19 +9,34 @@
         android:id="@+id/nav_main_menu"
         android:name="us.master.acme_explorer.ui.main_menu.MainMenuFragment"
         android:label="@string/menu_main_menu"
-        tools:layout="@layout/fragment_main_menu" />
+        tools:layout="@layout/fragment_main_menu" >
+        <action
+            android:id="@+id/action_nav_main_menu_to_nav_selected_trips"
+            app:destination="@id/nav_selected_trips" />
+        <action
+            android:id="@+id/action_nav_main_menu_to_nav_available_trips"
+            app:destination="@id/nav_available_trips" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_available_trips"
         android:name="us.master.acme_explorer.ui.available_trips.AvailableTripsFragment"
         android:label="@string/menu_available_trips"
-        tools:layout="@layout/fragment_trips_base_view" />
+        tools:layout="@layout/fragment_trips_base_view" >
+        <action
+            android:id="@+id/action_nav_available_trips_to_nav_active_trip_fragment"
+            app:destination="@id/nav_active_trip_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_selected_trips"
         android:name="us.master.acme_explorer.ui.selected_trips.SelectedTripsFragment"
         android:label="@string/menu_selected_trips"
-        tools:layout="@layout/fragment_trips_base_view" />
+        tools:layout="@layout/fragment_trips_base_view" >
+        <action
+            android:id="@+id/action_nav_selected_trips_to_nav_active_trip_fragment"
+            app:destination="@id/nav_active_trip_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_active_trip_fragment"
