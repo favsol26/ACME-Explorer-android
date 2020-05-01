@@ -23,22 +23,43 @@ import us.master.acme_explorer.entity.Trip;
 public class ActiveTripFragment extends Fragment {
 
     private static final String TAG = ActiveTripFragment.class.getSimpleName();
+    private TextView mTextViewDescription;
+    private ImageView mImageView;
+    private TextView mTextViewPrice;
+    private TextView mTextViewArrivalPlace;
+    private TextView mTextViewDepartureDate;
+    private TextView mTextViewArrivalDate;
+    private TextView mTextViewDeparturePlace;
+    private ImageView mSelectedImageView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_active_trip, container, false);
         Trip trip = Util.tripList.get(requireArguments().getInt(Constants.IntentTravel));
+        setView(root);
+        updateUI(root, trip);
 
-        ImageView mImageView = root.findViewById(R.id.my_trip_flag_i_v);
-        TextView mTextViewPrice = root.findViewById(R.id.my_price_trip_t_v);
-        TextView mTextViewArrivalPlace = root.findViewById(R.id.my_arrival_place_trip_t_v);
-        TextView mTextViewDepartureDate = root.findViewById(R.id.my_departure_date_trip_t_v);
-        TextView mTextViewArrivalDate = root.findViewById(R.id.my_arrival_date_trip_t_v);
-        TextView mTextViewDeparturePlace = root.findViewById(R.id.my_departure_place_trip_t_v);
-        ImageView mSelectedImageView = root.findViewById(R.id.my_active_selected_trip_i_v);
-        TextView mTextViewDescription = root.findViewById(R.id.my_description_trip_t_v);
+        mSelectedImageView.setOnClickListener(v -> {
+            trip.setSelected(!trip.isSelected());
+            setState(trip, mSelectedImageView);
+        });
+        Log.d(TAG, "onCreateView: " + trip.getId());
+        return root;
+    }
 
+    private void setView(View root) {
+        mImageView = root.findViewById(R.id.my_trip_flag_i_v);
+        mTextViewPrice = root.findViewById(R.id.my_price_trip_t_v);
+        mTextViewArrivalPlace = root.findViewById(R.id.my_arrival_place_trip_t_v);
+        mTextViewDepartureDate = root.findViewById(R.id.my_departure_date_trip_t_v);
+        mTextViewArrivalDate = root.findViewById(R.id.my_arrival_date_trip_t_v);
+        mTextViewDeparturePlace = root.findViewById(R.id.my_departure_place_trip_t_v);
+        mSelectedImageView = root.findViewById(R.id.my_active_selected_trip_i_v);
+        mTextViewDescription = root.findViewById(R.id.my_description_trip_t_v);
+    }
+
+    private void updateUI(View root, Trip trip) {
         Glide.with(root)
                 .load(trip.getUrlImage())
                 .fitCenter()
@@ -48,10 +69,6 @@ public class ActiveTripFragment extends Fragment {
 
         setState(trip, mSelectedImageView);
 
-        mSelectedImageView.setOnClickListener(v -> {
-            trip.setSelected(!trip.isSelected());
-            setState(trip, mSelectedImageView);
-        });
 
         mTextViewArrivalPlace.setText(String.format("%s \n(%s)", trip.getArrivalPlace(), trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
@@ -60,8 +77,6 @@ public class ActiveTripFragment extends Fragment {
         mTextViewArrivalDate.setText(Util.dateFormatter(trip.getArrivalDate()));
         mTextViewDeparturePlace.setText(trip.getDeparturePlace());
         mTextViewDescription.setText(trip.getDescription());
-        Log.d(TAG, "onCreateView: " + trip.getId());
-        return root;
     }
 
     private void setState(Trip trip, ImageView imv) {

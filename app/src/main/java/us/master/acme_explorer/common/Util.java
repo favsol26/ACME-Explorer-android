@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -41,7 +44,7 @@ public class Util {
     public static FirebaseUser currentUser;
 
 
-    public static String dateFormatter(Calendar calendar) {
+  /*  public static String dateFormatter(Calendar calendar) {
         int yy = calendar.get(Calendar.YEAR);
         int mm = calendar.get(Calendar.MONTH);
         int dd = calendar.get(Calendar.DAY_OF_MONTH);
@@ -50,7 +53,7 @@ public class Util {
         calendar.set(yy, mm, dd, 0, 0, 0);
         Date chosenDate = calendar.getTime();
         return (dateFormat.format(chosenDate));
-    }
+    }*/
 
     public static String dateFormatter(long date) {
         Calendar calendar = Calendar.getInstance();
@@ -131,6 +134,25 @@ public class Util {
                 .setPositiveButton(posMsg, positiveListener)
                 .setNegativeButton(negMsg, negativeListener)
                 .show();
+    }
+
+    public static TextWatcher mTxtChdLnr(TextInputLayout inputLayout) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                inputLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
     }
 
 }

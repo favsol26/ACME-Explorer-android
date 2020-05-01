@@ -10,6 +10,8 @@
     <string name="log_in">Iniciar Sesión</string>
     <string name="log_in_google">Continuar con Google</string>
     <string name="sign_up">¿Todavía no tienes cuenta? \n¡Regístrate!</string>
+    <string name="sign_in">Regístrate con tu E-mail</string>
+    <string name="log_in_up">¿Ya tienes cuenta?\nInicia sesión</string>
     <string name="menu_main_menu">Menu Principal</string>
     <string name="menu_available_trips">Viajes Disponibles</string>
     <string name="menu_selected_trips">Viajes Seleccionados</string>
@@ -43,6 +45,7 @@
 
     <string name="hint_email">Correo</string>
     <string name="hint_password">Contraseña</string>
+    <string name="hint_confirm_password">Confirmar contraseña</string>
     <string name="login_error_message_1">¡¡El correo electrónico no puede estar vacío!!</string>
     <string name="login_error_message_2">¡¡La contraseña no puede estar vacía!!</string>
     <string name="login_mail_access_error">Se ha producido un error al acceder</string>
@@ -58,9 +61,12 @@
     <string name="market_download_url">https://play.google.com/store/apps/details?id=com.google.android.gms</string>
     <string name="user_no_found_error">No hay registro de usuario correspondiente a esta cuenta</string>
     <string name="wrong_password_error">Contraseña incorrecta</string>
-    <string name="device_temporaly_blocked_error">Hemos bloqueado todas las solicitudes de este dispositivo debido a una actividad inusual. Intenta nuevamente más tarde.</string>
+    <string name="device_temporal_blocked_error">Hemos bloqueado todas las solicitudes de este
+        dispositivo debido a una actividad inusual. Intenta nuevamente más tarde.</string>
     <string name="network_error">Error de red, por favor verifica tu conexión de internet.</string>
     <string name="welcome">Bienvenido</string>
     <string name="user_disabled_error">La cuenta de usuario ha sido deshabilitada por un ADMINISTRADOR</string>
     <string name="email_badly_formatted_error">Dirección de correo electrónico mal escrita</string>
+    <string name="hint_name">Nombres</string>
+    <string name="hint_last_name">Apellidos</string>
 </resources>

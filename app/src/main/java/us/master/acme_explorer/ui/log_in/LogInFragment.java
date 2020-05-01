@@ -49,6 +49,7 @@ import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH
 import static java.util.Objects.requireNonNull;
 import static us.master.acme_explorer.common.Util.checkInstance;
 import static us.master.acme_explorer.common.Util.mAuth;
+import static us.master.acme_explorer.common.Util.mTxtChdLnr;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = LogInFragment.class.getSimpleName();
@@ -77,32 +78,10 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
         mInputEditTextEmail = root.findViewById(R.id.login_email_et);
         mInputEditTextPassword = root.findViewById(R.id.login_password_et);
-        mInputEditTextEmail.addTextChangedListener(mTxtChdLnr(mInputEditTextEmail));
-        mInputEditTextPassword.addTextChangedListener(mTxtChdLnr(mInputEditTextPassword));
+        mInputEditTextEmail.addTextChangedListener(mTxtChdLnr(mTextInputLayoutEmail));
+        mInputEditTextPassword.addTextChangedListener(mTxtChdLnr(mTextInputLayoutPassword));
     }
 
-    private TextWatcher mTxtChdLnr(TextInputEditText mInputEditText) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mInputEditText.getId() == R.id.login_email_et) {
-                    mTextInputLayoutEmail.setError(null);
-                } else {
-                    mTextInputLayoutPassword.setError(null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -125,7 +104,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
             case R.id.login_button_sign_up:
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.newEmail, requireNonNull(mInputEditTextEmail.getText()).toString());
-                Util.navigateTo(v, R.id.action_nav_log_in_fragment_to_nav_sign_up_fragment, bundle);
+                Util.navigateTo(v, R.id.action_nav_log_in_to_nav_sign_up, bundle);
                 break;
         }
     }
@@ -216,7 +195,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 stringId = R.string.user_no_found_error;
                 break;
             case -1501900565:
-                stringId = R.string.device_temporaly_blocked_error;
+                stringId = R.string.device_temporal_blocked_error;
                 break;
             case 1054830334:
                 stringId = R.string.network_error;
