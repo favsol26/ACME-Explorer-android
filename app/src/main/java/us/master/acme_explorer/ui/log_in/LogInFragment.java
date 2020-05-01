@@ -40,6 +40,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import us.master.acme_explorer.MainActivity;
 import us.master.acme_explorer.R;
+import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 
 import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE;
@@ -103,8 +104,8 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         };
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_log_in, container, false);
         setView(root);
         this.container = container;
@@ -122,8 +123,9 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 attemptLoginGoogle(Util.googleSignInOptions);
                 break;
             case R.id.login_button_sign_up:
-                Util.navigateTo(v, R.id.action_nav_log_in_fragment_to_nav_sign_up_fragment,
-                        null);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.newEmail, requireNonNull(mInputEditTextEmail.getText()).toString());
+                Util.navigateTo(v, R.id.action_nav_log_in_fragment_to_nav_sign_up_fragment, bundle);
                 break;
         }
     }
@@ -191,6 +193,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 FirebaseUser user = task.getResult().getUser();
                 assert user != null;
                 checkUserDataBaseLogin(user);
+                Log.d(TAG, "verifyTask: " + user.getEmail());
             }
         } catch (Exception e) {
             showLoginForm(true);
@@ -242,13 +245,16 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                             ? R.string.login_verified_mail_error_sent
                             : R.string.login_verified_mail_error_no_sent);
                     Snackbar.make(mProgressBar, text, LENGTH_SHORT).show();
+                    showLoginForm(true);
                 }),
-                negBtn = (dialog, which) -> {
-                };
+                negBtn = (dialog, which) -> showLoginForm(true);
+
         Util.showDialogMessage(context,
                 R.string.login_verified_mail_error,
                 R.string.login_verified_mail_error_ok,
                 R.string.login_verified_mail_error_cancel, posBtn, negBtn);
+        showLoginForm(true);
+        mAuth.signOut();
     }
 
     private void showErrorDialogMail() {
@@ -275,6 +281,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         layoutFade.setDuration(500);
         transitionSet.addTransition(layoutFade);
         TransitionManager.beginDelayedTransition(this.container, transitionSet);
+
         mProgressBar.setVisibility(show ? View.GONE : View.VISIBLE);
         mLayoutFormLogin.setVisibility(show ? View.VISIBLE : View.GONE);
     }
@@ -291,9 +298,9 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loginSucceeded() {
+        Util.mSnackBar(mProgressBar, context, R.string.welcome, LENGTH_SHORT);
         new Handler().postDelayed(() -> {
-            Util.mSnackBar(mProgressBar, context, R.string.welcome, LENGTH_SHORT);
-            startActivity(new Intent(context, MainActivity.class));
+                    startActivity(new Intent(context, MainActivity.class));
                     requireActivity().finish();
                 }, 1500
         );

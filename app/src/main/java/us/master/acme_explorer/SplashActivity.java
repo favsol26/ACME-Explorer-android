@@ -34,6 +34,7 @@ public class SplashActivity extends AppCompatActivity {
                 max < 1000 ? max + 1000 : max);
         Util.checkInstance();
         currentUser = mAuth.getCurrentUser();
+
         googleSignInOptions = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))

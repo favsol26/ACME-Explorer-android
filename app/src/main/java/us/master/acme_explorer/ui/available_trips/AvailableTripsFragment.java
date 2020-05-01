@@ -40,6 +40,7 @@ public class AvailableTripsFragment extends Fragment {
     private Switch mySwitch;
     private TripAdapter tripAdapter;
     private List<Trip> tripListToShow = new ArrayList<>();
+    private RelativeLayout myLayout;
     private boolean controlFilter = false;
     private Context context;
 
@@ -47,27 +48,43 @@ public class AvailableTripsFragment extends Fragment {
                              Bundle savedInstanceState) {
         this.context = container.getContext();
         View root = inflater.inflate(R.layout.fragment_trips_base_view, container, false);
-        RelativeLayout myLayout = root.findViewById(R.id.my_trips_base_view_filter);
-        myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
-        mySwitch = root.findViewById(R.id.my_trips_base_view_switch);
-        if (savedInstanceState != null)
-            this.controlFilter = savedInstanceState
-                    .getBoolean(Constants.controlFilter, false);
-        if (!(this.tripListToShow.size() > 0))
-            this.tripListToShow.addAll(controlFilter ? verificationFilters(Util.tripList)
-                    : Util.tripList);
-        this.tripAdapter = new TripAdapter(this.tripListToShow, TAG, mySwitch.isChecked() ? 2 : 1,
-                this.context);
+        setView(root);
+        loadTrips(savedInstanceState);
         Util.getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
+
         //TODO optimize recycler layout manager state
         Util.setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
-        myLayout.setOnClickListener(v -> {
-            startActivityForResult(new Intent(this.context, FilterActivity.class), PICK_FILTERS);
-            this.tripListToShow.clear();
-        });
-        mySwitch.setOnClickListener(v -> Util.setRecyclerView(this.context, mySwitch, myRecyclerView,
-                this.tripAdapter));
+
+        setOnClicksListeners();
         return root;
+    }
+
+    private void setView(View root) {
+        myLayout = root.findViewById(R.id.my_trips_base_view_filter);
+        mySwitch = root.findViewById(R.id.my_trips_base_view_switch);
+        myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
+    }
+
+    private void loadTrips(Bundle savedInstanceState) {
+        if (savedInstanceState != null)
+            this.controlFilter =
+                    savedInstanceState.getBoolean(Constants.controlFilter, false);
+
+        if (!(this.tripListToShow.size() > 0))
+            this.tripListToShow.addAll(controlFilter
+                    ? verificationFilters(Util.tripList)
+                    : Util.tripList);
+
+        this.tripAdapter = new TripAdapter(this.tripListToShow,
+                TAG, mySwitch.isChecked() ? 2 : 1, this.context);
+    }
+
+    private void setOnClicksListeners() {
+        myLayout.setOnClickListener(v -> startActivityForResult(
+                new Intent(this.context, FilterActivity.class), PICK_FILTERS));
+
+        mySwitch.setOnClickListener(v -> Util.setRecyclerView(
+                this.context, mySwitch, myRecyclerView, this.tripAdapter));
     }
 
     @Override
@@ -76,6 +93,7 @@ public class AvailableTripsFragment extends Fragment {
         if (requestCode == PICK_FILTERS)
             if (resultCode == RESULT_OK) {
                 assert data != null;
+                this.tripListToShow.clear();
                 this.tripListToShow.addAll(verificationFilters(Util.tripList, data));
                 this.tripAdapter.notifyDataSetChanged();
                 Util.getToast(this.context, this.tripListToShow.size(), R.string.filter_message);

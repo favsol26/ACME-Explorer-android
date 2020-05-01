@@ -16,13 +16,13 @@ import java.util.List;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Util;
-import us.master.acme_explorer.entity.links;
+import us.master.acme_explorer.entity.Links;
 
 public class MenuAdapter extends BaseAdapter {
-    private List<links> linksList;
+    private List<Links> linksList;
     private Context context;
 
-    public MenuAdapter(List<links> linksList, Context context) {
+    public MenuAdapter(List<Links> linksList, Context context) {
         this.linksList = linksList;
         this.context = context;
     }
@@ -44,7 +44,7 @@ public class MenuAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final links link = linksList.get(position);
+        final Links link = linksList.get(position);
         if (convertView == null)
             convertView = LayoutInflater.from(context)
                     .inflate(R.layout.link_item, parent, false);
