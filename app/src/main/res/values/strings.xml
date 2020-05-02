@@ -66,7 +66,18 @@
     <string name="network_error">Error de red, por favor verifica tu conexión de internet.</string>
     <string name="welcome">Bienvenido</string>
     <string name="user_disabled_error">La cuenta de usuario ha sido deshabilitada por un ADMINISTRADOR</string>
-    <string name="email_badly_formatted_error">Dirección de correo electrónico mal escrita</string>
+    <string name="email_badly_formatted_error">Dirección de correo electrónico inválida</string>
     <string name="hint_name">Nombres</string>
     <string name="hint_last_name">Apellidos</string>
+    <string name="required_field">Campo requerido.</string>
+    <string name="passwords_do_not_match">Las contraseñas no coinciden.</string>
+    <string name="password_requirements">"La contraseña tiene que "</string>
+    <string name="requirement_1">ser al menos de 6 letras, "</string>
+    <string name="requirement_2">"tener 1 numero, "</string>
+    <string name="requirement_3">"tener 1 letra mayúscula, "</string>
+    <string name="requirement_4">"tener 1 carácter especial, "</string>
+    <string name="requirement_5">"ser sin espacios, "</string>
+    <string name="user_create_message">Usuario registrado correctamente</string>
+    <string name="user_create_error">Ha ocurrido un erro al registrar el nuevo usuario</string>
+    <string name="verification_mail_sent">Por favor verifica tu correo electrónico</string>
 </resources>

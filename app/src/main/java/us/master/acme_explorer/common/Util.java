@@ -7,7 +7,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.transition.AutoTransition;
+import android.transition.Transition;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -153,6 +160,18 @@ public class Util {
 
             }
         };
+    }
+
+    public static void showLoginForm(boolean show, ViewGroup container,
+                                     ProgressBar mProgressBar, LinearLayout mLayoutFormLogin) {
+        TransitionSet transitionSet = new TransitionSet();
+        Transition layoutFade = new AutoTransition();
+        layoutFade.setDuration(500);
+        transitionSet.addTransition(layoutFade);
+        TransitionManager.beginDelayedTransition(container, transitionSet);
+
+        mProgressBar.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLayoutFormLogin.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
 }

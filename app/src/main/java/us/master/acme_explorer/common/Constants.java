@@ -3,6 +3,13 @@ package us.master.acme_explorer.common;
 import java.util.Hashtable;
 
 public final class Constants {
+    public static final String regExPassword = "^" +
+            "(?=.*[0-9])" +
+            "(?=.*[A-Z])" +
+            "(?=.*[@#$%^&+=!])" +
+            "(?=\\S+$)" +
+            ".{6,}" +
+            "$";
 
     public final static String[] cities = {
             "Tirana-Albania", "Berlín-Germany", "Andorra La Vieja-Andorra", "Ereván-Armenia",

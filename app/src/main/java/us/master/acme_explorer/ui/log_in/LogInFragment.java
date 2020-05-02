@@ -7,11 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
-import android.text.TextWatcher;
-import android.transition.AutoTransition;
-import android.transition.Transition;
-import android.transition.TransitionManager;
-import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +45,7 @@ import static java.util.Objects.requireNonNull;
 import static us.master.acme_explorer.common.Util.checkInstance;
 import static us.master.acme_explorer.common.Util.mAuth;
 import static us.master.acme_explorer.common.Util.mTxtChdLnr;
+import static us.master.acme_explorer.common.Util.showLoginForm;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = LogInFragment.class.getSimpleName();
@@ -125,7 +121,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 else googlePlayServicesError();
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed -> " + resultCode, e);
-                showLoginForm(true);
+                showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
             }
         }
     }
@@ -146,7 +142,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     private void loginWithEmail(Editable email, Editable password) {
         checkInstance();
         if (mAuth != null) {
-            showLoginForm(false);
+            showLoginForm(false, container, mProgressBar, mLayoutFormLogin);
             mAuth.signInWithEmailAndPassword(email.toString(), password.toString())
                     .addOnCompleteListener(requireActivity(), this::verifyTask);
         } else {
@@ -155,7 +151,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     }
 
     private void attemptLoginGoogle(GoogleSignInOptions googleSignInOptions) {
-        showLoginForm(false);
+        showLoginForm(false, container, mProgressBar, mLayoutFormLogin);
         GoogleSignInClient signIn = GoogleSignIn.getClient(context, googleSignInOptions);
         Intent signInIntent = signIn.getSignInIntent();
         startActivityForResult(signInIntent, LOGIN_GOOGLE);
@@ -175,7 +171,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "verifyTask: " + user.getEmail());
             }
         } catch (Exception e) {
-            showLoginForm(true);
+            showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
             showErrorMessage(task);
         }
     }
@@ -224,15 +220,16 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                             ? R.string.login_verified_mail_error_sent
                             : R.string.login_verified_mail_error_no_sent);
                     Snackbar.make(mProgressBar, text, LENGTH_SHORT).show();
-                    showLoginForm(true);
+                    showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
                 }),
-                negBtn = (dialog, which) -> showLoginForm(true);
+                negBtn = (dialog, which) -> showLoginForm(true,
+                        container, mProgressBar, mLayoutFormLogin);
 
         Util.showDialogMessage(context,
                 R.string.login_verified_mail_error,
                 R.string.login_verified_mail_error_ok,
                 R.string.login_verified_mail_error_cancel, posBtn, negBtn);
-        showLoginForm(true);
+        showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
         mAuth.signOut();
     }
 
@@ -252,17 +249,6 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 Uri.parse(context.getString(R.string.market_download_url))));
                     }
                 }).show();
-    }
-
-    private void showLoginForm(boolean show) {
-        TransitionSet transitionSet = new TransitionSet();
-        Transition layoutFade = new AutoTransition();
-        layoutFade.setDuration(500);
-        transitionSet.addTransition(layoutFade);
-        TransitionManager.beginDelayedTransition(this.container, transitionSet);
-
-        mProgressBar.setVisibility(show ? View.GONE : View.VISIBLE);
-        mLayoutFormLogin.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private boolean alertLoginUser(TextInputLayout layout, TextInputEditText mTextView) {
