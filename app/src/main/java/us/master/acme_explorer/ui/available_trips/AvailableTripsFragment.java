@@ -17,6 +17,9 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +46,7 @@ public class AvailableTripsFragment extends Fragment {
     private RelativeLayout myLayout;
     private boolean controlFilter = false;
     private Context context;
+    private FloatingActionButton fab;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,6 +64,8 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     private void setView(View root) {
+//        fab = root.findViewById(R.id.fab);
+
         myLayout = root.findViewById(R.id.my_trips_base_view_filter);
         mySwitch = root.findViewById(R.id.my_trips_base_view_switch);
         myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
@@ -85,6 +91,10 @@ public class AvailableTripsFragment extends Fragment {
 
         mySwitch.setOnClickListener(v -> Util.setRecyclerView(
                 this.context, mySwitch, myRecyclerView, this.tripAdapter));
+
+//        fab.setOnClickListener(view ->
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show());
     }
 
     @Override

@@ -98,21 +98,17 @@ public class SignUpFragment extends Fragment {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             mTxtIptLytEmail.setError(getString(R.string.email_badly_formatted_error));
             valid = false;
-        } else mTxtIptLytEmail.setError(null);
-
+        }
         if (TextUtils.isEmpty(password)) {
             mTxtIptLytPassword.setError(getString(R.string.required_field));
             valid = false;
         } else if (!Pattern.matches(Constants.regExPassword, password)) {
             mTxtIptLytPassword.setError(checkRegEx(password));
             valid = false;
-        } else {
-            mTxtIptLytPassword.setError(null);
-            if (!Objects.equals(password, confPass) && !(TextUtils.isEmpty(confPass))) {
-                mTxtIptLytPassword.setError(getString(R.string.passwords_do_not_match));
-                mTxtIptLytConfirmPassword.setError(getString(R.string.passwords_do_not_match));
-                valid = false;
-            } else mTxtIptLytConfirmPassword.setError(null);
+        } else if (!Objects.equals(password, confPass) && !(TextUtils.isEmpty(confPass))) {
+            mTxtIptLytPassword.setError(getString(R.string.passwords_do_not_match));
+            mTxtIptLytConfirmPassword.setError(getString(R.string.passwords_do_not_match));
+            valid = false;
         }
         if (TextUtils.isEmpty(confPass)) {
             mTxtIptLytConfirmPassword.setError(getString(R.string.required_field));

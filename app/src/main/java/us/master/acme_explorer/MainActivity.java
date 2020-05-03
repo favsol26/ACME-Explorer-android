@@ -2,12 +2,12 @@ package us.master.acme_explorer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,6 +19,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -40,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-
-        });*/
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -77,14 +74,12 @@ public class MainActivity extends AppCompatActivity {
                 uMail = navView.findViewById(R.id.txv_mail_profile);
         uMail.setText(currentUser.getEmail());
         uName.setText(currentUser.getDisplayName());
-            Picasso.get()
-                    .load(currentUser.getPhotoUrl())
-                    .fit()
-                    .error(R.mipmap.ic_launcher_acme_explorer_round)
-                    .placeholder(android.R.drawable.ic_menu_myplaces)
-                    .into(mImViewProf);
-        Log.d(TAG, String.format("onCreate: email: %s, name: %s, photo: %s, ",
-                currentUser.getEmail(), currentUser.getDisplayName(), currentUser.getPhotoUrl()));
+        Picasso.get()
+                .load(currentUser.getPhotoUrl())
+                .fit()
+                .error(R.mipmap.ic_launcher_acme_explorer_round)
+                .placeholder(android.R.drawable.ic_menu_myplaces)
+                .into(mImViewProf);
     }
 
     @Override

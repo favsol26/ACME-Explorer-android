@@ -8,12 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
@@ -23,6 +25,7 @@ import us.master.acme_explorer.entity.Trip;
 public class ActiveTripFragment extends Fragment {
 
     private static final String TAG = ActiveTripFragment.class.getSimpleName();
+    private FloatingActionButton fab;
     private TextView mTextViewDescription;
     private ImageView mImageView;
     private TextView mTextViewPrice;
@@ -40,11 +43,16 @@ public class ActiveTripFragment extends Fragment {
         setView(root);
         updateUI(root, trip);
 
+        fab.setOnClickListener(view -> {
+            Toast.makeText(requireContext(), TAG + " click", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), TAG + " click", Toast.LENGTH_SHORT).show();
+        });
+
         mSelectedImageView.setOnClickListener(v -> {
             trip.setSelected(!trip.isSelected());
             setState(trip, mSelectedImageView);
         });
-        Log.d(TAG, "onCreateView: " + trip.getId());
+        Log.d(TAG, String.format("onCreateView: id %d userId %s", trip.getId(), trip.getUserUid()));
         return root;
     }
 
@@ -57,6 +65,7 @@ public class ActiveTripFragment extends Fragment {
         mTextViewDeparturePlace = root.findViewById(R.id.my_departure_place_trip_t_v);
         mSelectedImageView = root.findViewById(R.id.my_active_selected_trip_i_v);
         mTextViewDescription = root.findViewById(R.id.my_description_trip_t_v);
+        fab = root.findViewById(R.id.my_active_trip_fab);
     }
 
     private void updateUI(View root, Trip trip) {
@@ -69,7 +78,6 @@ public class ActiveTripFragment extends Fragment {
 
         setState(trip, mSelectedImageView);
 
-
         mTextViewArrivalPlace.setText(String.format("%s \n(%s)", trip.getArrivalPlace(), trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
         mTextViewPrice.setText(String.valueOf(trip.getPrice()).concat(" $"));
@@ -77,6 +85,7 @@ public class ActiveTripFragment extends Fragment {
         mTextViewArrivalDate.setText(Util.dateFormatter(trip.getArrivalDate()));
         mTextViewDeparturePlace.setText(trip.getDeparturePlace());
         mTextViewDescription.setText(trip.getDescription());
+//        fab.setVisibility(trip.getUserUid()==);
     }
 
     private void setState(Trip trip, ImageView imv) {
