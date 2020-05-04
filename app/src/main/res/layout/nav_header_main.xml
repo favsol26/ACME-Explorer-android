@@ -47,12 +47,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            app:cardCornerRadius="37dp">
+            app:cardCornerRadius="35dp">
 
             <ImageView
                 android:id="@+id/image_view_profile"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
                 android:contentDescription="@string/nav_header_desc"
                 app:srcCompat="@mipmap/ic_launcher_acme_explorer_round" />
         </androidx.cardview.widget.CardView>

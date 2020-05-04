@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.active_trip.ActiveTripFragment">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/my_active_trip_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_delete"
-        app:backgroundTint="@color/colorPrimary" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -28,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="15dp"
                 app:cardCornerRadius="70dp">
 
                 <LinearLayout
@@ -162,14 +153,24 @@
 
             <TextView
                 android:id="@+id/my_description_trip_t_v"
-                android:layout_width="250dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/my_active_trip_l_l"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="15sp"
+                android:layout_marginTop="10sp"
                 android:layout_marginBottom="15sp"
                 android:text="@string/app_name"
                 android:textSize="20sp" />
         </RelativeLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/my_active_trip_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_delete"
+        android:visibility="visible"
+        app:backgroundTint="@color/colorPrimary" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

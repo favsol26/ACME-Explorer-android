@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_sign_up"
         android:name="us.master.acme_explorer.ui.sign_up.SignUpFragment"
-        android:label="@string/log_in"
+        android:label="@string/user_registration"
         tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_nav_sign_up_to_nav_log_in"

@@ -79,6 +79,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_log_in, container, false);

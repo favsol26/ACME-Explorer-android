@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,11 +28,15 @@ import us.master.acme_explorer.FilterActivity;
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.adapters.TripAdapter;
 import us.master.acme_explorer.common.Constants;
-import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
+import static us.master.acme_explorer.common.Util.getSharedPreferenceFilters;
+import static us.master.acme_explorer.common.Util.getToast;
+import static us.master.acme_explorer.common.Util.navigateTo;
+import static us.master.acme_explorer.common.Util.setRecyclerView;
+import static us.master.acme_explorer.common.Util.tripList;
 
 public class AvailableTripsFragment extends Fragment {
 
@@ -46,29 +49,31 @@ public class AvailableTripsFragment extends Fragment {
     private RelativeLayout myLayout;
     private boolean controlFilter = false;
     private Context context;
-    private FloatingActionButton fab;
+    private FloatingActionButton mNewTripFAB;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.context = container.getContext();
         View root = inflater.inflate(R.layout.fragment_trips_base_view, container, false);
         setView(root);
         loadTrips(savedInstanceState);
-        Util.getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
+        getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
 
         //TODO optimize recycler layout manager state
-        Util.setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
+        setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
 
         setOnClicksListeners();
         return root;
     }
 
     private void setView(View root) {
-//        fab = root.findViewById(R.id.fab);
-
+        mNewTripFAB = root.findViewById(R.id.my_new_trip_fab);
         myLayout = root.findViewById(R.id.my_trips_base_view_filter);
         mySwitch = root.findViewById(R.id.my_trips_base_view_switch);
         myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
+
+        mNewTripFAB.setVisibility(View.VISIBLE);
     }
 
     private void loadTrips(Bundle savedInstanceState) {
@@ -78,8 +83,8 @@ public class AvailableTripsFragment extends Fragment {
 
         if (!(this.tripListToShow.size() > 0))
             this.tripListToShow.addAll(controlFilter
-                    ? verificationFilters(Util.tripList)
-                    : Util.tripList);
+                    ? verificationFilters(tripList)
+                    : tripList);
 
         this.tripAdapter = new TripAdapter(this.tripListToShow,
                 TAG, mySwitch.isChecked() ? 2 : 1, this.context);
@@ -89,12 +94,12 @@ public class AvailableTripsFragment extends Fragment {
         myLayout.setOnClickListener(v -> startActivityForResult(
                 new Intent(this.context, FilterActivity.class), PICK_FILTERS));
 
-        mySwitch.setOnClickListener(v -> Util.setRecyclerView(
+        mySwitch.setOnClickListener(v -> setRecyclerView(
                 this.context, mySwitch, myRecyclerView, this.tripAdapter));
 
-//        fab.setOnClickListener(view ->
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show());
+        mNewTripFAB.setOnClickListener(v ->
+                navigateTo(v, R.id.action_nav_available_trips_to_nav_trips, null)
+        );
     }
 
     @Override
@@ -104,9 +109,9 @@ public class AvailableTripsFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 assert data != null;
                 this.tripListToShow.clear();
-                this.tripListToShow.addAll(verificationFilters(Util.tripList, data));
+                this.tripListToShow.addAll(verificationFilters(tripList, data));
                 this.tripAdapter.notifyDataSetChanged();
-                Util.getToast(this.context, this.tripListToShow.size(), R.string.filter_message);
+                getToast(this.context, this.tripListToShow.size(), R.string.filter_message);
                 this.controlFilter = true;
             }
     }
@@ -156,7 +161,7 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     private List<Trip> verificationFilters(List<Trip> tripList) {
-        HashMap filterSaved = Util.getSharedPreferenceFilters(context);
+        HashMap filterSaved = getSharedPreferenceFilters(context);
 
         if ((long) filterSaved.get(Constants.minPrice) > 0 || (long) filterSaved.get(Constants.maxPrice) > 0)
             tripList = filterByPrice(tripList,

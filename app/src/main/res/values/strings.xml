@@ -9,7 +9,9 @@
 
     <string name="log_in">Iniciar Sesión</string>
     <string name="log_in_google">Continuar con Google</string>
-    <string name="sign_up">¿Todavía no tienes cuenta? \n¡Regístrate!</string>
+    <string name="sign_in_up">¿Todavía no tienes cuenta? \n¡Regístrate!</string>
+    <string name="user_registration">Registro de usuarios</string>
+    <string name="edit_profile">Editar perfil de usuario</string>
     <string name="sign_in">Regístrate con tu E-mail</string>
     <string name="log_in_up">¿Ya tienes cuenta?\nInicia sesión</string>
     <string name="menu_main_menu">Menu Principal</string>
@@ -80,4 +82,17 @@
     <string name="user_create_message">Usuario registrado correctamente</string>
     <string name="user_create_error">Ha ocurrido un erro al registrar el nuevo usuario</string>
     <string name="verification_mail_sent">Por favor verifica tu correo electrónico</string>
+    <string name="profile">Mi perfil</string>
+    <string name="save_user">Actualizar datos de usuario</string>
+
+    <string name="new_trip">Publicar Viaje</string>
+    <string name="trip_destiny_country">País</string>
+    <string name="trip_destiny_city">Ciudad</string>
+    <string name="trip_origin_city">Lugar de salida</string>
+    <string name="trip_departure_date">Fecha de salida</string>
+    <string name="trip_arrival_date">Fecha de llegada</string>
+    <string name="trip_price">precio</string>
+    <string name="trip_description">Descripción</string>
+    <string name="trip_save_data_trip">Publicar Viaje</string>
+
 </resources>

@@ -19,6 +19,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class MainMenuFragment extends Fragment {
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

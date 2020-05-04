@@ -36,6 +36,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/sign_up_data_form"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -142,9 +143,9 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:drawableStart="@drawable/ic_check_black"
+                android:drawableStart="@drawable/ic_check"
                 android:ems="17"
-                android:text="@string/sign_in"
+                android:text="@string/app_name"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
 

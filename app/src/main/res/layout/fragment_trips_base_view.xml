@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/my_new_trip_fab"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:visibility="gone"
+        android:src="@drawable/ic_sign_add"
+        app:backgroundTint="@color/colorPrimary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/myFilterSettings"
@@ -60,20 +71,7 @@
             android:id="@+id/my_trips_base_view_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/myFilterSettings"
-            android:layout_alignParentBottom="true"
             android:background="@color/colorShadow" />
 
-    </RelativeLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/my_active_trip_fab"
-        app:backgroundTint="@color/colorPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_add" />
-
-
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

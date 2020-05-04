@@ -16,11 +16,14 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
+
+import static java.util.Objects.requireNonNull;
 
 public class ActiveTripFragment extends Fragment {
 
@@ -43,6 +46,10 @@ public class ActiveTripFragment extends Fragment {
         setView(root);
         updateUI(root, trip);
 
+        String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+//        fab.setVisibility(uid.equals(trip.getUserUid()) ? View.VISIBLE : View.GONE);
+
         fab.setOnClickListener(view -> {
             Toast.makeText(requireContext(), TAG + " click", Toast.LENGTH_SHORT).show();
             Toast.makeText(requireContext(), TAG + " click", Toast.LENGTH_SHORT).show();
@@ -52,7 +59,7 @@ public class ActiveTripFragment extends Fragment {
             trip.setSelected(!trip.isSelected());
             setState(trip, mSelectedImageView);
         });
-        Log.d(TAG, String.format("onCreateView: id %d userId %s", trip.getId(), trip.getUserUid()));
+        Log.d(TAG, String.format("onCreateView: id %d userId %s", trip.getId(), uid));
         return root;
     }
 
@@ -65,6 +72,7 @@ public class ActiveTripFragment extends Fragment {
         mTextViewDeparturePlace = root.findViewById(R.id.my_departure_place_trip_t_v);
         mSelectedImageView = root.findViewById(R.id.my_active_selected_trip_i_v);
         mTextViewDescription = root.findViewById(R.id.my_description_trip_t_v);
+
         fab = root.findViewById(R.id.my_active_trip_fab);
     }
 

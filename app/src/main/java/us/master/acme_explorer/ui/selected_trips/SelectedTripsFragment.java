@@ -23,6 +23,7 @@ public class SelectedTripsFragment extends Fragment {
 
     private static final String TAG = SelectedTripsFragment.class.getSimpleName();
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 

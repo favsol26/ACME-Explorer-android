@@ -2,8 +2,6 @@ package us.master.acme_explorer.entity;
 
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -14,7 +12,6 @@ import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 
 import static java.util.Objects.hash;
-import static java.util.Objects.requireNonNull;
 
 public class Trip {
     private static final String TAG = Trip.class.getSimpleName();
@@ -81,7 +78,7 @@ public class Trip {
                             "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalPlace),
                             Constants.citiesToCountry.get(arrivalPlace),
                             Constants.flagsLinks.get(Constants.citiesToCountry.get(arrivalPlace)),
-                            requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()
+                            "requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()"
                     )
             );
         }
@@ -155,21 +152,6 @@ public class Trip {
         return hash(selected, id, departureDate, arrivalDate, price, arrivalPlace,
                 departurePlace, description, country, urlImage);
     }
-
-    public String toString() {
-        return "Trip{" + "selected=" + selected +
-                ", id=" + id +
-                ", departureDate=" + departureDate +
-                ", arrivalDate=" + arrivalDate +
-                ", price=" + price +
-                ", arrivalPlace='" + arrivalPlace + '\'' +
-                ", departurePlace='" + departurePlace + '\'' +
-                ", description='" + description + '\'' +
-                ", country='" + country + '\'' +
-                ", urlImage='" + urlImage + '\'' +
-                '}';
-    }
-
     public String getUserUid() {
         return userUid;
     }

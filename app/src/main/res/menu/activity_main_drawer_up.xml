@@ -3,19 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <item android:title="@string/app_name">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_main_menu"
+                    android:icon="@android:drawable/ic_menu_myplaces"
+                    android:title="@string/menu_main_menu" />
+                <item
+                    android:id="@+id/nav_available_trips"
+                    android:icon="@android:drawable/ic_menu_mapmode"
+                    android:title="@string/menu_available_trips" />
+
+                <item
+                    android:id="@+id/nav_selected_trips"
+                    android:icon="@android:drawable/ic_menu_agenda"
+                    android:title="@string/menu_selected_trips" />
+            </group>
+        </menu>
+    </item>
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_main_menu"
-            android:icon="@android:drawable/ic_menu_myplaces"
-            android:title="@string/menu_main_menu" />
-        <item
-            android:id="@+id/nav_available_trips"
-            android:icon="@android:drawable/ic_menu_mapmode"
-            android:title="@string/menu_available_trips" />
-
-        <item
-            android:id="@+id/nav_selected_trips"
-            android:icon="@android:drawable/ic_menu_agenda"
-            android:title="@string/menu_selected_trips" />
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_person"
+            android:title="@string/profile" />
     </group>
 </menu>

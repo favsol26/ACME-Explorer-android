@@ -7,6 +7,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ public class SignUpFragment extends Fragment {
     private LinearLayout mLayoutForm;
     private TextInputEditText mIptEdtTxtConfirmPassword;
     private ViewGroup container;
+    private Button mSignUpButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -54,7 +56,7 @@ public class SignUpFragment extends Fragment {
         root.findViewById(R.id.sign_up_button_log_in).setOnClickListener(v ->
                 navigateTo(v, R.id.action_nav_sign_up_to_nav_log_in, null));
 
-        root.findViewById(R.id.sign_up_button).setOnClickListener(v -> createUser());
+        mSignUpButton.setOnClickListener(v -> createUser());
         return root;
     }
 
@@ -67,12 +69,14 @@ public class SignUpFragment extends Fragment {
         mIptEdtTxtPassword = root.findViewById(R.id.sign_up_password_et);
         mTxtIptLytConfirmPassword = root.findViewById(R.id.sign_up_confirm_password);
         mIptEdtTxtConfirmPassword = root.findViewById(R.id.sign_up_confirm_password_et);
+        mSignUpButton = root.findViewById(R.id.sign_up_button);
 
         mIptEdtTxtEmail.addTextChangedListener(mTxtChdLnr(mTxtIptLytEmail));
         mIptEdtTxtPassword.addTextChangedListener(mTxtChdLnr(mTxtIptLytPassword));
         mIptEdtTxtConfirmPassword.addTextChangedListener(mTxtChdLnr(mTxtIptLytConfirmPassword));
 
         mIptEdtTxtEmail.setText(requireArguments().getString(Constants.newEmail));
+        mSignUpButton.setText(R.string.sign_in);
     }
 
     private void createUser() {
@@ -90,27 +94,28 @@ public class SignUpFragment extends Fragment {
         }
     }
 
-    private boolean validateForm(String email, String password, String confPass) {
+    private boolean validateForm(String... dataToValidate) {
         boolean valid = true;
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(dataToValidate[0])) {
             mTxtIptLytEmail.setError(getString(R.string.required_field));
             valid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(dataToValidate[0]).matches()) {
             mTxtIptLytEmail.setError(getString(R.string.email_badly_formatted_error));
             valid = false;
         }
-        if (TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(dataToValidate[1])) {
             mTxtIptLytPassword.setError(getString(R.string.required_field));
             valid = false;
-        } else if (!Pattern.matches(Constants.regExPassword, password)) {
-            mTxtIptLytPassword.setError(checkRegEx(password));
+        } else if (!Pattern.matches(Constants.regExPassword, dataToValidate[1])) {
+            mTxtIptLytPassword.setError(checkRegEx(dataToValidate[1]));
             valid = false;
-        } else if (!Objects.equals(password, confPass) && !(TextUtils.isEmpty(confPass))) {
+        } else if (!Objects.equals(dataToValidate[1], dataToValidate[2])
+                && !(TextUtils.isEmpty(dataToValidate[2]))) {
             mTxtIptLytPassword.setError(getString(R.string.passwords_do_not_match));
             mTxtIptLytConfirmPassword.setError(getString(R.string.passwords_do_not_match));
             valid = false;
         }
-        if (TextUtils.isEmpty(confPass)) {
+        if (TextUtils.isEmpty(dataToValidate[2])) {
             mTxtIptLytConfirmPassword.setError(getString(R.string.required_field));
             valid = false;
         }

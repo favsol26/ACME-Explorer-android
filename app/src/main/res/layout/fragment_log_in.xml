@@ -105,7 +105,7 @@
                 android:layout_marginTop="55dp"
                 android:background="@android:color/transparent"
                 android:ems="18"
-                android:text="@string/sign_up"
+                android:text="@string/sign_in_up"
                 android:textColor="@color/colorPrimaryDark" />
 
         </LinearLayout>

@@ -7,7 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,7 +18,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -30,7 +28,7 @@ import static us.master.acme_explorer.common.Util.mAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    //    private static final String TAG = MainActivity.class.getSimpleName();
     private AppBarConfiguration mAppBarConfiguration;
 
 
@@ -50,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
                 new AppBarConfiguration.Builder(
                         R.id.nav_main_menu,
                         R.id.nav_available_trips,
-                        R.id.nav_selected_trips
+                        R.id.nav_selected_trips,
+                        R.id.nav_profile
                 ).setDrawerLayout(drawer)
                         .build();
 
