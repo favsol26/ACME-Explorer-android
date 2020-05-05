@@ -63,13 +63,13 @@ public class SignUpFragment extends Fragment {
     private void setView(View root) {
         mProgressBar = root.findViewById(R.id.sign_up_progress_bar);
         mLayoutForm = root.findViewById(R.id.sign_up_form);
-        mTxtIptLytEmail = root.findViewById(R.id.sign_up_email);
-        mTxtIptLytPassword = root.findViewById(R.id.sign_up_password);
-        mIptEdtTxtEmail = root.findViewById(R.id.sign_up_email_et);
-        mIptEdtTxtPassword = root.findViewById(R.id.sign_up_password_et);
-        mTxtIptLytConfirmPassword = root.findViewById(R.id.sign_up_confirm_password);
-        mIptEdtTxtConfirmPassword = root.findViewById(R.id.sign_up_confirm_password_et);
-        mSignUpButton = root.findViewById(R.id.sign_up_button);
+        mTxtIptLytEmail = root.findViewById(R.id.user_form_email);
+        mTxtIptLytPassword = root.findViewById(R.id.user_form_password);
+        mIptEdtTxtEmail = root.findViewById(R.id.user_form_email_et);
+        mIptEdtTxtPassword = root.findViewById(R.id.user_form_password_et);
+        mTxtIptLytConfirmPassword = root.findViewById(R.id.user_form_confirm_password);
+        mIptEdtTxtConfirmPassword = root.findViewById(R.id.user_form_confirm_password_et);
+        mSignUpButton = root.findViewById(R.id.user_form_button);
 
         mIptEdtTxtEmail.addTextChangedListener(mTxtChdLnr(mTxtIptLytEmail));
         mIptEdtTxtPassword.addTextChangedListener(mTxtChdLnr(mTxtIptLytPassword));
@@ -80,9 +80,9 @@ public class SignUpFragment extends Fragment {
     }
 
     private void createUser() {
-        String email = requireNonNull(mIptEdtTxtEmail.getText()).toString();
-        String password = requireNonNull(mIptEdtTxtPassword.getText()).toString();
-        String confirmPassword = requireNonNull(mIptEdtTxtConfirmPassword.getText()).toString();
+        String email = mIptEdtTxtEmail.getEditableText().toString();
+        String password = mIptEdtTxtPassword.getEditableText().toString();
+        String confirmPassword = mIptEdtTxtConfirmPassword.getEditableText().toString();
 
         if (validateForm(email, password, confirmPassword)) {
             showLoginForm(false, container, mProgressBar, mLayoutForm);

@@ -50,8 +50,8 @@ public class FilterActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        int minPrice = Integer.parseInt(getValue(mEditTextMinPrice.getText().toString()));
-        int maxPrice = Integer.parseInt(getValue(mEditTextMaxPrice.getText().toString()));
+        int minPrice = Integer.parseInt(Util.getValue(mEditTextMinPrice.getText().toString()));
+        int maxPrice = Integer.parseInt(Util.getValue(mEditTextMaxPrice.getText().toString()));
         if (isInControl(minPrice, maxPrice) && isInControl(dateStartToFilter, dateEndToFilter)) {
             Intent intent = new Intent();
             intent.putExtra(Constants.minPrice, minPrice);
@@ -89,8 +89,8 @@ public class FilterActivity extends AppCompatActivity {
             calendarDate.set(Calendar.DAY_OF_MONTH, day);
             if (calendarDate.getTimeInMillis() > (new Date().getTime() - 86400)) {
                 if (view.getId() == R.id.my_imv_filter_departure_date)
-                    updateTextView(Util.CalendarToLong(calendarDate), mTextViewDateStart);
-                else updateTextView(Util.CalendarToLong(calendarDate), mTextViewDateEnd);
+                    updateTextView(Util.calendarToLong(calendarDate), mTextViewDateStart);
+                else updateTextView(Util.calendarToLong(calendarDate), mTextViewDateEnd);
             } else Toast.makeText(this,
                     getResources().getString(R.string.date_message),
                     Toast.LENGTH_SHORT).show();
@@ -121,9 +121,5 @@ public class FilterActivity extends AppCompatActivity {
         mTextViewDate.setText(Util.dateFormatter(longDate));
         if (mTextViewDate.getId() == R.id.my_txv_filter_date_start) dateStartToFilter = longDate;
         else dateEndToFilter = longDate;
-    }
-
-    private String getValue(String data) {
-        return !Objects.equals(data, "") ? data : "0";
     }
 }

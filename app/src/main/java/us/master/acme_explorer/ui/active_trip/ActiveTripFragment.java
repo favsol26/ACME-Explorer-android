@@ -46,21 +46,18 @@ public class ActiveTripFragment extends Fragment {
         setView(root);
         updateUI(root, trip);
 
-        String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-
-//        fab.setVisibility(uid.equals(trip.getUserUid()) ? View.VISIBLE : View.GONE);
-
-        fab.setOnClickListener(view -> {
-            Toast.makeText(requireContext(), TAG + " click", Toast.LENGTH_SHORT).show();
-            Toast.makeText(requireContext(), TAG + " click", Toast.LENGTH_SHORT).show();
-        });
+        fab.setOnClickListener(view -> deleteTrip());
 
         mSelectedImageView.setOnClickListener(v -> {
             trip.setSelected(!trip.isSelected());
             setState(trip, mSelectedImageView);
         });
-        Log.d(TAG, String.format("onCreateView: id %d userId %s", trip.getId(), uid));
+
         return root;
+    }
+
+    private void deleteTrip() {
+        Toast.makeText(requireContext(), TAG + "delete trip", Toast.LENGTH_SHORT).show();
     }
 
     private void setView(View root) {
@@ -93,7 +90,13 @@ public class ActiveTripFragment extends Fragment {
         mTextViewArrivalDate.setText(Util.dateFormatter(trip.getArrivalDate()));
         mTextViewDeparturePlace.setText(trip.getDeparturePlace());
         mTextViewDescription.setText(trip.getDescription());
-//        fab.setVisibility(trip.getUserUid()==);
+
+
+        String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
+
+        Log.d(TAG, String.format("onCreateView: id %d userId %s", trip.getId(), uid));
     }
 
     private void setState(Trip trip, ImageView imv) {

@@ -4,6 +4,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import us.master.acme_explorer.entity.Trip;
+
 public class FirebaseDatabaseService {
     private static String userId;
     private static FirebaseDatabaseService service;
@@ -26,5 +28,9 @@ public class FirebaseDatabaseService {
     public static DatabaseReference getTravelById(String travelId) {
         return database.getReference(String.format("user/%s/travel/%s",
                 userId, travelId)).getRef();
+    }
+
+    public  void saveTrip(Trip trip, DatabaseReference.CompletionListener listener) {
+        database.getReference("trips").push().setValue(trip, listener);
     }
 }

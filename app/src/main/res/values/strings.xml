@@ -93,6 +93,11 @@
     <string name="trip_arrival_date">Fecha de llegada</string>
     <string name="trip_price">precio</string>
     <string name="trip_description">Descripción</string>
-    <string name="trip_save_data_trip">Publicar Viaje</string>
+    <string name="trip_save_data_trip">Guardar Viaje</string>
+    <string name="trip_saved">Viaje guardado exitosamente.</string>
+    <string name="new_trip_date_error_1">La fecha de salida tiene que ser mayor de la fecha actual.</string>
+    <string name="new_trip_date_error_2">La fecha de llegada tiene que ser mayor de la fecha de salida.</string>
+    <string name="new_trip_date_error_3">Fecha de salida vacía</string>
+    <string name="trip_no_saved">Error al guardar el viaje</string>
 
 </resources>

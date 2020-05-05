@@ -40,7 +40,7 @@ public class ProfileFragment extends Fragment {
         setView(root);
 
         root.findViewById(R.id.sign_up_button_log_in).setVisibility(View.GONE);
-        root.findViewById(R.id.sign_up_data_form).setVisibility(View.VISIBLE);
+        root.findViewById(R.id.user_form_personal_data).setVisibility(View.VISIBLE);
 
         mSignUpButton.setOnClickListener(v -> saveUser());
         return root;
@@ -53,13 +53,13 @@ public class ProfileFragment extends Fragment {
     private void setView(View root) {
         mProgressBar = root.findViewById(R.id.sign_up_progress_bar);
         mLayoutForm = root.findViewById(R.id.sign_up_form);
-        mTxtIptLytEmail = root.findViewById(R.id.sign_up_email);
-        mTxtIptLytPassword = root.findViewById(R.id.sign_up_password);
-        mIptEdtTxtEmail = root.findViewById(R.id.sign_up_email_et);
-        mIptEdtTxtPassword = root.findViewById(R.id.sign_up_password_et);
-        mTxtIptLytConfirmPassword = root.findViewById(R.id.sign_up_confirm_password);
-        mIptEdtTxtConfirmPassword = root.findViewById(R.id.sign_up_confirm_password_et);
-        mSignUpButton = root.findViewById(R.id.sign_up_button);
+        mTxtIptLytEmail = root.findViewById(R.id.user_form_email);
+        mTxtIptLytPassword = root.findViewById(R.id.user_form_password);
+        mIptEdtTxtEmail = root.findViewById(R.id.user_form_email_et);
+        mIptEdtTxtPassword = root.findViewById(R.id.user_form_password_et);
+        mTxtIptLytConfirmPassword = root.findViewById(R.id.user_form_confirm_password);
+        mIptEdtTxtConfirmPassword = root.findViewById(R.id.user_form_confirm_password_et);
+        mSignUpButton = root.findViewById(R.id.user_form_button);
 
         mIptEdtTxtEmail.addTextChangedListener(mTxtChdLnr(mTxtIptLytEmail));
         mIptEdtTxtPassword.addTextChangedListener(mTxtChdLnr(mTxtIptLytPassword));

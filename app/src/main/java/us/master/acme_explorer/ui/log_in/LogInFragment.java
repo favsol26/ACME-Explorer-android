@@ -100,7 +100,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.login_button_sign_up:
                 Bundle bundle = new Bundle();
-                bundle.putString(Constants.newEmail, requireNonNull(mInputEditTextEmail.getText()).toString());
+                bundle.putString(Constants.newEmail, mInputEditTextEmail.getEditableText().toString());
                 Util.navigateTo(v, R.id.action_nav_log_in_to_nav_sign_up, bundle);
                 break;
         }
@@ -135,8 +135,8 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         pass = alertLoginUser(mTextInputLayoutPassword, mInputEditTextPassword);
 
         if (user && pass)
-            loginWithEmail(requireNonNull(mInputEditTextEmail.getText()),
-                    requireNonNull(mInputEditTextPassword.getText()));
+            loginWithEmail(mInputEditTextEmail.getEditableText(),
+                    mInputEditTextPassword.getEditableText());
 //        else showLoginForm(true);
     }
 
@@ -253,7 +253,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     }
 
     private boolean alertLoginUser(TextInputLayout layout, TextInputEditText mTextView) {
-        boolean validate = requireNonNull(mTextView.getText()).toString().length() < 1;
+        boolean validate =  mTextView.getEditableText().toString().length() < 1;
         if (validate) {
             layout.setErrorEnabled(true);
             layout.setError(context.getString(layout.getId() == R.id.login_email

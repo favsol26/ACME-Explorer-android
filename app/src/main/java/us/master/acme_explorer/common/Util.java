@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import us.master.acme_explorer.adapters.TripAdapter;
 import us.master.acme_explorer.entity.Trip;
@@ -51,7 +52,7 @@ public class Util {
     public static FirebaseUser currentUser;
 
 
-  /*  public static String dateFormatter(Calendar calendar) {
+    public static String dateFormatter(Calendar calendar) {
         int yy = calendar.get(Calendar.YEAR);
         int mm = calendar.get(Calendar.MONTH);
         int dd = calendar.get(Calendar.DAY_OF_MONTH);
@@ -60,7 +61,7 @@ public class Util {
         calendar.set(yy, mm, dd, 0, 0, 0);
         Date chosenDate = calendar.getTime();
         return (dateFormat.format(chosenDate));
-    }*/
+    }
 
     public static String dateFormatter(long date) {
         Calendar calendar = Calendar.getInstance();
@@ -70,7 +71,7 @@ public class Util {
         return (dateFormat.format(chosenDate));
     }
 
-    public static long CalendarToLong(Calendar date) {
+    public static long calendarToLong(Calendar date) {
         return (date.getTimeInMillis() / 1000);
     }
 
@@ -109,6 +110,10 @@ public class Util {
 //                + String.format("%s", sharePreferenceData.toString()));
 
         return sharePreferenceData;
+    }
+
+    public static String getValue(String data) {
+        return !Objects.equals(data, "") ? data : "0";
     }
 
     public static void navigateTo(View V, int direction, @Nullable Bundle bundle) {
@@ -163,7 +168,7 @@ public class Util {
     }
 
     public static void showLoginForm(boolean show, ViewGroup container,
-                                     ProgressBar mProgressBar, LinearLayout mLayoutFormLogin) {
+                                     ProgressBar mProgressBar, LinearLayout mLayoutForm) {
         TransitionSet transitionSet = new TransitionSet();
         Transition layoutFade = new AutoTransition();
         layoutFade.setDuration(500);
@@ -171,7 +176,7 @@ public class Util {
         TransitionManager.beginDelayedTransition(container, transitionSet);
 
         mProgressBar.setVisibility(show ? View.GONE : View.VISIBLE);
-        mLayoutFormLogin.setVisibility(show ? View.VISIBLE : View.GONE);
+        mLayoutForm.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
 }
