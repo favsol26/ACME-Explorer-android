@@ -2,6 +2,7 @@ package us.master.acme_explorer.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import us.master.acme_explorer.R;
@@ -23,14 +25,15 @@ import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder> {
+    private static final String TAG = TripAdapter.class.getSimpleName();
     private int column;
     private List<Trip> trips;
     private String aClass;
     private Context context;
     private String formatText = " ";
 
-    public TripAdapter(List<Trip> trips, String aClass, int column, Context context) {
-        this.trips = trips;
+    public TripAdapter(String aClass, int column, Context context) {
+        this.trips = new ArrayList<>();
         this.aClass = aClass;
         this.column = column;
         this.context = context;
@@ -87,8 +90,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         holder.mCardView.setOnClickListener(
                 V -> {
                     Bundle args = new Bundle();
-                    args.putInt(Constants.IntentTravel, trip.getId());
-                    Util.navigateTo(V, R.id.nav_active_trip_fragment, args);
+                    args.putString(Constants.IntentTravel, trip.getId());
+                    Util.navigateTo(V,
+                            R.id.nav_active_trip_fragment, args);
                 }
         );
 
@@ -97,6 +101,28 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     @Override
     public int getItemCount() {
         return trips.size();
+    }
+
+    public void addItem(Trip trip) {
+        this.trips.add(0, trip);
+        this.notifyItemInserted(0);
+    }
+
+    public void updateItem(Trip trip) {
+        int position = this.trips.indexOf(trip);
+        if (position >= 0) {
+            this.trips.remove(position);
+            this.trips.add(position, trip);
+        }
+        this.notifyItemChanged(position);
+    }
+
+    public void removeItem(Trip trip) {
+        int position = this.trips.indexOf(trip);
+        if (position >= 0) {
+            this.trips.remove(position);
+        }
+        this.notifyItemRemoved(position);
     }
 
     public void setColumn(int column) {

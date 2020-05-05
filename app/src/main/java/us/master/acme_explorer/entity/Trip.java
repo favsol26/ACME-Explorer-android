@@ -16,7 +16,7 @@ import static java.util.Objects.hash;
 public class Trip {
     private static final String TAG = Trip.class.getSimpleName();
     private boolean selected;
-    private int id;
+    private String id;
     private String userUid;
     private long departureDate, arrivalDate, price;
     private String arrivalPlace;
@@ -28,7 +28,7 @@ public class Trip {
     public Trip() {
     }
 
-    private Trip(boolean selected, int id, long departureDate, long arrivalDate, long price,
+    private Trip(boolean selected, String id, long departureDate, long arrivalDate, long price,
                  String arrivalPlace, String departurePlace, String description, String country,
                  String urlImage, String userUid) {
         this.selected = selected;
@@ -73,7 +73,7 @@ public class Trip {
                             % Constants.departurePlace.length];
             trips.add(
                     new Trip(
-                            false, i, Util.calendarToLong(departureDate),
+                            false, String.valueOf(i), Util.calendarToLong(departureDate),
                             Util.calendarToLong(arrivalDate),
                             ThreadLocalRandom.current().nextLong(min, max),
                             arrivalPlace, departurePlace,
@@ -160,11 +160,11 @@ public class Trip {
         this.urlImage = urlImage;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -182,7 +182,7 @@ public class Trip {
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
         return selected == trip.selected &&
-                id == trip.id &&
+                id.equals(trip.id) &&
                 departureDate == trip.departureDate &&
                 arrivalDate == trip.arrivalDate &&
                 price == trip.price &&

@@ -2,7 +2,6 @@ package us.master.acme_explorer.ui.active_trip;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,9 +17,13 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
+import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
@@ -37,27 +41,73 @@ public class ActiveTripFragment extends Fragment {
     private TextView mTextViewArrivalDate;
     private TextView mTextViewDeparturePlace;
     private ImageView mSelectedImageView;
+    private FirebaseDatabaseService databaseService;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Util.navigateTo(mImageView,
+                        R.id.action_nav_active_trip_fragment_to_nav_available_trips, null);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_active_trip, container, false);
-        Trip trip = Util.tripList.get(requireArguments().getInt(Constants.IntentTravel));
         setView(root);
-        updateUI(root, trip);
 
-        fab.setOnClickListener(view -> deleteTrip());
+        databaseService = FirebaseDatabaseService.getServiceInstance();
+        databaseService.getTravelById(requireArguments().getString(Constants.IntentTravel))
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            Trip trip = dataSnapshot.getValue(Trip.class);
 
-        mSelectedImageView.setOnClickListener(v -> {
-            trip.setSelected(!trip.isSelected());
-            setState(trip, mSelectedImageView);
-        });
+                            if (trip != null) {
+                                updateUI(root, trip);
+
+                                fab.setOnClickListener(view -> deleteTrip());
+
+                                mSelectedImageView.setOnClickListener(v -> {
+                                    trip.setSelected(!trip.isSelected());
+                                    setState(trip, mSelectedImageView);
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
 
         return root;
     }
 
     private void deleteTrip() {
         Toast.makeText(requireContext(), TAG + "delete trip", Toast.LENGTH_SHORT).show();
+        databaseService.deleteTravelById(requireArguments().getString(Constants.IntentTravel))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void setView(View root) {
@@ -95,8 +145,6 @@ public class ActiveTripFragment extends Fragment {
         String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
-
-        Log.d(TAG, String.format("onCreateView: id %d userId %s", trip.getId(), uid));
     }
 
     private void setState(Trip trip, ImageView imv) {

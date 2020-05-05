@@ -36,15 +36,15 @@ public class SelectedTripsFragment extends Fragment {
         RecyclerView myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
 
         List<Trip> selectedTrips = new ArrayList<>();
-        for (Trip trip : Util.tripList) {
+       /*  for (Trip trip : Util.tripList) {
             if (trip.isSelected())
                 selectedTrips.add(trip);
-        }
+        }*/
         Util.getToast(container.getContext(), selectedTrips.size(), R.string.menu_selected_trips);
         myRecyclerView.setLayoutManager(
                 new LinearLayoutManager(container.getContext()));
         myRecyclerView.setAdapter(
-                new TripAdapter(selectedTrips, TAG, 1, container.getContext()));
+                new TripAdapter(TAG, 1, container.getContext()));
         return root;
     }
 }

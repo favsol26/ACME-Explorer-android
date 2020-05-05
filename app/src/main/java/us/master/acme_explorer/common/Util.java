@@ -33,7 +33,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -46,7 +46,7 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 public class Util {
 
     //    private static final String TAG = Util.class.getSimpleName();
-    public static List<Trip> tripList;
+    public static Hashtable<String, Trip> tripList =  new  Hashtable<>();
     public static FirebaseAuth mAuth;
     public static GoogleSignInOptions googleSignInOptions;
     public static FirebaseUser currentUser;

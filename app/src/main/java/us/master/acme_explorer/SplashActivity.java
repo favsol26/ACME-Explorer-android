@@ -8,10 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
-import java.util.Date;
-
 import us.master.acme_explorer.common.Util;
-import us.master.acme_explorer.entity.Trip;
 
 import static us.master.acme_explorer.common.Util.currentUser;
 import static us.master.acme_explorer.common.Util.googleSignInOptions;
@@ -25,13 +22,14 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Date date = new Date();
+
+      /*   Date date = new Date();
         long n = date.getTime();
         long max = n % 10000;
 //        Log.d(TAG, "onCreate: " + getString(R.string.default_web_client_id));
 
-        Util.tripList = Trip.generateTrips(2 + n % 100, 1 + n % 100,
-                max < 1000 ? max + 1000 : max);
+       Util.tripList = new ArrayList<>();Trip.generateTrips(2 + n % 100, 1 + n % 100,
+                max < 1000 ? max + 1000 : max);*/
         Util.checkInstance();
         currentUser = mAuth.getCurrentUser();
 

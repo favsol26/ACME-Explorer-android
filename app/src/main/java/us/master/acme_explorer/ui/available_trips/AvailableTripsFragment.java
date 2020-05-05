@@ -18,6 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +31,7 @@ import us.master.acme_explorer.FilterActivity;
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.adapters.TripAdapter;
 import us.master.acme_explorer.common.Constants;
+import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.entity.Trip;
 
 import static android.app.Activity.RESULT_OK;
@@ -36,7 +40,6 @@ import static us.master.acme_explorer.common.Util.getSharedPreferenceFilters;
 import static us.master.acme_explorer.common.Util.getToast;
 import static us.master.acme_explorer.common.Util.navigateTo;
 import static us.master.acme_explorer.common.Util.setRecyclerView;
-import static us.master.acme_explorer.common.Util.tripList;
 
 public class AvailableTripsFragment extends Fragment {
 
@@ -50,6 +53,13 @@ public class AvailableTripsFragment extends Fragment {
     private boolean controlFilter = false;
     private Context context;
     private FloatingActionButton mNewTripFAB;
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        loadDatabase();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -67,6 +77,51 @@ public class AvailableTripsFragment extends Fragment {
         return root;
     }
 
+    private void loadDatabase() {
+        FirebaseDatabaseService databaseService = FirebaseDatabaseService.getServiceInstance();
+        databaseService.getTrips().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                    Trip trip = dataSnapshot.getValue(Trip.class);
+                    if (trip != null) {
+                        trip.setId(dataSnapshot.getKey());
+                        tripAdapter.addItem(trip);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Trip trip = dataSnapshot.getValue(Trip.class);
+                if (trip != null) {
+                    trip.setId(dataSnapshot.getKey());
+                    tripAdapter.updateItem(trip);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Trip trip = dataSnapshot.getValue(Trip.class);
+                if (trip != null) {
+                    trip.setId(dataSnapshot.getKey());
+                    tripAdapter.removeItem(trip);
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     private void setView(View root) {
         mNewTripFAB = root.findViewById(R.id.my_new_trip_fab);
         myLayout = root.findViewById(R.id.my_trips_base_view_filter);
@@ -81,13 +136,12 @@ public class AvailableTripsFragment extends Fragment {
             this.controlFilter =
                     savedInstanceState.getBoolean(Constants.controlFilter, false);
 
-        if (!(this.tripListToShow.size() > 0))
+      /*  if (!(this.tripListToShow.size() > 0))
             this.tripListToShow.addAll(controlFilter
                     ? verificationFilters(tripList)
                     : tripList);
-
-        this.tripAdapter = new TripAdapter(this.tripListToShow,
-                TAG, mySwitch.isChecked() ? 2 : 1, this.context);
+*/
+        this.tripAdapter = new TripAdapter(TAG, mySwitch.isChecked() ? 2 : 1, this.context);
     }
 
     private void setOnClicksListeners() {
@@ -109,7 +163,7 @@ public class AvailableTripsFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 assert data != null;
                 this.tripListToShow.clear();
-                this.tripListToShow.addAll(verificationFilters(tripList, data));
+//                this.tripListToShow.addAll(verificationFilters(tripList, data));
                 this.tripAdapter.notifyDataSetChanged();
                 getToast(this.context, this.tripListToShow.size(), R.string.filter_message);
                 this.controlFilter = true;

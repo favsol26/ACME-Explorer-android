@@ -25,12 +25,30 @@ public class FirebaseDatabaseService {
         return service;
     }
 
-    public static DatabaseReference getTravelById(String travelId) {
-        return database.getReference(String.format("user/%s/travel/%s",
-                userId, travelId)).getRef();
-    }
-
-    public  void saveTrip(Trip trip, DatabaseReference.CompletionListener listener) {
+    public void saveTrip(Trip trip, DatabaseReference.CompletionListener listener) {
         database.getReference("trips").push().setValue(trip, listener);
     }
+
+    public DatabaseReference getTrips() {
+        return database.getReference("trips").getRef();
+    }
+
+    public DatabaseReference getTravelById(String travelId) {
+        return database.getReference(String.format("trips/%s", travelId)).getRef();
+    }
+
+    public DatabaseReference updateTravelById(String travelId) {
+        //TODO complete update method
+        return database.getReference(String.format("trips/%s", travelId)).getRef();
+    }
+
+    public DatabaseReference deleteTravelById(String travelId) {
+        //TODO complete delete method
+        return database.getReference(String.format("trips/%s", travelId)).getRef();
+    }
 }
+/*   DatabaseReference dbTrips = database.getReference("trips");
+        String idTrip = dbTrips.push().getKey();
+        assert idTrip != null;
+        trip.setId(idTrip);
+        dbTrips.child(idTrip).setValue(trip, listener);*/

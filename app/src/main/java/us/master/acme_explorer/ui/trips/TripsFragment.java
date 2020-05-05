@@ -11,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -51,6 +53,20 @@ public class TripsFragment extends Fragment {
 
     private ProgressBar mProgressBar;
     private LinearLayout mFormLayout;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Util.navigateTo(mProgressBar,
+                        R.id.action_nav_new_trips_to_nav_available_trips, null);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -137,7 +153,8 @@ public class TripsFragment extends Fragment {
 
                     Util.mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_saved,
                             Snackbar.LENGTH_LONG);
-                    Util.navigateTo(mNewTripFlagIV, R.id.nav_available_trips, null);
+                    Util.navigateTo(mNewTripFlagIV,
+                            R.id.action_nav_new_trips_to_nav_available_trips, null);
                 }
 
                 if (databaseError != null) {
@@ -180,7 +197,8 @@ public class TripsFragment extends Fragment {
                     mNewTripArrivalDateLong = 0;
                     mNewTripDepartureDate.setError(null);
                 } else {
-                    mNewTripDepartureDate.setError(getString(R.string.new_trip_date_error_1));
+                    mNewTripDepartureDate.setError(
+                            getString(R.string.new_trip_date_error_1));
                 }
             } else {
                 if (mNewTripDepartureDateLong > 0) {
