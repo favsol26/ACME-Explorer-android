@@ -31,6 +31,9 @@ import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
+import static us.master.acme_explorer.common.Util.mSnackBar;
+import static us.master.acme_explorer.common.Util.showTransitionForm;
+
 public class TripsFragment extends Fragment {
     private static final String TAG = TripsFragment.class.getSimpleName();
 
@@ -134,7 +137,7 @@ public class TripsFragment extends Fragment {
                 description, departureDate, arrivalDate, flag)) {
 
             Log.d(TAG, "saveTrip: " + mNewTripFlagIV.getContentDescription());
-            Util.showTransitionForm(false, container, mProgressBar, mFormLayout);
+            showTransitionForm(false, container, mProgressBar, mFormLayout);
             Trip trip = new Trip();
             trip.setUserUid(FirebaseAuth.getInstance().getUid());
             trip.setCountry(country);
@@ -153,7 +156,7 @@ public class TripsFragment extends Fragment {
             databaseService.saveTrip(Trip.generateTrip(1, 100, 5500),
                     (databaseError, databaseReference) -> {
                         if (databaseError == null) {
-                            Util.mSnackBar(mNewTripFlagIV, requireContext(),
+                            mSnackBar(mNewTripFlagIV, requireContext(),
                                     R.string.trip_saved, Snackbar.LENGTH_LONG);
 
                             new Handler().postDelayed(() -> Util.navigateTo(mNewTripFlagIV,
@@ -163,9 +166,9 @@ public class TripsFragment extends Fragment {
 
                         if (databaseError != null) {
                             Log.d(TAG, String.format("saveTrip: %s", databaseError.getMessage()));
-                            Util.mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_no_saved,
+                            mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_no_saved,
                                     Snackbar.LENGTH_LONG);
-                            Util.showTransitionForm(true, container, mProgressBar, mFormLayout);
+                            showTransitionForm(true, container, mProgressBar, mFormLayout);
                         }
                     });
         }
@@ -173,12 +176,11 @@ public class TripsFragment extends Fragment {
 
     private boolean validateForm(String... dataToValidate) {
         boolean valid = true;
-        for (int i = 0; i < dataToValidate.length; i++) {
+        for (int i = 0; i < dataToValidate.length; i++)
             if (TextUtils.isEmpty(dataToValidate[i])) {
                 mNewTripILs[i].setError(getString(R.string.required_field));
                 valid = false;
             } else mNewTripILs[i].setError(null);
-        }
         return valid;
     }
 

@@ -46,7 +46,7 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 public class Util {
 
     //    private static final String TAG = Util.class.getSimpleName();
-    public static Hashtable<String, Trip> tripList =  new  Hashtable<>();
+    public static Hashtable<String, Trip> tripList = new Hashtable<>();
     public static FirebaseAuth mAuth;
     public static GoogleSignInOptions googleSignInOptions;
     public static FirebaseUser currentUser;
@@ -144,6 +144,7 @@ public class Util {
         builder.setMessage(msg)
                 .setPositiveButton(posMsg, positiveListener)
                 .setNegativeButton(negMsg, negativeListener)
+                .setCancelable(false)
                 .show();
     }
 

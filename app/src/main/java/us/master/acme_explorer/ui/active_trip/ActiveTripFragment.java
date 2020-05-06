@@ -117,6 +117,7 @@ public class ActiveTripFragment extends Fragment {
                 posBut = (dialog, which) ->
                 databaseService
                         .deleteTravelById(requireArguments().getString(Constants.IntentTravel))
+                        //TODO using removeValue method
                         .removeValue((databaseError, databaseReference) -> {
                             if (databaseError == null) {
                                 mSnackBar(mImageView, requireContext(),

@@ -45,6 +45,7 @@ import static java.util.Objects.requireNonNull;
 import static us.master.acme_explorer.common.Util.checkInstance;
 import static us.master.acme_explorer.common.Util.mAuth;
 import static us.master.acme_explorer.common.Util.mTxtChdLnr;
+import static us.master.acme_explorer.common.Util.showDialogMessage;
 import static us.master.acme_explorer.common.Util.showTransitionForm;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
@@ -226,7 +227,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 negBtn = (dialog, which) -> showTransitionForm(true,
                         container, mProgressBar, mLayoutFormLogin);
 
-        Util.showDialogMessage(context,
+        showDialogMessage(context,
                 R.string.login_verified_mail_error,
                 R.string.login_verified_mail_error_ok,
                 R.string.login_verified_mail_error_cancel, posBtn, negBtn);

@@ -43,7 +43,6 @@ public class FirebaseDatabaseService {
     }
 
     public DatabaseReference deleteTravelById(String travelId) {
-        //TODO complete delete method
         return database.getReference(String.format("trips/%s", travelId)).getRef();
     }
 }
