@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,6 +29,7 @@ public class Trip {
     private String description;
     private String country;
     private String urlImage;
+    private Map<String,String> selectedBy;
 
     public Trip() {
     }
@@ -243,5 +245,13 @@ public class Trip {
                 ", country='" + country + '\'' +
                 ", urlImage='" + urlImage + '\'' +
                 '}';
+    }
+
+    public Map<String, String> getSelectedBy() {
+        return selectedBy;
+    }
+
+    public void setSelectedBy(Map<String, String> selectedBy) {
+        this.selectedBy = selectedBy;
     }
 }

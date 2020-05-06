@@ -100,5 +100,7 @@
     <string name="new_trip_date_error_3">Fecha de salida vacía</string>
     <string name="trip_no_saved">Error al guardar el viaje</string>
     <string name="description_date">publicado el</string>
-
+    <string name="confirmation_delete_trip">¿Seguro de que desea eliminar este viaje?</string>
+    <string name="delete_trip_msg">Viaje eliminado exitosamente.</string>
+    <string name="delete_trip_error">No se ha podido eliminar el viaje.</string>
 </resources>

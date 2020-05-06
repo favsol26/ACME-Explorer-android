@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
 import static us.master.acme_explorer.common.Util.checkInstance;
 import static us.master.acme_explorer.common.Util.mAuth;
 import static us.master.acme_explorer.common.Util.mTxtChdLnr;
-import static us.master.acme_explorer.common.Util.showLoginForm;
+import static us.master.acme_explorer.common.Util.showTransitionForm;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = LogInFragment.class.getSimpleName();
@@ -122,7 +122,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 else googlePlayServicesError();
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed -> " + resultCode, e);
-                showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
+                showTransitionForm(true, container, mProgressBar, mLayoutFormLogin);
             }
         }
     }
@@ -143,7 +143,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     private void loginWithEmail(Editable email, Editable password) {
         checkInstance();
         if (mAuth != null) {
-            showLoginForm(false, container, mProgressBar, mLayoutFormLogin);
+            showTransitionForm(false, container, mProgressBar, mLayoutFormLogin);
             mAuth.signInWithEmailAndPassword(email.toString(), password.toString())
                     .addOnCompleteListener(requireActivity(), this::verifyTask);
         } else {
@@ -152,7 +152,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     }
 
     private void attemptLoginGoogle(GoogleSignInOptions googleSignInOptions) {
-        showLoginForm(false, container, mProgressBar, mLayoutFormLogin);
+        showTransitionForm(false, container, mProgressBar, mLayoutFormLogin);
         GoogleSignInClient signIn = GoogleSignIn.getClient(context, googleSignInOptions);
         Intent signInIntent = signIn.getSignInIntent();
         startActivityForResult(signInIntent, LOGIN_GOOGLE);
@@ -172,7 +172,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "verifyTask: " + user.getEmail());
             }
         } catch (Exception e) {
-            showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
+            showTransitionForm(true, container, mProgressBar, mLayoutFormLogin);
             showErrorMessage(task);
         }
     }
@@ -221,16 +221,16 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                             ? R.string.login_verified_mail_error_sent
                             : R.string.login_verified_mail_error_no_sent);
                     Snackbar.make(mProgressBar, text, LENGTH_SHORT).show();
-                    showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
+                    showTransitionForm(true, container, mProgressBar, mLayoutFormLogin);
                 }),
-                negBtn = (dialog, which) -> showLoginForm(true,
+                negBtn = (dialog, which) -> showTransitionForm(true,
                         container, mProgressBar, mLayoutFormLogin);
 
         Util.showDialogMessage(context,
                 R.string.login_verified_mail_error,
                 R.string.login_verified_mail_error_ok,
                 R.string.login_verified_mail_error_cancel, posBtn, negBtn);
-        showLoginForm(true, container, mProgressBar, mLayoutFormLogin);
+        showTransitionForm(true, container, mProgressBar, mLayoutFormLogin);
         mAuth.signOut();
     }
 

@@ -31,7 +31,7 @@ import static us.master.acme_explorer.common.Util.checkInstance;
 import static us.master.acme_explorer.common.Util.mAuth;
 import static us.master.acme_explorer.common.Util.mTxtChdLnr;
 import static us.master.acme_explorer.common.Util.navigateTo;
-import static us.master.acme_explorer.common.Util.showLoginForm;
+import static us.master.acme_explorer.common.Util.showTransitionForm;
 
 public class SignUpFragment extends Fragment {
     //    private static final String TAG = SignUpFragment.class.getSimpleName();
@@ -85,7 +85,7 @@ public class SignUpFragment extends Fragment {
         String confirmPassword = mIptEdtTxtConfirmPassword.getEditableText().toString();
 
         if (validateForm(email, password, confirmPassword)) {
-            showLoginForm(false, container, mProgressBar, mLayoutForm);
+            showTransitionForm(false, container, mProgressBar, mLayoutForm);
             checkInstance();
             if (mAuth != null) {
                 mAuth.createUserWithEmailAndPassword(email, password)
@@ -157,8 +157,9 @@ public class SignUpFragment extends Fragment {
                         R.id.action_nav_sign_up_to_nav_log_in, null), 1000);
             });
         } else {
-            Toast.makeText(requireContext(), R.string.user_create_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(),
+                    R.string.user_create_error, Toast.LENGTH_LONG).show();
         }
-        showLoginForm(true, this.container, mProgressBar, mLayoutForm);
+        showTransitionForm(true, this.container, mProgressBar, mLayoutForm);
     }
 }

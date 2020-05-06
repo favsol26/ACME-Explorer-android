@@ -134,7 +134,7 @@ public class TripsFragment extends Fragment {
                 description, departureDate, arrivalDate, flag)) {
 
             Log.d(TAG, "saveTrip: " + mNewTripFlagIV.getContentDescription());
-            Util.showLoginForm(false, container, mProgressBar, mFormLayout);
+            Util.showTransitionForm(false, container, mProgressBar, mFormLayout);
             Trip trip = new Trip();
             trip.setUserUid(FirebaseAuth.getInstance().getUid());
             trip.setCountry(country);
@@ -165,7 +165,7 @@ public class TripsFragment extends Fragment {
                             Log.d(TAG, String.format("saveTrip: %s", databaseError.getMessage()));
                             Util.mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_no_saved,
                                     Snackbar.LENGTH_LONG);
-                            Util.showLoginForm(true, container, mProgressBar, mFormLayout);
+                            Util.showTransitionForm(true, container, mProgressBar, mFormLayout);
                         }
                     });
         }

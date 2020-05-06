@@ -166,8 +166,8 @@ public class Util {
         };
     }
 
-    public static void showLoginForm(boolean show, ViewGroup container,
-                                     ProgressBar mProgressBar, LinearLayout mLayoutForm) {
+    public static void showTransitionForm(boolean show, ViewGroup container,
+                                          ProgressBar mProgressBar, LinearLayout mLayoutForm) {
         TransitionSet transitionSet = new TransitionSet();
         Transition layoutFade = new AutoTransition();
         layoutFade.setDuration(500);
