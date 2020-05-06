@@ -2,9 +2,12 @@ package us.master.acme_explorer.entity;
 
 import android.util.Log;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,13 +15,14 @@ import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 public class Trip {
     private static final String TAG = Trip.class.getSimpleName();
     private boolean selected;
     private String id;
     private String userUid;
-    private long departureDate, arrivalDate, price;
+    private long departureDate, arrivalDate, price, created;
     private String arrivalPlace;
     private String departurePlace;
     private String description;
@@ -28,11 +32,11 @@ public class Trip {
     public Trip() {
     }
 
-    private Trip(boolean selected, String id, long departureDate, long arrivalDate, long price,
-                 String arrivalPlace, String departurePlace, String description, String country,
+    private Trip(boolean selected, long departureDate, long arrivalDate, long price,
+                 long created, String arrivalPlace, String departurePlace, String description, String country,
                  String urlImage, String userUid) {
         this.selected = selected;
-        this.id = id;
+        this.created = created;
         this.userUid = userUid;
         this.departureDate = departureDate;
         this.arrivalDate = arrivalDate;
@@ -44,48 +48,48 @@ public class Trip {
         this.urlImage = urlImage;
     }
 
-    public static List<Trip> generateTrips(long amount, long min, long max) {
-        List<Trip> trips = new ArrayList<>();
+    public static Trip generateTrip(long amount, long min, long max) {
+//        List<Trip> trips = new ArrayList<>();
         Calendar departureDate, arrivalDate, calendarBase = Calendar.getInstance();
 
-        for (int i = 0; i < amount; i++) {
-            departureDate = (Calendar) calendarBase.clone();
-            departureDate.add(
-                    Calendar.DAY_OF_MONTH, (int) (
-                            ThreadLocalRandom
-                                    .current()
-                                    .nextLong(min % 10, (max * 2 / 80) - 15)
-                    ));
+        //        for (int i = 0; i < amount; i++) {
+        departureDate = (Calendar) calendarBase.clone();
+        departureDate.add(
+                Calendar.DAY_OF_MONTH, (int) (
+                        ThreadLocalRandom
+                                .current()
+                                .nextLong(min % 10, (max * 2 / 80) - 15)
+                ));
 
-            arrivalDate = (Calendar) departureDate.clone();
-            arrivalDate.add(
-                    Calendar.DAY_OF_MONTH,
-                    1 + (int) (ThreadLocalRandom.current().nextLong(min, max) % min)
-            );
+        arrivalDate = (Calendar) departureDate.clone();
+        arrivalDate.add(
+                Calendar.DAY_OF_MONTH,
+                1 + (int) (ThreadLocalRandom.current().nextLong(min, max) % min)
+        );
 
-            String arrivalPlace = Constants.cities[
-                    (int) ThreadLocalRandom.current().nextLong(min, max) % Constants.cities.length];
+        String arrivalPlace = Constants.cities[
+                (int) ThreadLocalRandom.current().nextLong(min, max) % Constants.cities.length];
 
-            arrivalPlace = arrivalPlace.substring(0, arrivalPlace.indexOf("-"));
+        arrivalPlace = arrivalPlace.substring(0, arrivalPlace.indexOf("-"));
 
-            String departurePlace = Constants.departurePlace[
-                    (int) ThreadLocalRandom.current().nextLong(min, max)
-                            % Constants.departurePlace.length];
-            trips.add(
-                    new Trip(
-                            false, String.valueOf(i), Util.calendarToLong(departureDate),
-                            Util.calendarToLong(arrivalDate),
-                            ThreadLocalRandom.current().nextLong(min, max),
-                            arrivalPlace, departurePlace,
-                            "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalPlace),
-                            Constants.citiesToCountry.get(arrivalPlace),
-                            Constants.flagsLinks.get(Constants.citiesToCountry.get(arrivalPlace)),
-                            "requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()"
-                    )
-            );
-        }
-        Log.d(TAG, min + " generate " + max + " Trips: " + amount);
-        return trips;
+        String departurePlace = Constants.departurePlace[
+                (int) ThreadLocalRandom.current().nextLong(min, max)
+                        % Constants.departurePlace.length];
+
+        Trip t1 = new Trip(
+                false, Util.calendarToLong(departureDate),
+                Util.calendarToLong(arrivalDate),
+                ThreadLocalRandom.current().nextLong(min, max), -1 * (new Date().getTime() / 1000),
+                arrivalPlace,
+                departurePlace,
+                "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalPlace),
+                Constants.citiesToCountry.get(arrivalPlace),
+                Constants.flagsLinks.get(Constants.citiesToCountry.get(arrivalPlace)),
+                requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+//            trips.add(t1);
+//        }
+        Log.d(TAG, t1.toString() + " generate " + max + " Trips: " + amount);
+        return t1;
     }
 
     public long getPrice() {
@@ -176,6 +180,14 @@ public class Trip {
         this.userUid = userUid;
     }
 
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -197,6 +209,24 @@ public class Trip {
     public int hashCode() {
         return hash(selected, id, departureDate, arrivalDate, price, arrivalPlace,
                 departurePlace, description, country, urlImage);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "selected=" + selected +
+                ", id=" + id +
+                ", userUid='" + userUid + '\'' +
+                ", departureDate=" + departureDate +
+                ", arrivalDate=" + arrivalDate +
+                ", price=" + price +
+                ", arrivalPlace='" + arrivalPlace + '\'' +
+                ", departurePlace='" + departurePlace + '\'' +
+                ", description='" + description + '\'' +
+                ", country='" + country + '\'' +
+                ", urlImage='" + urlImage + '\'' +
+                '}';
     }
 
     public String mToString() {

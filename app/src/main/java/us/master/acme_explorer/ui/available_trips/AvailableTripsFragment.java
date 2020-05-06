@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,18 +54,18 @@ public class AvailableTripsFragment extends Fragment {
     private boolean controlFilter = false;
     private Context context;
     private FloatingActionButton mNewTripFAB;
+    private boolean subscribed = false;
 
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        loadDatabase();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.context = container.getContext();
+        context = requireContext();
         View root = inflater.inflate(R.layout.fragment_trips_base_view, container, false);
         setView(root);
         loadTrips(savedInstanceState);
@@ -73,17 +74,22 @@ public class AvailableTripsFragment extends Fragment {
         //TODO optimize recycler layout manager state
         setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
 
+        myRecyclerView.setAdapter(tripAdapter);
+        if (!subscribed)
+            loadDatabase();
         setOnClicksListeners();
         return root;
     }
 
     private void loadDatabase() {
+        Log.d(TAG, "loadDatabase: " + "am here");
         FirebaseDatabaseService databaseService = FirebaseDatabaseService.getServiceInstance();
-        databaseService.getTrips().addChildEventListener(new ChildEventListener() {
+        databaseService.getTrips().orderByChild("created").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     Trip trip = dataSnapshot.getValue(Trip.class);
+                    Log.d(TAG, "onChildAdded: " + dataSnapshot.getValue());
                     if (trip != null) {
                         trip.setId(dataSnapshot.getKey());
                         tripAdapter.addItem(trip);
@@ -94,6 +100,7 @@ public class AvailableTripsFragment extends Fragment {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Trip trip = dataSnapshot.getValue(Trip.class);
+//                Log.d(TAG, "onChildChanged: " + dataSnapshot.getValue());
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
                     tripAdapter.updateItem(trip);
@@ -103,6 +110,7 @@ public class AvailableTripsFragment extends Fragment {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Trip trip = dataSnapshot.getValue(Trip.class);
+//                Log.d(TAG, "onChildRemoved: " + dataSnapshot.getValue());
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
                     tripAdapter.removeItem(trip);
@@ -119,7 +127,7 @@ public class AvailableTripsFragment extends Fragment {
 
             }
         });
-
+        subscribed = true;
     }
 
     private void setView(View root) {
@@ -142,6 +150,7 @@ public class AvailableTripsFragment extends Fragment {
                     : tripList);
 */
         this.tripAdapter = new TripAdapter(TAG, mySwitch.isChecked() ? 2 : 1, this.context);
+
     }
 
     private void setOnClicksListeners() {
@@ -180,6 +189,7 @@ public class AvailableTripsFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         mySwitch.setChecked(false);
+        subscribed = false;
     }
 
     private void saveSharePreferFilters(int minPrice, int maxPrice, long dateStart, long dateEnd) {

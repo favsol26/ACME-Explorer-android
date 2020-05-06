@@ -99,5 +99,6 @@
     <string name="new_trip_date_error_2">La fecha de llegada tiene que ser mayor de la fecha de salida.</string>
     <string name="new_trip_date_error_3">Fecha de salida vacía</string>
     <string name="trip_no_saved">Error al guardar el viaje</string>
+    <string name="description_date">publicado el</string>
 
 </resources>

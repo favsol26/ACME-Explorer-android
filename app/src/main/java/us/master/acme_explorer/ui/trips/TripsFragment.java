@@ -2,6 +2,7 @@ package us.master.acme_explorer.ui.trips;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -144,26 +145,29 @@ public class TripsFragment extends Fragment {
             trip.setUrlImage(Constants.urlImages[0]);
             trip.setDepartureDate(mNewTripDepartureDateLong);
             trip.setArrivalDate(mNewTripArrivalDateLong);
+            trip.setCreated(-1 * (new Date().getTime() / 1000));
 
             Log.d(TAG, "saveTrip: " + trip.mToString());
 
             FirebaseDatabaseService databaseService = FirebaseDatabaseService.getServiceInstance();
-            databaseService.saveTrip(trip, (databaseError, databaseReference) -> {
-                if (databaseError == null) {
+            databaseService.saveTrip(Trip.generateTrip(1, 100, 5500),
+                    (databaseError, databaseReference) -> {
+                        if (databaseError == null) {
+                            Util.mSnackBar(mNewTripFlagIV, requireContext(),
+                                    R.string.trip_saved, Snackbar.LENGTH_LONG);
 
-                    Util.mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_saved,
-                            Snackbar.LENGTH_LONG);
-                    Util.navigateTo(mNewTripFlagIV,
-                            R.id.action_nav_new_trips_to_nav_available_trips, null);
-                }
+                            new Handler().postDelayed(() -> Util.navigateTo(mNewTripFlagIV,
+                                    R.id.action_nav_new_trips_to_nav_available_trips, null),
+                                    1500);
+                        }
 
-                if (databaseError != null) {
-                    Log.d(TAG, String.format("saveTrip: %s", databaseError.getMessage()));
-                    Util.mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_no_saved,
-                            Snackbar.LENGTH_LONG);
-                }
-                Util.showLoginForm(true, container, mProgressBar, mFormLayout);
-            });
+                        if (databaseError != null) {
+                            Log.d(TAG, String.format("saveTrip: %s", databaseError.getMessage()));
+                            Util.mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_no_saved,
+                                    Snackbar.LENGTH_LONG);
+                            Util.showLoginForm(true, container, mProgressBar, mFormLayout);
+                        }
+                    });
         }
     }
 

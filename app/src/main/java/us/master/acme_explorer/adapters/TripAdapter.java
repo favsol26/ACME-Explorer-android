@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import us.master.acme_explorer.R;
@@ -27,16 +28,20 @@ import us.master.acme_explorer.entity.Trip;
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder> {
     private static final String TAG = TripAdapter.class.getSimpleName();
     private int column;
-    private List<Trip> trips;
+
+    private List<String> indexes;
+    private Hashtable<String, Trip> dicTrips;
     private String aClass;
     private Context context;
     private String formatText = " ";
 
     public TripAdapter(String aClass, int column, Context context) {
-        this.trips = new ArrayList<>();
         this.aClass = aClass;
         this.column = column;
         this.context = context;
+
+        this.dicTrips = new Hashtable<>();
+        this.indexes = new ArrayList<>();
     }
 
     @NonNull
@@ -50,8 +55,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
-        Trip trip = trips.get(position);
+//        List<String> reverseList = Lists.reverse(indexes);
+        String tripId = indexes.get(holder.getAdapterPosition());
+        Trip trip = dicTrips.get(tripId);
 
+        assert trip != null;
         Picasso.get()
                 .load(trip.getUrlImage())
                 .placeholder(android.R.drawable.ic_menu_myplaces)
@@ -100,29 +108,43 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
     @Override
     public int getItemCount() {
-        return trips.size();
+        return indexes.size();
     }
 
     public void addItem(Trip trip) {
-        this.trips.add(0, trip);
-        this.notifyItemInserted(0);
+        this.indexes.add(trip.getId());
+        this.dicTrips.put(trip.getId(), trip);
+//        this.notifyItemInserted( );
+        this.notifyDataSetChanged();
     }
 
     public void updateItem(Trip trip) {
-        int position = this.trips.indexOf(trip);
-        if (position >= 0) {
-            this.trips.remove(position);
-            this.trips.add(position, trip);
+        Log.d(TAG, "updateItem: " + indexes);
+
+        int position = indexes.indexOf(trip.getId());
+        Log.d(TAG, " updateItem: " + position);
+        if (position > -1) {
+            this.dicTrips.remove(trip.getId());
+            this.indexes.remove(position);
+            this.dicTrips.put(trip.getId(), trip);
+            this.indexes.add(position, trip.getId());
+            this.notifyItemChanged(position);
         }
-        this.notifyItemChanged(position);
+
+//        Log.d(TAG, this.trips.indexOf(trip) + " updateItem: " + position);
+//        if (position >= 0) {
+//            this.trips.remove(position);
+//            this.trips.add(position, trip);
+//        }
     }
 
     public void removeItem(Trip trip) {
-        int position = this.trips.indexOf(trip);
-        if (position >= 0) {
-            this.trips.remove(position);
+        int position = this.indexes.indexOf(trip.getId());
+        if (position > -1) {
+            this.indexes.remove(position);
+            this.dicTrips.remove(trip.getId());
+            this.notifyItemRemoved(position);
         }
-        this.notifyItemRemoved(position);
     }
 
     public void setColumn(int column) {

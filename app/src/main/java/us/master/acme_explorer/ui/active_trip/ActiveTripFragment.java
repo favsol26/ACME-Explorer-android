@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -47,14 +46,14 @@ public class ActiveTripFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Util.navigateTo(mImageView,
-                        R.id.action_nav_active_trip_fragment_to_nav_available_trips, null);
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+//        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                Util.navigateTo(mImageView,
+//                        R.id.action_nav_active_trip_fragment_to_nav_available_trips, null);
+//            }
+//        };
+//        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -65,7 +64,7 @@ public class ActiveTripFragment extends Fragment {
 
         databaseService = FirebaseDatabaseService.getServiceInstance();
         databaseService.getTravelById(requireArguments().getString(Constants.IntentTravel))
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
@@ -139,7 +138,8 @@ public class ActiveTripFragment extends Fragment {
         mTextViewDepartureDate.setText(Util.dateFormatter(trip.getDepartureDate()));
         mTextViewArrivalDate.setText(Util.dateFormatter(trip.getArrivalDate()));
         mTextViewDeparturePlace.setText(trip.getDeparturePlace());
-        mTextViewDescription.setText(trip.getDescription());
+        mTextViewDescription.setText(String.format("%s, %s %s.", trip.getDescription(),
+                getString(R.string.description_date), Util.dateFormatter(-1 * trip.getCreated())));
 
 
         String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();

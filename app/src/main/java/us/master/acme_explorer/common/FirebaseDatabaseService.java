@@ -47,8 +47,3 @@ public class FirebaseDatabaseService {
         return database.getReference(String.format("trips/%s", travelId)).getRef();
     }
 }
-/*   DatabaseReference dbTrips = database.getReference("trips");
-        String idTrip = dbTrips.push().getKey();
-        assert idTrip != null;
-        trip.setId(idTrip);
-        dbTrips.child(idTrip).setValue(trip, listener);*/

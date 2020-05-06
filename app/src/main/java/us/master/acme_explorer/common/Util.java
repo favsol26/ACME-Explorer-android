@@ -135,7 +135,6 @@ public class Util {
         tripAdapter.setFormatText(text);
         GridLayoutManager layoutManager = new GridLayoutManager(context, column);
         myRecyclerView.setLayoutManager(layoutManager);
-        myRecyclerView.setAdapter(tripAdapter);
     }
 
     public static void showDialogMessage(Context context, int msg, int posMsg, int negMsg,
