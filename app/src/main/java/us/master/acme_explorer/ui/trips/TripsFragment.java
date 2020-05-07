@@ -153,24 +153,23 @@ public class TripsFragment extends Fragment {
             Log.d(TAG, "saveTrip: " + trip.mToString());
 
             FirebaseDatabaseService databaseService = FirebaseDatabaseService.getServiceInstance();
-            databaseService.saveTrip(Trip.generateTrip(1, 100, 5500),
-                    (databaseError, databaseReference) -> {
-                        if (databaseError == null) {
-                            mSnackBar(mNewTripFlagIV, requireContext(),
-                                    R.string.trip_saved, Snackbar.LENGTH_LONG);
+            databaseService.createTrip(trip, (databaseError, databaseReference) -> {
+                if (databaseError == null) {
+                    mSnackBar(mNewTripFlagIV, requireContext(),
+                            R.string.trip_saved, Snackbar.LENGTH_LONG);
 
-                            new Handler().postDelayed(() -> Util.navigateTo(mNewTripFlagIV,
-                                    R.id.action_nav_new_trips_to_nav_available_trips, null),
-                                    1500);
-                        }
+                    new Handler().postDelayed(() -> Util.navigateTo(mNewTripFlagIV,
+                            R.id.action_nav_new_trips_to_nav_available_trips, null),
+                            1500);
+                }
 
-                        if (databaseError != null) {
-                            Log.d(TAG, String.format("saveTrip: %s", databaseError.getMessage()));
-                            mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_no_saved,
-                                    Snackbar.LENGTH_LONG);
-                            showTransitionForm(true, container, mProgressBar, mFormLayout);
-                        }
-                    });
+                if (databaseError != null) {
+                    Log.d(TAG, String.format("saveTrip: %s", databaseError.getMessage()));
+                    mSnackBar(mNewTripFlagIV, requireContext(), R.string.trip_no_saved,
+                            Snackbar.LENGTH_LONG);
+                    showTransitionForm(true, container, mProgressBar, mFormLayout);
+                }
+            });
         }
     }
 

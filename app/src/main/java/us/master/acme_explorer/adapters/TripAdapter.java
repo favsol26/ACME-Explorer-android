@@ -80,7 +80,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         holder.mBuyTripImv.setOnClickListener(
                 V -> Toast.makeText(context, String.format("%s %s %s",
                         context.getString(R.string.trip_tag),
-                        trip.getId() + 1, context.getString(R.string.bought_tag)),
+                        this.indexes.indexOf(trip.getId()) + 1, context.getString(R.string.bought_tag)),
                         Toast.LENGTH_SHORT).show()
         );
 
@@ -99,6 +99,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
                 V -> {
                     Bundle args = new Bundle();
                     args.putString(Constants.IntentTravel, trip.getId());
+                    args.putString(Constants.from, this.aClass);
                     Util.navigateTo(V,
                             R.id.nav_active_trip_fragment, args);
                 }
@@ -112,10 +113,13 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     }
 
     public void addItem(Trip trip) {
-        this.indexes.add(trip.getId());
-        this.dicTrips.put(trip.getId(), trip);
-//        this.notifyItemInserted( );
-        this.notifyDataSetChanged();
+        if (this.indexes.contains(trip.getId())) {
+            updateItem(trip);
+        } else {
+            this.indexes.add(trip.getId());
+            this.dicTrips.put(trip.getId(), trip);
+            this.notifyDataSetChanged();
+        }
     }
 
     public void updateItem(Trip trip) {
@@ -130,12 +134,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
             this.indexes.add(position, trip.getId());
             this.notifyItemChanged(position);
         }
-
-//        Log.d(TAG, this.trips.indexOf(trip) + " updateItem: " + position);
-//        if (position >= 0) {
-//            this.trips.remove(position);
-//            this.trips.add(position, trip);
-//        }
     }
 
     public void removeItem(Trip trip) {

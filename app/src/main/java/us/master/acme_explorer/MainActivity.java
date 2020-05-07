@@ -2,6 +2,7 @@ package us.master.acme_explorer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import static us.master.acme_explorer.common.Util.checkInstance;
@@ -28,7 +30,7 @@ import static us.master.acme_explorer.common.Util.mAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    //    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     private AppBarConfiguration mAppBarConfiguration;
 
 
@@ -71,6 +73,25 @@ public class MainActivity extends AppCompatActivity {
         ImageView mImViewProf = navView.findViewById(R.id.image_view_profile);
         TextView uName = navView.findViewById(R.id.txv_name_profile),
                 uMail = navView.findViewById(R.id.txv_mail_profile);
+        try {
+            Log.e(TAG, "updateUI: " + currentUser.getEmail());
+            checkInstance();
+            if (mAuth == null) mAuth = FirebaseAuth.getInstance();
+            if (currentUser == null) {
+                currentUser = mAuth.getCurrentUser();
+                assert currentUser != null;
+                showUserData(mImViewProf, uName, uMail);
+            } else
+                showUserData(mImViewProf, uName, uMail);
+        } catch (Exception e) {
+            Log.e(TAG, "updateUI: " + e.getMessage());
+            startActivity(new Intent(this, SplashActivity.class));
+            finish();
+        }
+
+    }
+
+    private void showUserData(ImageView mImViewProf, TextView uName, TextView uMail) {
         uMail.setText(currentUser.getEmail());
         uName.setText(currentUser.getDisplayName());
         Picasso.get()

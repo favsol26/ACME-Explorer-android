@@ -60,7 +60,9 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_nav_active_trip_fragment_to_nav_selected_trips"
-            app:destination="@id/nav_selected_trips" />
+            app:destination="@id/nav_selected_trips"
+            app:popUpTo="@id/nav_selected_trips"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

@@ -103,4 +103,6 @@
     <string name="confirmation_delete_trip">¿Seguro de que desea eliminar este viaje?</string>
     <string name="delete_trip_msg">Viaje eliminado exitosamente.</string>
     <string name="delete_trip_error">No se ha podido eliminar el viaje.</string>
+    <string name="selected_trip">Viaje seleccionado</string>
+    <string name="discarded_trip">Viaje descartado</string>
 </resources>

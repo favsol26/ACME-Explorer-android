@@ -24,7 +24,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,7 +69,7 @@ public class AvailableTripsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_trips_base_view, container, false);
         setView(root);
         loadTrips(savedInstanceState);
-        getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
+//        getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
 
         //TODO optimize recycler layout manager state
         setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
@@ -83,9 +82,13 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     private void loadDatabase() {
-        Log.d(TAG, "loadDatabase: " + "am here");
         FirebaseDatabaseService databaseService = FirebaseDatabaseService.getServiceInstance();
-        databaseService.getTrips().orderByChild("created").addChildEventListener(new ChildEventListener() {
+        databaseService.getTrips().orderByChild("created").addChildEventListener(getListener());
+        subscribed = true;
+    }
+
+    private ChildEventListener getListener() {
+        return new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
@@ -127,8 +130,7 @@ public class AvailableTripsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
-        subscribed = true;
+        };
     }
 
     private void setView(View root) {

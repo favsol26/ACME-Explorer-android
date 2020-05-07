@@ -24,7 +24,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
@@ -63,8 +66,11 @@ public class ActiveTripFragment extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                navigateTo(mImageView,
-                        R.id.action_nav_active_trip_fragment_to_nav_available_trips, null);
+                String from = requireArguments().getString(Constants.from);
+                navigateTo(mImageView, !Objects.equals(from, "SelectedTripsFragment")
+                                ? R.id.action_nav_active_trip_fragment_to_nav_available_trips
+                                : R.id.action_nav_active_trip_fragment_to_nav_selected_trips,
+                        null);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -83,22 +89,21 @@ public class ActiveTripFragment extends Fragment {
     }
 
     private void loadDatabase(FirebaseDatabaseService databaseService, View root) {
-
         databaseService.getTravelById(requireArguments().getString(Constants.IntentTravel))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                             Trip trip = dataSnapshot.getValue(Trip.class);
-
                             if (trip != null) {
                                 updateUI(root, trip);
 
-                                fab.setOnClickListener(view -> deleteTrip());
+                                fab.setOnClickListener(view -> deleteTrip(dataSnapshot.getKey()));
 
                                 mSelectedImageView.setOnClickListener(v -> {
                                     trip.setSelected(!trip.isSelected());
                                     setState(trip, mSelectedImageView);
+                                    updateTrip(trip, dataSnapshot.getKey());
                                 });
                             }
                         }
@@ -111,30 +116,47 @@ public class ActiveTripFragment extends Fragment {
                 });
     }
 
-    private void deleteTrip() {
+    private void updateTrip(Trip trip, String tripId) {
+//        Map<String, String> map = trip.getSelectedBy();
+
+//        if (map.containsKey(currentUser.getUid()))
+//            map.remove(currentUser.getUid());
+//        else map.put(currentUser.getUid(), currentUser.getUid());
+//        trip.setSelectedBy(map);
+        Log.d(TAG, String.format("updateTrip: id: %s \n %s %s", tripId,
+                "map.containsKey(currentUser.getUid())", trip));
+        //TODO using set value method
+        databaseService.updateTravelById(tripId).setValue(trip, getListener(false, trip.isSelected()));
+    }
+
+    private void deleteTrip(String tripId) {
         showTransitionForm(false, this.container, mProgressBar, mLayoutForm);
-        DialogInterface.OnClickListener
-                posBut = (dialog, which) ->
-                databaseService
-                        .deleteTravelById(requireArguments().getString(Constants.IntentTravel))
-                        //TODO using removeValue method
-                        .removeValue((databaseError, databaseReference) -> {
-                            if (databaseError == null) {
-                                mSnackBar(mImageView, requireContext(),
-                                        R.string.delete_trip_msg, Snackbar.LENGTH_SHORT);
-                                new Handler().postDelayed(() ->
-                                        requireActivity().onBackPressed(), 1000);
-                            } else {
-                                mSnackBar(mImageView, requireContext(),
-                                        R.string.delete_trip_error, Snackbar.LENGTH_SHORT);
-                                Log.e(TAG, "deleteTrip: " + databaseError.getMessage());
-                            }
-                        }),
-                negBut = (dialog, which) ->
-                        showTransitionForm(true, this.container, mProgressBar, mLayoutForm);
+        //TODO using removeValue method
+        DialogInterface.OnClickListener posBut = (dialog, which) ->
+                databaseService.deleteTravelById(tripId).removeValue(getListener(true, true));
+
+        DialogInterface.OnClickListener negBut = (dialog, which) ->
+                showTransitionForm(true, this.container, mProgressBar, mLayoutForm);
 
         showDialogMessage(requireContext(), R.string.confirmation_delete_trip,
                 android.R.string.ok, android.R.string.no, posBut, negBut);
+    }
+
+    private DatabaseReference.CompletionListener getListener(boolean back, Boolean selected) {
+        return (databaseError, databaseReference) -> {
+            if (databaseError == null) {
+                mSnackBar(mImageView, this.container.getContext(),
+                        back ? R.string.delete_trip_msg :
+                                selected ? R.string.selected_trip : R.string.discarded_trip,
+                        Snackbar.LENGTH_SHORT);
+                if (back) new Handler().postDelayed(() ->
+                        requireActivity().onBackPressed(), 1000);
+            } else {
+                if (back) mSnackBar(mImageView, this.container.getContext(),
+                        R.string.delete_trip_error, Snackbar.LENGTH_SHORT);
+                Log.e(TAG, "deleteTrip: " + databaseError.getMessage());
+            }
+        };
     }
 
     private void setView(View root) {

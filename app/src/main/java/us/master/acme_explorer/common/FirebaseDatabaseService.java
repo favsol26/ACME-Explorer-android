@@ -25,7 +25,7 @@ public class FirebaseDatabaseService {
         return service;
     }
 
-    public void saveTrip(Trip trip, DatabaseReference.CompletionListener listener) {
+    public void createTrip(Trip trip, DatabaseReference.CompletionListener listener) {
         database.getReference("trips").push().setValue(trip, listener);
     }
 
@@ -38,7 +38,6 @@ public class FirebaseDatabaseService {
     }
 
     public DatabaseReference updateTravelById(String travelId) {
-        //TODO complete update method
         return database.getReference(String.format("trips/%s", travelId)).getRef();
     }
 
