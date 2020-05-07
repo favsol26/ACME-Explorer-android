@@ -2,13 +2,12 @@ package us.master.acme_explorer.entity;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -20,7 +19,6 @@ import static java.util.Objects.requireNonNull;
 
 public class Trip {
     private static final String TAG = Trip.class.getSimpleName();
-    private boolean selected;
     private String id;
     private String userUid;
     private long departureDate, arrivalDate, price, created;
@@ -29,12 +27,28 @@ public class Trip {
     private String description;
     private String country;
     private String urlImage;
-    private Map<String,String> selectedBy;
+    private List<String> selectedBy;
 
     public Trip() {
     }
 
-    private Trip(boolean selected, long departureDate, long arrivalDate, long price,
+    private Trip(long departureDate, long arrivalDate, long price,
+                 long created, String arrivalPlace, String departurePlace, String description, String country,
+                 String urlImage, String userUid, List<String> selectedBy) {
+        this.userUid = userUid;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
+        this.price = price;
+        this.created = created;
+        this.arrivalPlace = arrivalPlace;
+        this.departurePlace = departurePlace;
+        this.description = description;
+        this.country = country;
+        this.urlImage = urlImage;
+        this.selectedBy = selectedBy;
+    }
+
+  /*  private Trip(boolean selected, long departureDate, long arrivalDate, long price,
                  long created, String arrivalPlace, String departurePlace, String description, String country,
                  String urlImage, String userUid) {
         this.selected = selected;
@@ -48,7 +62,7 @@ public class Trip {
         this.description = description;
         this.country = country;
         this.urlImage = urlImage;
-    }
+    }*/
 
     public static Trip generateTrip(long amount, long min, long max) {
 //        List<Trip> trips = new ArrayList<>();
@@ -79,7 +93,7 @@ public class Trip {
                         % Constants.departurePlace.length];
 
         Trip t1 = new Trip(
-                false, Util.calendarToLong(departureDate),
+                Util.calendarToLong(departureDate),
                 Util.calendarToLong(arrivalDate),
                 ThreadLocalRandom.current().nextLong(min, max), -1 * (new Date().getTime() / 1000),
                 arrivalPlace,
@@ -87,7 +101,7 @@ public class Trip {
                 "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalPlace),
                 Constants.citiesToCountry.get(arrivalPlace),
                 Constants.flagsLinks.get(Constants.citiesToCountry.get(arrivalPlace)),
-                requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), new ArrayList<>());
 //            trips.add(t1);
 //        }
         Log.d(TAG, t1.toString() + " generate " + max + " Trips: " + amount);
@@ -100,14 +114,6 @@ public class Trip {
 
     public void setPrice(long price) {
         this.price = price;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     public long getDepartureDate() {
@@ -190,50 +196,59 @@ public class Trip {
         this.created = created;
     }
 
+    public List<String> getSelectedBy() {
+        return selectedBy;
+    }
+
+    public void setSelectedBy(List<String> selectedBy) {
+        this.selectedBy = selectedBy;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return selected == trip.selected &&
-                id.equals(trip.id) &&
-                departureDate == trip.departureDate &&
+        return departureDate == trip.departureDate &&
                 arrivalDate == trip.arrivalDate &&
                 price == trip.price &&
+                created == trip.created &&
+                Objects.equals(id, trip.id) &&
+                Objects.equals(userUid, trip.userUid) &&
                 Objects.equals(arrivalPlace, trip.arrivalPlace) &&
                 Objects.equals(departurePlace, trip.departurePlace) &&
                 Objects.equals(description, trip.description) &&
                 Objects.equals(country, trip.country) &&
-                Objects.equals(urlImage, trip.urlImage);
+                Objects.equals(urlImage, trip.urlImage) &&
+                Objects.equals(selectedBy, trip.selectedBy);
     }
 
     @Override
     public int hashCode() {
-        return hash(selected, id, departureDate, arrivalDate, price, arrivalPlace,
-                departurePlace, description, country, urlImage);
+        return hash(id, userUid, departureDate, arrivalDate, price, created, arrivalPlace,
+                departurePlace, description, country, urlImage, selectedBy);
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "Trip{" +
-                "selected=" + selected +
-                ", id=" + id +
+                "id='" + id + '\'' +
                 ", userUid='" + userUid + '\'' +
                 ", departureDate=" + departureDate +
                 ", arrivalDate=" + arrivalDate +
                 ", price=" + price +
+                ", created=" + created +
                 ", arrivalPlace='" + arrivalPlace + '\'' +
                 ", departurePlace='" + departurePlace + '\'' +
                 ", description='" + description + '\'' +
                 ", country='" + country + '\'' +
                 ", urlImage='" + urlImage + '\'' +
+                ", selectedBy=" + selectedBy +
                 '}';
     }
 
     public String mToString() {
         return "Trip{" +
-                "selected=" + selected +
                 ", id=" + id +
                 ", userUid='" + userUid + '\'' +
                 ", departureDate=" + Util.dateFormatter(departureDate) +
@@ -244,14 +259,7 @@ public class Trip {
                 ", description='" + description + '\'' +
                 ", country='" + country + '\'' +
                 ", urlImage='" + urlImage + '\'' +
+                ", selectedBy=" + selectedBy +
                 '}';
-    }
-
-    public Map<String, String> getSelectedBy() {
-        return selectedBy;
-    }
-
-    public void setSelectedBy(Map<String, String> selectedBy) {
-        this.selectedBy = selectedBy;
     }
 }

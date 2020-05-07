@@ -13,6 +13,7 @@ import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -33,7 +34,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -44,9 +44,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class Util {
-
     //    private static final String TAG = Util.class.getSimpleName();
-    public static Hashtable<String, Trip> tripList = new Hashtable<>();
     public static FirebaseAuth mAuth;
     public static GoogleSignInOptions googleSignInOptions;
     public static FirebaseUser currentUser;
@@ -105,9 +103,6 @@ public class Util {
         sharePreferenceData.put(Constants.maxPrice, (long) vMaxPrice);
         sharePreferenceData.put(Constants.dateStart, vDateStartToFilter);
         sharePreferenceData.put(Constants.dateEnd, vDateEndToFilter);
-
-//        Log.d(TAG, "getSharePreferencesFilters: "
-//                + String.format("%s", sharePreferenceData.toString()));
 
         return sharePreferenceData;
     }
@@ -179,4 +174,14 @@ public class Util {
         mLayoutForm.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
+    public static void setState(Trip trip, ImageView imv) {
+        boolean hasIt = false;
+        if (trip.getSelectedBy() != null) {
+            hasIt = trip.getSelectedBy().contains(currentUser.getUid());
+        }
+        imv.setImageResource(hasIt
+                ? android.R.drawable.btn_star_big_on
+                : android.R.drawable.btn_star_big_off
+        );
+    }
 }

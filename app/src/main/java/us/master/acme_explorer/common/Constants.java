@@ -31,7 +31,7 @@ public final class Constants {
 
     public final static String controlFilter = "controlFilter", filterPreferences = "Filters",
             dateStart = "dateStart", dateEnd = "dateEnd", maxPrice = "maxPrice",
-            minPrice = "minPrice", IntentTravel = "Travel", newEmail = "newEmail", from = "from";
+            minPrice = "minPrice", IntentTrip = "Travel", newEmail = "newEmail", from = "from";
 
     public final static String[] departurePlace = {"Sevilla", "Punta Cana",
             "Cádiz", "Zaragoza", "Barcelona", "Granada", "Valencia", "Oporto", "Huelva"};

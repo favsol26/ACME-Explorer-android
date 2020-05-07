@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +92,6 @@ public class AvailableTripsFragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     Trip trip = dataSnapshot.getValue(Trip.class);
-                    Log.d(TAG, "onChildAdded: " + dataSnapshot.getValue());
                     if (trip != null) {
                         trip.setId(dataSnapshot.getKey());
                         tripAdapter.addItem(trip);
@@ -104,7 +102,6 @@ public class AvailableTripsFragment extends Fragment {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Trip trip = dataSnapshot.getValue(Trip.class);
-//                Log.d(TAG, "onChildChanged: " + dataSnapshot.getValue());
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
                     tripAdapter.updateItem(trip);
@@ -114,7 +111,6 @@ public class AvailableTripsFragment extends Fragment {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Trip trip = dataSnapshot.getValue(Trip.class);
-//                Log.d(TAG, "onChildRemoved: " + dataSnapshot.getValue());
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
                     tripAdapter.removeItem(trip);

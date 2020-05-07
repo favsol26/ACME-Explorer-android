@@ -55,7 +55,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
-//        List<String> reverseList = Lists.reverse(indexes);
         String tripId = indexes.get(holder.getAdapterPosition());
         Trip trip = dicTrips.get(tripId);
 
@@ -71,11 +70,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
             holder.mBuyTripImv.setVisibility(View.VISIBLE);
         else holder.mSelectedImv.setVisibility(View.VISIBLE);
 
-        holder.mSelectedImv.setImageResource(
-                (trip.isSelected())
-                        ? android.R.drawable.btn_star_big_on
-                        : android.R.drawable.btn_star_big_off
-        );
+        Util.setState(trip, holder.mSelectedImv);
 
         holder.mBuyTripImv.setOnClickListener(
                 V -> Toast.makeText(context, String.format("%s %s %s",
@@ -95,16 +90,13 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         holder.mArrivalDateTxv.setText(String.format("%s%s%s", context.getString(R.string.arrival), formatText,
                 Util.dateFormatter(trip.getArrivalDate())));
 
-        holder.mCardView.setOnClickListener(
-                V -> {
+        holder.mCardView.setOnClickListener(V -> {
                     Bundle args = new Bundle();
-                    args.putString(Constants.IntentTravel, trip.getId());
+                    args.putString(Constants.IntentTrip, trip.getId());
                     args.putString(Constants.from, this.aClass);
-                    Util.navigateTo(V,
-                            R.id.nav_active_trip_fragment, args);
+                    Util.navigateTo(V, R.id.nav_active_trip_fragment, args);
                 }
         );
-
     }
 
     @Override
@@ -128,8 +120,8 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         int position = indexes.indexOf(trip.getId());
         Log.d(TAG, " updateItem: " + position);
         if (position > -1) {
-            this.dicTrips.remove(trip.getId());
             this.indexes.remove(position);
+            this.dicTrips.remove(trip.getId());
             this.dicTrips.put(trip.getId(), trip);
             this.indexes.add(position, trip.getId());
             this.notifyItemChanged(position);

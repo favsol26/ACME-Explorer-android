@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import us.master.acme_explorer.R;
@@ -35,9 +37,11 @@ import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.entity.Trip;
 
 import static java.util.Objects.requireNonNull;
+import static us.master.acme_explorer.common.Util.currentUser;
 import static us.master.acme_explorer.common.Util.dateFormatter;
 import static us.master.acme_explorer.common.Util.mSnackBar;
 import static us.master.acme_explorer.common.Util.navigateTo;
+import static us.master.acme_explorer.common.Util.setState;
 import static us.master.acme_explorer.common.Util.showDialogMessage;
 import static us.master.acme_explorer.common.Util.showTransitionForm;
 
@@ -52,17 +56,17 @@ public class ActiveTripFragment extends Fragment {
     private TextView mTextViewDepartureDate;
     private TextView mTextViewArrivalDate;
     private TextView mTextViewDeparturePlace;
-    private ImageView mSelectedImageView;
+    private ImageView mImgVwStar;
     private FirebaseDatabaseService databaseService;
     private LinearLayout mLayoutForm;
     private ProgressBar mProgressBar;
     private ViewGroup container;
+    private ValueEventListener valueEventListener;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -77,56 +81,67 @@ public class ActiveTripFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        if (databaseService != null && valueEventListener != null) {
+//            Toast.makeText(container.getContext(), "unSubs", Toast.LENGTH_SHORT).show();
+            String tripId = requireArguments().getString(Constants.IntentTrip);
+            databaseService.getTravelById(tripId).removeEventListener(valueEventListener);
+        }
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         this.container = container;
         View root = inflater.inflate(R.layout.fragment_active_trip, container, false);
         setView(root);
-
         databaseService = FirebaseDatabaseService.getServiceInstance();
-        loadDatabase(databaseService, root);
+
+        valueEventListener = getValueEventListener(root);
+
+        databaseService.getTravelById(requireArguments().getString(Constants.IntentTrip))
+                .addValueEventListener(valueEventListener);
         return root;
     }
 
-    private void loadDatabase(FirebaseDatabaseService databaseService, View root) {
-        databaseService.getTravelById(requireArguments().getString(Constants.IntentTravel))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                            Trip trip = dataSnapshot.getValue(Trip.class);
-                            if (trip != null) {
-                                updateUI(root, trip);
-
-                                fab.setOnClickListener(view -> deleteTrip(dataSnapshot.getKey()));
-
-                                mSelectedImageView.setOnClickListener(v -> {
-                                    trip.setSelected(!trip.isSelected());
-                                    setState(trip, mSelectedImageView);
-                                    updateTrip(trip, dataSnapshot.getKey());
-                                });
-                            }
-                        }
+    private ValueEventListener getValueEventListener(View root) {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                    Trip trip = dataSnapshot.getValue(Trip.class);
+                    if (trip != null) {
+                        updateUI(root, trip);
+                        fab.setOnClickListener(view -> deleteTrip(dataSnapshot.getKey()));
+                        mImgVwStar.setOnClickListener(v -> updateTrip(trip, dataSnapshot.getKey()));
                     }
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        };
     }
 
     private void updateTrip(Trip trip, String tripId) {
-//        Map<String, String> map = trip.getSelectedBy();
+        List<String> users = new ArrayList<>();
+        boolean selectedBy = false;
+        if (trip.getSelectedBy() != null) {
+            users.addAll(trip.getSelectedBy());
+            if (users.contains(currentUser.getUid())) {
+                users.remove(currentUser.getUid());
+            } else users.add(currentUser.getUid());
+        } else
+            users.add(currentUser.getUid());
+        trip.setSelectedBy(users);
+        if (trip.getSelectedBy() != null)
+            selectedBy = trip.getSelectedBy().contains(currentUser.getUid());
 
-//        if (map.containsKey(currentUser.getUid()))
-//            map.remove(currentUser.getUid());
-//        else map.put(currentUser.getUid(), currentUser.getUid());
-//        trip.setSelectedBy(map);
-        Log.d(TAG, String.format("updateTrip: id: %s \n %s %s", tripId,
-                "map.containsKey(currentUser.getUid())", trip));
         //TODO using set value method
-        databaseService.updateTravelById(tripId).setValue(trip, getListener(false, trip.isSelected()));
+        databaseService.updateTravelById(tripId).setValue(trip, getListener(false, selectedBy));
     }
 
     private void deleteTrip(String tripId) {
@@ -166,7 +181,7 @@ public class ActiveTripFragment extends Fragment {
         mTextViewDepartureDate = root.findViewById(R.id.my_departure_date_trip_t_v);
         mTextViewArrivalDate = root.findViewById(R.id.my_arrival_date_trip_t_v);
         mTextViewDeparturePlace = root.findViewById(R.id.my_departure_place_trip_t_v);
-        mSelectedImageView = root.findViewById(R.id.my_active_selected_trip_i_v);
+        mImgVwStar = root.findViewById(R.id.my_active_selected_trip_i_v);
         mTextViewDescription = root.findViewById(R.id.my_description_trip_t_v);
         mProgressBar = root.findViewById(R.id.my_active_trip_progress_bar);
         mLayoutForm = root.findViewById(R.id.my_active_trip_form);
@@ -181,7 +196,7 @@ public class ActiveTripFragment extends Fragment {
                 .error(android.R.drawable.ic_menu_myplaces)
                 .into(mImageView);
 
-        setState(trip, mSelectedImageView);
+        setState(trip, mImgVwStar);
 
         mTextViewArrivalPlace.setText(String.format("%s \n(%s)", trip.getArrivalPlace(), trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
@@ -197,11 +212,4 @@ public class ActiveTripFragment extends Fragment {
         fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
     }
 
-    private void setState(Trip trip, ImageView imv) {
-        imv.setImageResource(
-                trip.isSelected()
-                        ? android.R.drawable.btn_star_big_on
-                        : android.R.drawable.btn_star_big_off
-        );
-    }
 }
