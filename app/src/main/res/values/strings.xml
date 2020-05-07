@@ -105,4 +105,7 @@
     <string name="delete_trip_error">No se ha podido eliminar el viaje.</string>
     <string name="selected_trip">Viaje seleccionado</string>
     <string name="discarded_trip">Viaje descartado</string>
+    <string name="trip_to_save">¿Desea publicar este viaje?</string>
+    <string name="cancel_create_trip">¿Seguro que desea salir?\n Se perderán los datos </string>
+    <string name="exit">Salir</string>
 </resources>

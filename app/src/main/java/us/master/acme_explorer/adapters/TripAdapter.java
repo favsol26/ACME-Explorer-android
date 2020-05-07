@@ -137,6 +137,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         }
     }
 
+    public void clearLists() {
+        this.indexes.clear();
+        this.dicTrips.clear();
+    }
+
     public void setColumn(int column) {
         this.column = column;
     }

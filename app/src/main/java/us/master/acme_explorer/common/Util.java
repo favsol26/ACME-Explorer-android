@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
@@ -48,6 +47,7 @@ public class Util {
     public static FirebaseAuth mAuth;
     public static GoogleSignInOptions googleSignInOptions;
     public static FirebaseUser currentUser;
+    public static boolean controlFilter = false;
 
 
     public static String dateFormatter(Calendar calendar) {
@@ -73,11 +73,11 @@ public class Util {
         return (date.getTimeInMillis() / 1000);
     }
 
-    public static void getToast(Context context, int size, int message) {
-        String text1 = String.format("Hay %s %s", size, context.getString(message));
-        String text2 = String.format(" No hay %s", context.getString(message));
-        Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
-    }
+//    public static void getToast(Context context, int size, int message) {
+//        String text1 = String.format("Hay %s %s", size, context.getString(message));
+//        String text2 = String.format(" No hay %s", context.getString(message));
+//        Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
+//    }
 
     public static void checkInstance() {
         if (mAuth == null) {
