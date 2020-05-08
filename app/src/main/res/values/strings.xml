@@ -108,4 +108,7 @@
     <string name="trip_to_save">¿Desea publicar este viaje?</string>
     <string name="cancel_create_trip">¿Seguro que desea salir?\n Se perderán los datos </string>
     <string name="exit">Salir</string>
+    <string name="gallery_request_permission">Necesitamos acceder a tu galería para poder elegir una foto.</string>
+    <string name="allow_permission">Permitir</string>
+    <string name="gallery_permission_no_granted">No es posible elegir una foto sin acceder a la galería.</string>
 </resources>
