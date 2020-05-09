@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +12,7 @@ import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,12 +25,17 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,12 +50,48 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class Util {
-    //    private static final String TAG = Util.class.getSimpleName();
+    private static final String TAG = Util.class.getSimpleName();
     public static FirebaseAuth mAuth;
     public static GoogleSignInOptions googleSignInOptions;
     public static FirebaseUser currentUser;
     public static boolean controlFilter = false;
+    private static String fileName;
 
+    public static void getImageUrl(StorageReference mStorageRef,
+                                   ImageView photoImgVw, String folder, String path) {
+        fileName = "IMG_" + new Date().getTime() + path.substring(path.lastIndexOf("."));
+        Uri file = Uri.fromFile(new File(path));
+        UploadTask uploadTask = mStorageRef.child(folder).child("images")
+                .child(fileName).putFile(file);
+
+        uploadTask.addOnFailureListener(e -> Log.e(TAG, "getImageUrl: " + e.getMessage()));
+        uploadTask.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.i(TAG, "getImageUrl: image saved");
+                mStorageRef.child(folder).child("images").child(fileName)
+                        .getDownloadUrl().addOnCompleteListener(task1 -> {
+                    String url = (String.valueOf(task1.getResult()));
+                    photoImgVw.setContentDescription(url);
+                    Glide.with(photoImgVw)
+                            .load(url)
+                            .placeholder(android.R.drawable.ic_menu_myplaces)
+                            .into(photoImgVw);
+                    Log.i(TAG, "getImageUrl: image url confirmed ->" + url);
+                });
+            }
+        });
+
+    }
+
+    public static void deleteImageUrl(StorageReference mStorageRef, String folder) {
+        Task<Void> task1 = mStorageRef.child(folder).child("images").child(fileName).delete();
+        task1.addOnCompleteListener(command -> {
+            if (command.isSuccessful()) {
+                Log.d(TAG, "deleteImageUrl: image deleted");
+            }
+        });
+        task1.addOnFailureListener(e -> Log.e(TAG, "deleteImageUrl: error " + e.getMessage()));
+    }
 
     public static String dateFormatter(Calendar calendar) {
         int yy = calendar.get(Calendar.YEAR);
@@ -68,16 +111,16 @@ public class Util {
         Date chosenDate = calendar.getTime();
         return (dateFormat.format(chosenDate));
     }
-
-    public static long calendarToLong(Calendar date) {
-        return (date.getTimeInMillis() / 1000);
-    }
-
 //    public static void getToast(Context context, int size, int message) {
 //        String text1 = String.format("Hay %s %s", size, context.getString(message));
 //        String text2 = String.format(" No hay %s", context.getString(message));
 //        Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
+
 //    }
+
+    public static long calendarToLong(Calendar date) {
+        return (date.getTimeInMillis() / 1000);
+    }
 
     public static void checkInstance() {
         if (mAuth == null) {

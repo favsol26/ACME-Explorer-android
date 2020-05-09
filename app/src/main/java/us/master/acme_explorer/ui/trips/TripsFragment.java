@@ -34,12 +34,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
@@ -48,6 +45,8 @@ import us.master.acme_explorer.entity.Trip;
 import static android.app.Activity.RESULT_OK;
 import static us.master.acme_explorer.common.Util.calendarToLong;
 import static us.master.acme_explorer.common.Util.dateFormatter;
+import static us.master.acme_explorer.common.Util.deleteImageUrl;
+import static us.master.acme_explorer.common.Util.getImageUrl;
 import static us.master.acme_explorer.common.Util.getValue;
 import static us.master.acme_explorer.common.Util.mSnackBar;
 import static us.master.acme_explorer.common.Util.mTxtChdLnr;
@@ -57,9 +56,10 @@ import static us.master.acme_explorer.common.Util.showTransitionForm;
 
 public class TripsFragment extends Fragment {
     private static final String TAG = TripsFragment.class.getSimpleName();
+    private static final String folder = "Trips";
     private static final int PICK_PHOTO = 0x512;
     private static final int GALLERY_PERMISSION_REQUEST = 0x842;
-
+    private long mNewTripDepartureDateLong = 0, mNewTripArrivalDateLong = 0;
     private TextInputLayout mNewTripDepartureDate;
     private TextInputLayout mNewTripArrivalDate;
     private TextInputLayout mNewTripCountry;
@@ -69,7 +69,6 @@ public class TripsFragment extends Fragment {
     private TextInputLayout mNewTripDescription;
     private TextInputLayout mNewTripFlag;
     private TextInputLayout[] mNewTripILs;
-
     private TextInputEditText mNewTripCountryET;
     private TextInputEditText mNewTripCityET;
     private TextInputEditText mNewTripDeparturePlaceET;
@@ -78,30 +77,33 @@ public class TripsFragment extends Fragment {
     private TextInputEditText mNewTripDepartureDateET;
     private TextInputEditText mNewTripArrivalDateET;
     private TextInputEditText[] mNewTripIETs;
-
     private ImageView mNewTripFlagIV;
     private Calendar calendar = Calendar.getInstance();
-    private long mNewTripDepartureDateLong = 0, mNewTripArrivalDateLong = 0;
     private ViewGroup container;
-
+    private StorageReference mStorageRef;
     private ProgressBar mProgressBar;
     private LinearLayout mFormLayout;
-    private StorageReference mStorageRef;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mStorageRef = FirebaseStorage.getInstance().getReference("ACME-Explorer");
-
+        mStorageRef = FirebaseStorage.getInstance().getReference(getString(R.string.app_name));
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                DialogInterface.OnClickListener posBut = (dialog, which) ->
-                        navigateTo(mProgressBar,
-                                R.id.action_nav_new_trips_to_nav_available_trips, null);
+                DialogInterface.OnClickListener posBut = (dialog, which) -> {
+                    if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
+                            getString(R.string.app_name))) {
+                        deleteImageUrl(mStorageRef, folder);
+                    }
+                    navigateTo(mProgressBar,
+                            R.id.action_nav_new_trips_to_nav_available_trips, null);
+                };
                 DialogInterface.OnClickListener negBut = (dialog, which) -> {
                 };
-                showDialogMessage(container.getContext(), R.string.cancel_create_trip,
+                showDialogMessage(container.getContext(),
+                        R.string.cancel_create_trip,
                         R.string.exit, android.R.string.no, posBut, negBut);
             }
         };
@@ -151,13 +153,12 @@ public class TripsFragment extends Fragment {
         mNewTripFlagIV = root.findViewById(R.id.trips_flag_iv);
         mFormLayout = root.findViewById(R.id.trips_form_layout);
         mProgressBar = root.findViewById(R.id.trips_progress_bar);
-
     }
 
     private void checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
@@ -200,6 +201,10 @@ public class TripsFragment extends Fragment {
         startActivityForResult(pickPhoto, PICK_PHOTO);
     }
 
+    /*      storage files out from default app dir API 26 or higher
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());*/
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
@@ -207,52 +212,33 @@ public class TripsFragment extends Fragment {
         if (requestCode == PICK_PHOTO && resultCode == RESULT_OK) {
             if (resultData != null) {
                 Uri uriPickedImg = resultData.getData();
-                assert uriPickedImg != null;
-                Log.i(TAG, "Uri: " + uriPickedImg.toString());
-
-                // Let's read picked image path using content resolver
-                String[] filePath = {MediaStore.Images.Media.DATA};
-                Cursor cursor = container.getContext()
-                        .getContentResolver()
-                        .query(uriPickedImg, filePath, null, null, null);
-                try {
-                    if (cursor != null && cursor.moveToFirst()) {
-
-                        selectedImagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-
-                        getImageUrl(mStorageRef, mNewTripFlagIV, "Trips", selectedImagePath);
+                if (uriPickedImg != null) {
+                    if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
+                            getString(R.string.app_name))) {
+                        deleteImageUrl(mStorageRef, folder);
                     }
-                } finally {
-                    // At the end remember to close the cursor or you will end with the RuntimeException!
-                    assert cursor != null;
-                    cursor.close();
+                    Log.i(TAG, "Uri: " + uriPickedImg.toString());
+                    // Let's read picked image path using content resolver
+                    String[] filePath = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = container.getContext()
+                            .getContentResolver()
+                            .query(uriPickedImg, filePath, null,
+                                    null, null);
+                    try {
+                        if (cursor != null && cursor.moveToFirst()) {
+                            selectedImagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                            getImageUrl(mStorageRef, mNewTripFlagIV, folder, selectedImagePath);
+                        }
+                    } finally {// At the end remember to close the cursor or you will end with
+                        // the RuntimeException!
+                        assert cursor != null;
+                        cursor.close();
+                    }
                 }
             } else {
                 Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    /*      storage files out from default app dir API 26 or higher
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());*/
-    private void getImageUrl(StorageReference mStorageRef, ImageView mNewTripFlagIV, String folder, String path) {
-        String fileName = "IMG_" + new Date().getTime() + path.substring(path.lastIndexOf("."));
-
-        Uri file = Uri.fromFile(new File(path));
-        UploadTask uploadTask = mStorageRef
-                .child(folder).child("images").child(fileName).putFile(file);
-
-        uploadTask.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.e(TAG, String.format("getImageUrl: %d",
-                        Objects.requireNonNull(task.getResult()).getTotalByteCount()));
-                mStorageRef.getDownloadUrl().addOnCompleteListener(
-                        task1 -> mNewTripFlagIV.setContentDescription(String.valueOf(task1.getResult()))
-                );
-            }
-        });
-        uploadTask.addOnFailureListener(e -> Log.e(TAG, "getImageUrl: " + e.getMessage()));
     }
 
     private void setTextWatcher() {
@@ -382,4 +368,3 @@ public class TripsFragment extends Fragment {
         dialog.show();
     }
 }
-
