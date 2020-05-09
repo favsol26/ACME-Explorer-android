@@ -40,19 +40,19 @@ import java.util.Date;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
+import us.master.acme_explorer.common.FirebaseStorageService;
 import us.master.acme_explorer.entity.Trip;
 
 import static android.app.Activity.RESULT_OK;
 import static us.master.acme_explorer.common.Util.calendarToLong;
 import static us.master.acme_explorer.common.Util.dateFormatter;
-import static us.master.acme_explorer.common.Util.deleteImageUrl;
-import static us.master.acme_explorer.common.Util.getImageUrl;
 import static us.master.acme_explorer.common.Util.getValue;
 import static us.master.acme_explorer.common.Util.mSnackBar;
 import static us.master.acme_explorer.common.Util.mTxtChdLnr;
 import static us.master.acme_explorer.common.Util.navigateTo;
 import static us.master.acme_explorer.common.Util.showDialogMessage;
 import static us.master.acme_explorer.common.Util.showTransitionForm;
+
 
 public class TripsFragment extends Fragment {
     private static final String TAG = TripsFragment.class.getSimpleName();
@@ -83,6 +83,7 @@ public class TripsFragment extends Fragment {
     private StorageReference mStorageRef;
     private ProgressBar mProgressBar;
     private LinearLayout mFormLayout;
+    private FirebaseStorageService mStorageService;
 
 
     @Override
@@ -95,7 +96,7 @@ public class TripsFragment extends Fragment {
                 DialogInterface.OnClickListener posBut = (dialog, which) -> {
                     if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
                             getString(R.string.app_name))) {
-                        deleteImageUrl(mStorageRef, folder);
+                        mStorageService.deleteImageUrl(folder);
                     }
                     navigateTo(mProgressBar,
                             R.id.action_nav_new_trips_to_nav_available_trips, null);
@@ -114,7 +115,9 @@ public class TripsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.container = container;
+        mStorageService = new FirebaseStorageService(container.getContext());
         View root = inflater.inflate(R.layout.fragment_trips, container, false);
+
         setView(root);
         mNewTripILs = new TextInputLayout[]{
                 mNewTripCountry, mNewTripCity, mNewTripDeparturePlace, mNewTripPrice,
@@ -201,10 +204,6 @@ public class TripsFragment extends Fragment {
         startActivityForResult(pickPhoto, PICK_PHOTO);
     }
 
-    /*      storage files out from default app dir API 26 or higher
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());*/
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
@@ -215,19 +214,18 @@ public class TripsFragment extends Fragment {
                 if (uriPickedImg != null) {
                     if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
                             getString(R.string.app_name))) {
-                        deleteImageUrl(mStorageRef, folder);
+                        mStorageService.deleteImageUrl(folder);
                     }
                     Log.i(TAG, "Uri: " + uriPickedImg.toString());
                     // Let's read picked image path using content resolver
                     String[] filePath = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = container.getContext()
-                            .getContentResolver()
+                    Cursor cursor = container.getContext().getContentResolver()
                             .query(uriPickedImg, filePath, null,
                                     null, null);
                     try {
                         if (cursor != null && cursor.moveToFirst()) {
                             selectedImagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                            getImageUrl(mStorageRef, mNewTripFlagIV, folder, selectedImagePath);
+                            mStorageService.getImageUrl(mNewTripFlagIV, folder, selectedImagePath);
                         }
                     } finally {// At the end remember to close the cursor or you will end with
                         // the RuntimeException!
