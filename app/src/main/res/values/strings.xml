@@ -111,4 +111,8 @@
     <string name="gallery_request_permission">Necesitamos acceder a tu galería para poder elegir una foto.</string>
     <string name="allow_permission">Permitir</string>
     <string name="gallery_permission_no_granted">No es posible elegir una foto sin acceder a la galería.</string>
+    <string name="error_message">Error al conectar con el servidor</string>
+    <string name="main">main</string>
+    <string name="query_api_id_api_key"><![CDATA[&appid=439d4b804bc8187953eb36d2a8c26a02]]></string>
+    <string name="base_url">https://openweathermap.org/data/2.5/weather?q=</string>
 </resources>

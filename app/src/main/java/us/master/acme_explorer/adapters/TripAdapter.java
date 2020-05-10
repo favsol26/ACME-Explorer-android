@@ -2,7 +2,6 @@ package us.master.acme_explorer.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder> {
-    private static final String TAG = TripAdapter.class.getSimpleName();
+//    private static final String TAG = TripAdapter.class.getSimpleName();
     private int column;
 
     private List<String> indexes;
@@ -39,7 +38,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         this.aClass = aClass;
         this.column = column;
         this.context = context;
-
         this.dicTrips = new Hashtable<>();
         this.indexes = new ArrayList<>();
     }
@@ -115,10 +113,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     }
 
     public void updateItem(Trip trip) {
-        Log.d(TAG, "updateItem: " + indexes);
-
         int position = indexes.indexOf(trip.getId());
-        Log.d(TAG, " updateItem: " + position);
         if (position > -1) {
             this.indexes.remove(position);
             this.dicTrips.remove(trip.getId());

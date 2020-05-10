@@ -32,8 +32,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -80,7 +78,6 @@ public class TripsFragment extends Fragment {
     private ImageView mNewTripFlagIV;
     private Calendar calendar = Calendar.getInstance();
     private ViewGroup container;
-    private StorageReference mStorageRef;
     private ProgressBar mProgressBar;
     private LinearLayout mFormLayout;
     private FirebaseStorageService mStorageService;
@@ -89,7 +86,6 @@ public class TripsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mStorageRef = FirebaseStorage.getInstance().getReference(getString(R.string.app_name));
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

@@ -12,12 +12,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,6 +32,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +43,7 @@ import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.entity.Trip;
+import us.master.acme_explorer.web.VolleySingleton;
 
 import static java.util.Objects.requireNonNull;
 import static us.master.acme_explorer.common.Util.currentUser;
@@ -63,7 +72,6 @@ public class ActiveTripFragment extends Fragment {
     private ViewGroup container;
     private ValueEventListener valueEventListener;
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +92,6 @@ public class ActiveTripFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if (databaseService != null && valueEventListener != null) {
-//            Toast.makeText(container.getContext(), "unSubs", Toast.LENGTH_SHORT).show();
             String tripId = requireArguments().getString(Constants.IntentTrip);
             databaseService.getTravelById(tripId).removeEventListener(valueEventListener);
         }
@@ -112,7 +119,13 @@ public class ActiveTripFragment extends Fragment {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     Trip trip = dataSnapshot.getValue(Trip.class);
                     if (trip != null) {
-                        updateUI(root, trip);
+                        getTemp(trip.getArrivalPlace().concat(",").concat(trip.getCountry()), trip);
+                        Glide.with(root)
+                                .load(trip.getUrlImage())
+                                .fitCenter()
+                                .placeholder(android.R.drawable.ic_menu_myplaces)
+                                .error(android.R.drawable.ic_menu_myplaces)
+                                .into(mImageView);
                         fab.setOnClickListener(view -> deleteTrip(dataSnapshot.getKey()));
                         mImgVwStar.setOnClickListener(v -> updateTrip(trip, dataSnapshot.getKey()));
                     }
@@ -188,17 +201,12 @@ public class ActiveTripFragment extends Fragment {
         fab = root.findViewById(R.id.my_active_trip_fab);
     }
 
-    private void updateUI(View root, Trip trip) {
-        Glide.with(root)
-                .load(trip.getUrlImage())
-                .fitCenter()
-                .placeholder(android.R.drawable.ic_menu_myplaces)
-                .error(android.R.drawable.ic_menu_myplaces)
-                .into(mImageView);
+    private void updateUI(Trip trip, String temp) {
+
 
         setState(trip, mImgVwStar);
-
-        mTextViewArrivalPlace.setText(String.format("%s \n(%s)", trip.getArrivalPlace(), trip.getCountry()));
+        mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
+                trip.getArrivalPlace(), temp, trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
         mTextViewPrice.setText(String.valueOf(trip.getPrice()).concat(" $"));
         mTextViewDepartureDate.setText(dateFormatter(trip.getDepartureDate()));
@@ -210,6 +218,47 @@ public class ActiveTripFragment extends Fragment {
         String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
+    }
+
+    private void getTemp(String place, Trip trip) {
+        String mURL = String.format("%s%s%s",
+                getString(R.string.base_url), place, getString(R.string.query_api_id_api_key));
+
+        Response.Listener<JSONObject> onSuccess = (JSONObject response) -> {
+            try {
+                //  processing the Response Json
+                processingResponse(response, trip);
+                Log.d(TAG, "Success JSON code: "
+                        + response.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+
+        Response.ErrorListener onError = (VolleyError error) -> {
+            Log.d(TAG, "Error Volley : " + error.getMessage());
+            Toast.makeText(container.getContext(),
+                    container.getContext().getString(R.string.error_message),
+                    Toast.LENGTH_LONG).show();
+            updateUI(trip, "N/A");
+        };
+
+        JsonObjectRequest requestQueue =
+                new JsonObjectRequest(Request.Method.GET, mURL, null, onSuccess, onError);
+
+        VolleySingleton.getInstance(requireContext()).addToRequestQueue(requestQueue);
+    }
+
+    private void processingResponse(JSONObject response, Trip trip) {
+        try {
+            Log.i(TAG, "processingResponse: " + response);
+            JSONObject temp = new JSONObject(response.getString(getString(R.string.main)));
+            Log.d(TAG, "processingResponse() called with: response = [" + temp + "]");
+
+            updateUI(trip, temp.getString("temp").concat("°"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
