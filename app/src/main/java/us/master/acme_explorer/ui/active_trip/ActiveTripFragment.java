@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,6 +127,12 @@ public class ActiveTripFragment extends Fragment {
                                 .placeholder(android.R.drawable.ic_menu_myplaces)
                                 .error(android.R.drawable.ic_menu_myplaces)
                                 .into(mImageView);
+                        try {
+                            Log.i(TAG, "onDataChange: " + trip.getUrlImage());
+                            Log.i(TAG, "onDataChange: " + trip.getUrlImage().substring(trip.getUrlImage().lastIndexOf("IMG"), trip.getUrlImage().lastIndexOf("?")));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         fab.setOnClickListener(view -> deleteTrip(dataSnapshot.getKey()));
                         mImgVwStar.setOnClickListener(v -> updateTrip(trip, dataSnapshot.getKey()));
                     }
@@ -202,7 +209,8 @@ public class ActiveTripFragment extends Fragment {
     }
 
     private void updateUI(Trip trip, String temp) {
-
+        GeoLocation location = new GeoLocation();
+        location.getAddress(trip.getArrivalPlace().concat(", " + trip.getCountry()), container.getContext(), new GeoHandler());
 
         setState(trip, mImgVwStar);
         mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
@@ -261,4 +269,17 @@ public class ActiveTripFragment extends Fragment {
         }
     }
 
+    private static class GeoHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            String address;
+            if (msg.what == 1) {
+                Bundle bundle = msg.getData();
+                address = bundle.getString("Address");
+            } else {
+                address = null;
+            }
+            Log.i(TAG, "handleMessage: address" + address);
+        }
+    }
 }
