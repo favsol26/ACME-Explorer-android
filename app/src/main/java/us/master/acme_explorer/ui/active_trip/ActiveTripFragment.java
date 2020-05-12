@@ -13,17 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,9 +28,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,8 +36,8 @@ import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.common.FirebaseStorageService;
+import us.master.acme_explorer.common.GeoLocation;
 import us.master.acme_explorer.entity.Trip;
-import us.master.acme_explorer.web.VolleySingleton;
 
 import static java.util.Objects.requireNonNull;
 import static us.master.acme_explorer.common.Util.currentUser;
@@ -121,7 +113,7 @@ public class ActiveTripFragment extends Fragment {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     Trip trip = dataSnapshot.getValue(Trip.class);
                     if (trip != null) {
-                      getTemp(trip.getArrivalPlace().concat(",").concat(trip.getCountry()), trip);
+//                        getTemp(trip.getArrivalPlace().concat(",").concat(trip.getCountry()), trip);
                         updateUI(trip);
                         Glide.with(root)
                                 .load(trip.getUrlImage())
@@ -237,50 +229,9 @@ public class ActiveTripFragment extends Fragment {
 
         fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
         GeoLocation location = new GeoLocation();
-        location.getLocation(trip.getDeparturePlace(), container.getContext(),
-                new GeoHandler());
+        location.getLocation(trip.getArrivalPlace().concat(", " + trip.getCountry()), "destiny",
+                container.getContext(), new GeoHandler(), trip, mTextViewArrivalPlace);
 
-    }
-
-    private void getTemp(String place, Trip trip) {
-        String mURL = String.format("%s%s%s",
-                getString(R.string.base_url), place, getString(R.string.query_api_id_api_key));
-
-        Response.Listener<JSONObject> onSuccess = (JSONObject response) -> {
-            try {
-                //  processing the Response Json
-                processingResponse(response, trip);
-                Log.d(TAG, "Success JSON code: "
-                        + response.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        };
-
-        Response.ErrorListener onError = (VolleyError error) -> {
-            Log.d(TAG, "Error Volley : " + error.getMessage());
-            Toast.makeText(container.getContext(),
-                    container.getContext().getString(R.string.error_message),
-                    Toast.LENGTH_LONG).show();
-            mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
-                    trip.getArrivalPlace(), "N/A", trip.getCountry()));
-        };
-
-        JsonObjectRequest requestQueue =
-                new JsonObjectRequest(Request.Method.GET, mURL, null, onSuccess, onError);
-
-        VolleySingleton.getInstance(requireContext()).addToRequestQueue(requestQueue);
-    }
-
-    private void processingResponse(JSONObject response, Trip trip) {
-        try {
-            JSONObject temp = new JSONObject(response.getString(getString(R.string.main)));
-            mTextViewArrivalPlace.setText(
-                    String.format("%s (%s) \n(%s)", trip.getArrivalPlace(),
-                            temp.getString("temp").concat("°"), trip.getCountry()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private static class GeoHandler extends Handler {
@@ -301,4 +252,5 @@ public class ActiveTripFragment extends Fragment {
                     address, latitude, longitude));
         }
     }
+
 }
