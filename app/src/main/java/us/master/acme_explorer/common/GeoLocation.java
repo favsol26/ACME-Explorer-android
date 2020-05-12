@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,9 +61,9 @@ public class GeoLocation {
                         if (addressList != null && addressList.size() > 0) {
                             Address address = addressList.get(0);
                             StringBuilder builder = new StringBuilder();
+                            builder.append(address.getAddressLine(0)).append("\n");
                             builder.append(address.getLatitude()).append("\n");
                             builder.append(address.getLongitude()).append("\n");
-                            Log.i(TAG, "run: -> " + addressList.toString());
                             latitude = address.getLatitude();
                             longitude = address.getLongitude();
                             result = builder.substring(0);
@@ -81,15 +82,17 @@ public class GeoLocation {
                         bundle.putDouble("latitude", latitude);
                         bundle.putDouble("longitude", longitude);
                         message.setData(bundle);
-
                     }
                     message.sendToTarget();
                     if (TextUtils.equals(from, "destiny")) {
                         Log.i(TAG, "run: " + result);
                         getTemp(latitude, longitude, trip);
+                    } else {
+                        getDistance();
                     }
                 }
             }
+
         };
         thread.start();
     }
@@ -104,10 +107,13 @@ public class GeoLocation {
 
     private void processingResponse(JSONObject response, Trip trip) {
         try {
+            JSONArray weather = new JSONArray(response.getString("weather"));
+            JSONObject climate = new JSONObject(weather.get(0).toString());
             JSONObject temp = new JSONObject(response.getString(context.getString(R.string.main)));
-            this.mTextViewArrivalPlace.setText(
-                    String.format("%s (%s) \n(%s)", trip.getArrivalPlace(),
-                            temp.getString("temp").concat("°"), trip.getCountry()));
+            this.mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
+                    trip.getArrivalPlace(), temp.getString("temp").concat("°, ")
+                            .concat(climate.getString("description")),
+                    trip.getCountry()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -140,5 +146,7 @@ public class GeoLocation {
         VolleySingleton.getInstance(this.context).addToRequestQueue(requestQueue);
     }
 
+    private void getDistance() {
 
+    }
 }

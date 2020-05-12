@@ -65,6 +65,7 @@ public class ActiveTripFragment extends Fragment {
     private ProgressBar mProgressBar;
     private ViewGroup container;
     private ValueEventListener valueEventListener;
+    private boolean control = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,8 +114,6 @@ public class ActiveTripFragment extends Fragment {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     Trip trip = dataSnapshot.getValue(Trip.class);
                     if (trip != null) {
-//                        getTemp(trip.getArrivalPlace().concat(",").concat(trip.getCountry()), trip);
-                        updateUI(trip);
                         Glide.with(root)
                                 .load(trip.getUrlImage())
                                 .fitCenter()
@@ -132,7 +131,20 @@ public class ActiveTripFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         });
-                        mImgVwStar.setOnClickListener(v -> updateTrip(trip, dataSnapshot.getKey()));
+                        setState(trip, mImgVwStar);
+                        mImgVwStar.setOnClickListener(v -> {
+                            setState(trip, mImgVwStar);
+                            updateTrip(trip, dataSnapshot.getKey());
+                        });
+                        if (control) {
+                            updateUI(trip);
+                            GeoLocation location = new GeoLocation();
+                            location.getLocation(
+                                    trip.getArrivalPlace().concat(", " + trip.getCountry()),
+                                    "destiny", container.getContext(), new GeoHandler(),
+                                    trip, mTextViewArrivalPlace);
+                        }
+                        control = false;
                     }
                 }
             }
@@ -214,7 +226,6 @@ public class ActiveTripFragment extends Fragment {
     }
 
     private void updateUI(Trip trip) {
-        setState(trip, mImgVwStar);
         mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
                 trip.getArrivalPlace(), "", trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
@@ -228,10 +239,6 @@ public class ActiveTripFragment extends Fragment {
         String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
-        GeoLocation location = new GeoLocation();
-        location.getLocation(trip.getArrivalPlace().concat(", " + trip.getCountry()), "destiny",
-                container.getContext(), new GeoHandler(), trip, mTextViewArrivalPlace);
-
     }
 
     private static class GeoHandler extends Handler {
@@ -252,5 +259,4 @@ public class ActiveTripFragment extends Fragment {
                     address, latitude, longitude));
         }
     }
-
 }
