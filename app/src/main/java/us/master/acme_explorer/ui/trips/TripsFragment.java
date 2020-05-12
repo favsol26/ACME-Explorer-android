@@ -350,6 +350,8 @@ public class TripsFragment extends Fragment {
                     mNewTripArrivalDateET.setText("");
                     mNewTripArrivalDateLong = 0;
                     mNewTripDepartureDate.setError(null);
+                    Log.i(TAG, String.format("pickOneDate: arrival -> %d departure -> %d",
+                            mNewTripArrivalDateLong, mNewTripDepartureDateLong));
                 } else {
                     mNewTripDepartureDate.setError(
                             getString(R.string.new_trip_date_error_1));

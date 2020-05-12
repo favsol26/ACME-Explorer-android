@@ -121,7 +121,7 @@ public class ActiveTripFragment extends Fragment {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     Trip trip = dataSnapshot.getValue(Trip.class);
                     if (trip != null) {
-                        getTemp(trip.getArrivalPlace().concat(",").concat(trip.getCountry()), trip);
+                      getTemp(trip.getArrivalPlace().concat(",").concat(trip.getCountry()), trip);
                         updateUI(trip);
                         Glide.with(root)
                                 .load(trip.getUrlImage())
@@ -222,9 +222,6 @@ public class ActiveTripFragment extends Fragment {
     }
 
     private void updateUI(Trip trip) {
-        GeoLocation location = new GeoLocation();
-        location.getAddress(trip.getArrivalPlace().concat(", " + trip.getCountry()), container.getContext(), new GeoHandler());
-
         setState(trip, mImgVwStar);
         mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
                 trip.getArrivalPlace(), "", trip.getCountry()));
@@ -239,6 +236,10 @@ public class ActiveTripFragment extends Fragment {
         String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
+        GeoLocation location = new GeoLocation();
+        location.getLocation(trip.getDeparturePlace(), container.getContext(),
+                new GeoHandler());
+
     }
 
     private void getTemp(String place, Trip trip) {
@@ -286,13 +287,18 @@ public class ActiveTripFragment extends Fragment {
         @Override
         public void handleMessage(@NonNull Message msg) {
             String address;
+            double latitude = 0D;
+            double longitude = 0D;
             if (msg.what == 1) {
                 Bundle bundle = msg.getData();
                 address = bundle.getString("Address");
+                latitude = bundle.getDouble("latitude");
+                longitude = bundle.getDouble("longitude");
             } else {
                 address = null;
             }
-            Log.i(TAG, "handleMessage: address" + address);
+            Log.i(TAG, String.format("handleMessage: address = %s latitude -> %s longitude -> %s",
+                    address, latitude, longitude));
         }
     }
 }
