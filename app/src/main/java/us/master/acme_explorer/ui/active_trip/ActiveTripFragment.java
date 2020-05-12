@@ -179,7 +179,7 @@ public class ActiveTripFragment extends Fragment {
                     .removeValue(getListener(true, true));
             FirebaseStorageService storageService =
                     new FirebaseStorageService(container.getContext());
-            storageService.deleteImageUrl(getString(R.string.folder), fileName);
+            storageService.deleteImageUrl(getString(R.string.folderTrips), fileName);
 
         };
 
@@ -273,12 +273,10 @@ public class ActiveTripFragment extends Fragment {
 
     private void processingResponse(JSONObject response, Trip trip) {
         try {
-            Log.i(TAG, "processingResponse: " + response);
             JSONObject temp = new JSONObject(response.getString(getString(R.string.main)));
-            Log.d(TAG, "processingResponse() called with: response = [" + temp + "]");
-            mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
-                    trip.getArrivalPlace(),
-                    temp.getString("temp").concat("°"), trip.getCountry()));
+            mTextViewArrivalPlace.setText(
+                    String.format("%s (%s) \n(%s)", trip.getArrivalPlace(),
+                            temp.getString("temp").concat("°"), trip.getCountry()));
         } catch (JSONException e) {
             e.printStackTrace();
         }

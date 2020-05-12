@@ -60,16 +60,18 @@ public class TripsFragment extends Fragment {
     private long mNewTripDepartureDateLong = 0, mNewTripArrivalDateLong = 0;
     private TextInputLayout mNewTripDepartureDate;
     private TextInputLayout mNewTripArrivalDate;
-    private TextInputLayout mNewTripCountry;
-    private TextInputLayout mNewTripCity;
-    private TextInputLayout mNewTripDeparturePlace;
+    private TextInputLayout mNewTripArrivalCountry;
+    private TextInputLayout mNewTripArrivalCity;
+    private TextInputLayout mNewTripDepartureCountry;
+    private TextInputLayout mNewTripDepartureCity;
     private TextInputLayout mNewTripPrice;
     private TextInputLayout mNewTripDescription;
     private TextInputLayout mNewTripFlag;
     private TextInputLayout[] mNewTripILs;
-    private TextInputEditText mNewTripCountryET;
-    private TextInputEditText mNewTripCityET;
-    private TextInputEditText mNewTripDeparturePlaceET;
+    private TextInputEditText mNewTripArrivalCountryET;
+    private TextInputEditText mNewTripArrivalCityET;
+    private TextInputEditText mNewTripDepartureCountryET;
+    private TextInputEditText mNewTripDepartureCityET;
     private TextInputEditText mNewTripPriceET;
     private TextInputEditText mNewTripDescriptionET;
     private TextInputEditText mNewTripDepartureDateET;
@@ -108,22 +110,23 @@ public class TripsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         this.container = container;
         mStorageService = new FirebaseStorageService(container.getContext());
-        folder =  getString(R.string.folder);
+        folder = getString(R.string.folderTrips);
         View root = inflater.inflate(R.layout.fragment_trips, container, false);
 
         setView(root);
         mNewTripILs = new TextInputLayout[]{
-                mNewTripCountry, mNewTripCity, mNewTripDeparturePlace, mNewTripPrice,
-                mNewTripDescription, mNewTripDepartureDate, mNewTripArrivalDate, mNewTripFlag
+                mNewTripArrivalCountry, mNewTripArrivalCity, mNewTripDepartureCountry,
+                mNewTripDepartureCity, mNewTripPrice, mNewTripDescription, mNewTripDepartureDate,
+                mNewTripArrivalDate, mNewTripFlag
         };
 
         mNewTripIETs = new TextInputEditText[]{
-                mNewTripCountryET, mNewTripCityET, mNewTripDeparturePlaceET,
-                mNewTripPriceET, mNewTripDescriptionET
+                mNewTripArrivalCountryET, mNewTripArrivalCityET, mNewTripDepartureCountryET,
+                mNewTripDepartureCityET, mNewTripPriceET, mNewTripDescriptionET
         };
         setTextWatcher();
         root.findViewById(R.id.trips_departure_date_ib).setOnClickListener(this::pickOneDate);
@@ -134,16 +137,18 @@ public class TripsFragment extends Fragment {
     }
 
     private void setView(View root) {
-        mNewTripCountry = root.findViewById(R.id.trips_destiny_country);
-        mNewTripCity = root.findViewById(R.id.trips_destiny_city);
-        mNewTripDeparturePlace = root.findViewById(R.id.trips_origin_city);
+        mNewTripArrivalCountry = root.findViewById(R.id.trips_destiny_country);
+        mNewTripArrivalCity = root.findViewById(R.id.trips_destiny_city);
+        mNewTripDepartureCity = root.findViewById(R.id.trips_origin_city);
+        mNewTripDepartureCountry = root.findViewById(R.id.trips_origin_country);
         mNewTripPrice = root.findViewById(R.id.trips_price);
         mNewTripDescription = root.findViewById(R.id.trips_description);
         mNewTripFlag = root.findViewById(R.id.trips_flag);
 
-        mNewTripCountryET = root.findViewById(R.id.trips_destiny_country_et);
-        mNewTripCityET = root.findViewById(R.id.trips_destiny_city_et);
-        mNewTripDeparturePlaceET = root.findViewById(R.id.trips_origin_city_et);
+        mNewTripArrivalCountryET = root.findViewById(R.id.trips_destiny_country_et);
+        mNewTripArrivalCityET = root.findViewById(R.id.trips_destiny_city_et);
+        mNewTripDepartureCityET = root.findViewById(R.id.trips_origin_city_et);
+        mNewTripDepartureCountryET = root.findViewById(R.id.trips_origin_country_et);
         mNewTripPriceET = root.findViewById(R.id.trips_price_et);
         mNewTripDescriptionET = root.findViewById(R.id.trips_description_et);
         mNewTripDepartureDate = root.findViewById(R.id.trips_departure_date);
@@ -199,6 +204,7 @@ public class TripsFragment extends Fragment {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(pickPhoto, PICK_PHOTO);
+        mNewTripFlag.setError(null);
     }
 
     @Override
@@ -250,7 +256,8 @@ public class TripsFragment extends Fragment {
             showTransitionForm(false, container, mProgressBar, mFormLayout);
 
             DialogInterface.OnClickListener posBut = (dialog, which) -> {
-                Trip trip = getNewTrip(values[0], values[1], values[2], values[3], values[4]);
+                Trip trip = getNewTrip(values[0], values[1], values[2].concat(", " + values[3]),
+                        values[4], values[5]);
                 saveTripInDatabase(trip);
             };
             DialogInterface.OnClickListener negBut = (dialog, which) ->
@@ -263,11 +270,12 @@ public class TripsFragment extends Fragment {
 
     private String[] getValues() {
         return new String[]{
-                mNewTripCountryET.getEditableText().toString(),
-                mNewTripCityET.getEditableText().toString(),
-                mNewTripDeparturePlaceET.getEditableText().toString(),
+                mNewTripArrivalCountryET.getEditableText().toString(),//0
+                mNewTripArrivalCityET.getEditableText().toString(),
+                mNewTripDepartureCityET.getEditableText().toString(),//2
+                mNewTripDepartureCountryET.getEditableText().toString(),
                 mNewTripPriceET.getEditableText().toString(),
-                mNewTripDescriptionET.getEditableText().toString(),
+                mNewTripDescriptionET.getEditableText().toString(),//5
                 mNewTripDepartureDateET.getEditableText().toString(),
                 mNewTripArrivalDateET.getEditableText().toString(),
                 mNewTripFlagIV.getContentDescription().toString()

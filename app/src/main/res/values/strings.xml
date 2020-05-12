@@ -86,9 +86,10 @@
     <string name="save_user">Actualizar datos de usuario</string>
 
     <string name="new_trip">Publicar Viaje</string>
-    <string name="trip_destiny_country">País</string>
-    <string name="trip_destiny_city">Ciudad</string>
+    <string name="trip_destiny_country">País de destino</string>
+    <string name="trip_destiny_city">Ciudad de destino</string>
     <string name="trip_origin_city">Lugar de salida</string>
+    <string name="trip_origin_country">País de salida</string>
     <string name="trip_departure_date">Fecha de salida</string>
     <string name="trip_arrival_date">Fecha de llegada</string>
     <string name="trip_price">precio</string>
@@ -115,5 +116,5 @@
     <string name="main">main</string>
     <string name="query_api_id_api_key"><![CDATA[&appid=439d4b804bc8187953eb36d2a8c26a02]]></string>
     <string name="base_url">https://openweathermap.org/data/2.5/weather?q=</string>
-    <string name="folder">Trips</string>
+    <string name="folderTrips">Trips</string>
 </resources>

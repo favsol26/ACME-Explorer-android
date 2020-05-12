@@ -7,13 +7,10 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
-import static com.android.volley.VolleyLog.TAG;
 
 
 class GeoLocation {
@@ -27,8 +24,6 @@ class GeoLocation {
                     List<Address> addressList = geocoder.getFromLocationName(location, 1);
                     if (addressList != null && addressList.size() > 0) {
                         Address address = addressList.get(0);
-                        Log.d(TAG, "run: ");
-                        Log.i(TAG, "run: " + address);
                         StringBuilder builder = new StringBuilder();
                         builder.append(address.getLatitude()).append("\n");
                         builder.append(address.getLongitude()).append("\n");
@@ -43,7 +38,6 @@ class GeoLocation {
                         message.what = 1;
                         Bundle bundle = new Bundle();
                         result = String.format("address  : %s \n\n\nlat & log %s", location, result);
-//                        Log.i(TAG, "run: " + result);
                         bundle.putString("Address", result);
                         message.setData(bundle);
                     }
