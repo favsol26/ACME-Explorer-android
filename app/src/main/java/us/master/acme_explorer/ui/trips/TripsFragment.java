@@ -54,9 +54,9 @@ import static us.master.acme_explorer.common.Util.showTransitionForm;
 
 public class TripsFragment extends Fragment {
     private static final String TAG = TripsFragment.class.getSimpleName();
-    private static final String folder = "Trips";
     private static final int PICK_PHOTO = 0x512;
     private static final int GALLERY_PERMISSION_REQUEST = 0x842;
+    private String folder;
     private long mNewTripDepartureDateLong = 0, mNewTripArrivalDateLong = 0;
     private TextInputLayout mNewTripDepartureDate;
     private TextInputLayout mNewTripArrivalDate;
@@ -92,7 +92,7 @@ public class TripsFragment extends Fragment {
                 DialogInterface.OnClickListener posBut = (dialog, which) -> {
                     if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
                             getString(R.string.app_name))) {
-                        mStorageService.deleteImageUrl(folder);
+                        mStorageService.deleteImageUrl(folder, null);
                     }
                     navigateTo(mProgressBar,
                             R.id.action_nav_new_trips_to_nav_available_trips, null);
@@ -112,6 +112,7 @@ public class TripsFragment extends Fragment {
                              Bundle savedInstanceState) {
         this.container = container;
         mStorageService = new FirebaseStorageService(container.getContext());
+        folder =  getString(R.string.folder);
         View root = inflater.inflate(R.layout.fragment_trips, container, false);
 
         setView(root);
@@ -210,7 +211,7 @@ public class TripsFragment extends Fragment {
                 if (uriPickedImg != null) {
                     if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
                             getString(R.string.app_name))) {
-                        mStorageService.deleteImageUrl(folder);
+                        mStorageService.deleteImageUrl(folder, null);
                     }
                     Log.i(TAG, "Uri: " + uriPickedImg.toString());
                     // Let's read picked image path using content resolver

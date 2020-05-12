@@ -43,6 +43,7 @@ import java.util.Objects;
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
+import us.master.acme_explorer.common.FirebaseStorageService;
 import us.master.acme_explorer.entity.Trip;
 import us.master.acme_explorer.web.VolleySingleton;
 
@@ -121,19 +122,24 @@ public class ActiveTripFragment extends Fragment {
                     Trip trip = dataSnapshot.getValue(Trip.class);
                     if (trip != null) {
                         getTemp(trip.getArrivalPlace().concat(",").concat(trip.getCountry()), trip);
+                        updateUI(trip);
                         Glide.with(root)
                                 .load(trip.getUrlImage())
                                 .fitCenter()
                                 .placeholder(android.R.drawable.ic_menu_myplaces)
                                 .error(android.R.drawable.ic_menu_myplaces)
                                 .into(mImageView);
-                        try {
-                            Log.i(TAG, "onDataChange: " + trip.getUrlImage());
-                            Log.i(TAG, "onDataChange: " + trip.getUrlImage().substring(trip.getUrlImage().lastIndexOf("IMG"), trip.getUrlImage().lastIndexOf("?")));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        fab.setOnClickListener(view -> deleteTrip(dataSnapshot.getKey()));
+                        fab.setOnClickListener(view -> {
+                            try {
+                                Log.i(TAG, "onDataChange: " + trip.getUrlImage());
+                                String fileName = trip.getUrlImage()
+                                        .substring(trip.getUrlImage().lastIndexOf("IMG"),
+                                                trip.getUrlImage().lastIndexOf("?"));
+                                deleteTrip(dataSnapshot.getKey(), fileName);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
                         mImgVwStar.setOnClickListener(v -> updateTrip(trip, dataSnapshot.getKey()));
                     }
                 }
@@ -161,14 +167,21 @@ public class ActiveTripFragment extends Fragment {
             selectedBy = trip.getSelectedBy().contains(currentUser.getUid());
 
         //TODO using set value method
-        databaseService.updateTravelById(tripId).setValue(trip, getListener(false, selectedBy));
+        databaseService.updateTravelById(tripId)
+                .setValue(trip, getListener(false, selectedBy));
     }
 
-    private void deleteTrip(String tripId) {
+    private void deleteTrip(String tripId, String fileName) {
         showTransitionForm(false, this.container, mProgressBar, mLayoutForm);
         //TODO using removeValue method
-        DialogInterface.OnClickListener posBut = (dialog, which) ->
-                databaseService.deleteTravelById(tripId).removeValue(getListener(true, true));
+        DialogInterface.OnClickListener posBut = (dialog, which) -> {
+            databaseService.deleteTravelById(tripId)
+                    .removeValue(getListener(true, true));
+            FirebaseStorageService storageService =
+                    new FirebaseStorageService(container.getContext());
+            storageService.deleteImageUrl(getString(R.string.folder), fileName);
+
+        };
 
         DialogInterface.OnClickListener negBut = (dialog, which) ->
                 showTransitionForm(true, this.container, mProgressBar, mLayoutForm);
@@ -208,13 +221,13 @@ public class ActiveTripFragment extends Fragment {
         fab = root.findViewById(R.id.my_active_trip_fab);
     }
 
-    private void updateUI(Trip trip, String temp) {
+    private void updateUI(Trip trip) {
         GeoLocation location = new GeoLocation();
         location.getAddress(trip.getArrivalPlace().concat(", " + trip.getCountry()), container.getContext(), new GeoHandler());
 
         setState(trip, mImgVwStar);
         mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
-                trip.getArrivalPlace(), temp, trip.getCountry()));
+                trip.getArrivalPlace(), "", trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
         mTextViewPrice.setText(String.valueOf(trip.getPrice()).concat(" $"));
         mTextViewDepartureDate.setText(dateFormatter(trip.getDepartureDate()));
@@ -248,7 +261,8 @@ public class ActiveTripFragment extends Fragment {
             Toast.makeText(container.getContext(),
                     container.getContext().getString(R.string.error_message),
                     Toast.LENGTH_LONG).show();
-            updateUI(trip, "N/A");
+            mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
+                    trip.getArrivalPlace(), "N/A", trip.getCountry()));
         };
 
         JsonObjectRequest requestQueue =
@@ -262,8 +276,9 @@ public class ActiveTripFragment extends Fragment {
             Log.i(TAG, "processingResponse: " + response);
             JSONObject temp = new JSONObject(response.getString(getString(R.string.main)));
             Log.d(TAG, "processingResponse() called with: response = [" + temp + "]");
-
-            updateUI(trip, temp.getString("temp").concat("°"));
+            mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
+                    trip.getArrivalPlace(),
+                    temp.getString("temp").concat("°"), trip.getCountry()));
         } catch (JSONException e) {
             e.printStackTrace();
         }

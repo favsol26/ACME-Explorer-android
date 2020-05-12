@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -19,7 +21,7 @@ import us.master.acme_explorer.R;
 public class FirebaseStorageService {
     private static final String TAG = FirebaseStorageService.class.getSimpleName();
 
-    private static String fileName;
+    private String fileName;
     private StorageReference mStorageRef;
 
     public FirebaseStorageService(Context context) {
@@ -51,8 +53,16 @@ public class FirebaseStorageService {
         });
     }
 
-    public void deleteImageUrl(String folder) {
-        Task<Void> task1 = this.mStorageRef.child(folder).child("images").child(fileName).delete();
+    public void deleteImageUrl(String folder, @Nullable String fileName) {
+        this.fileName = fileName != null
+                ? fileName
+                : this.fileName;
+
+        Task<Void> task1 = this.mStorageRef
+                .child(folder)
+                .child("images")
+                .child(this.fileName).delete();
+
         task1.addOnCompleteListener(command -> {
             if (command.isSuccessful()) {
                 Log.d(TAG, "deleteImageUrl: image deleted");
