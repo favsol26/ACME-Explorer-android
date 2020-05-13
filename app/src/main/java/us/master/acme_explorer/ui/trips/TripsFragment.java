@@ -4,10 +4,8 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -24,8 +22,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -39,6 +35,7 @@ import java.util.Date;
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.common.FirebaseStorageService;
+import us.master.acme_explorer.common.PermissionsService;
 import us.master.acme_explorer.entity.Trip;
 
 import static android.app.Activity.RESULT_OK;
@@ -54,8 +51,7 @@ import static us.master.acme_explorer.common.Util.showTransitionForm;
 
 public class TripsFragment extends Fragment {
     private static final String TAG = TripsFragment.class.getSimpleName();
-    private static final int PICK_PHOTO = 0x512;
-    private static final int GALLERY_PERMISSION_REQUEST = 0x842;
+    private static final int GALLERY_PERMISSION_REQUEST = 0x512;
     private String folder;
     private long mNewTripDepartureDateLong = 0, mNewTripArrivalDateLong = 0;
     private TextInputLayout mNewTripDepartureDate;
@@ -132,7 +128,15 @@ public class TripsFragment extends Fragment {
         root.findViewById(R.id.trips_departure_date_ib).setOnClickListener(this::pickOneDate);
         root.findViewById(R.id.trips_arrival_date_ib).setOnClickListener(this::pickOneDate);
         root.findViewById(R.id.trips_button_save).setOnClickListener(v -> saveTrip());
-        mNewTripFlagIV.setOnClickListener(v -> checkPermissions());
+        mNewTripFlagIV.setOnClickListener(v -> {
+            PermissionsService service = new PermissionsService(
+                    requireActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    new int[]{GALLERY_PERMISSION_REQUEST},
+                    new int[]{R.string.gallery_request_permission}
+            );
+            service.checkPermissions(mProgressBar, this::pickOnePhoto);
+        });
         return root;
     }
 
@@ -160,50 +164,11 @@ public class TripsFragment extends Fragment {
         mProgressBar = root.findViewById(R.id.trips_progress_bar);
     }
 
-    private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                    Snackbar.make(mFormLayout, R.string.gallery_request_permission,
-                            Snackbar.LENGTH_LONG).setAction(R.string.allow_permission,
-                            click -> ActivityCompat.requestPermissions(requireActivity(),
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    GALLERY_PERMISSION_REQUEST)).show();
-                } else {
-                    ActivityCompat.requestPermissions(requireActivity(),
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            GALLERY_PERMISSION_REQUEST);
-                }
-            } else {
-                pickOnePhoto();
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (GALLERY_PERMISSION_REQUEST == requestCode) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (permissions[i].equals(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        pickOnePhoto();
-                    } else Snackbar.make(mFormLayout,
-                            R.string.gallery_permission_no_granted,
-                            Snackbar.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
 
     private void pickOnePhoto() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, PICK_PHOTO);
+        startActivityForResult(pickPhoto, GALLERY_PERMISSION_REQUEST);
         mNewTripFlag.setError(null);
     }
 
@@ -211,7 +176,7 @@ public class TripsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
         String selectedImagePath;
-        if (requestCode == PICK_PHOTO && resultCode == RESULT_OK) {
+        if (requestCode == GALLERY_PERMISSION_REQUEST && resultCode == RESULT_OK) {
             if (resultData != null) {
                 Uri uriPickedImg = resultData.getData();
                 if (uriPickedImg != null) {
@@ -303,8 +268,8 @@ public class TripsFragment extends Fragment {
         });
     }
 
-    private Trip getNewTrip(String country, String city, String departurePlace, String price,
-                            String description) {
+    private Trip getNewTrip(String country, String city,
+                            String departurePlace, String price, String description) {
         Trip trip = new Trip();
         trip.setUserUid(FirebaseAuth.getInstance().getUid());
         trip.setCountry(country);
@@ -373,3 +338,43 @@ public class TripsFragment extends Fragment {
         dialog.show();
     }
 }
+//    private void checkPermissions() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(requireActivity(),
+//                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+//                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//
+//                    Snack bar.make(mFormLayout, R.string.gallery_request_permission,
+//                            Snack bar.LENGTH_LONG).setAction(R.string.allow_permission,
+//                            click -> ActivityCompat.requestPermissions(requireActivity(),
+//                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                                    GALLERY_PERMISSION_REQUEST)).show();
+//                } else {
+//                    ActivityCompat.requestPermissions(requireActivity(),
+//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                            GALLERY_PERMISSION_REQUEST);
+//                }
+//            } else {
+//                pickOnePhoto();
+//            }
+//        }
+//    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        Toast.makeText(container.getContext(), "pr", Toast.LENGTH_SHORT).show();
+//        if (GALLERY_PERMISSION_REQUEST == requestCode) {
+//            for (int i = 0; i < permissions.length; i++) {
+//                if (permissions[i].equals(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+//                        pickOnePhoto();
+//                    } else Snack bar.make(mFormLayout,
+//                            R.string.gallery_permission_no_granted,
+//                            Snack bar.LENGTH_LONG).show();
+//                }
+//            }
+//        }
+//    }

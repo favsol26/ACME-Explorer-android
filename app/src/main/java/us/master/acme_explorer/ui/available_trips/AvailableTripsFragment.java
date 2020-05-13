@@ -174,7 +174,8 @@ public class AvailableTripsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,
+                                 @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_FILTERS)
             if (resultCode == RESULT_OK) {
@@ -200,7 +201,8 @@ public class AvailableTripsFragment extends Fragment {
         tripAdapter.clearLists();
     }
 
-    private void saveSharePreferFilters(int minPrice, int maxPrice, long dateStart, long dateEnd) {
+    private void saveSharePreferFilters(int minPrice, int maxPrice,
+                                        long dateStart, long dateEnd) {
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -233,12 +235,14 @@ public class AvailableTripsFragment extends Fragment {
         boolean valid = true;
         HashMap filterSaved = getSharedPreferenceFilters(context);
 
-        if ((long) filterSaved.get(Constants.minPrice) > 0 || (long) filterSaved.get(Constants.maxPrice) > 0)
+        if ((long) filterSaved.get(Constants.minPrice) > 0 ||
+                (long) filterSaved.get(Constants.maxPrice) > 0)
             valid = filterByPrice(trip,
                     (int) (long) filterSaved.get(Constants.minPrice),
                     (int) (long) filterSaved.get(Constants.maxPrice));
 
-        if ((long) filterSaved.get(Constants.dateStart) > 0 || (long) filterSaved.get(Constants.dateEnd) > 0)
+        if ((long) filterSaved.get(Constants.dateStart) > 0 ||
+                /**/(long) filterSaved.get(Constants.dateEnd) > 0)
             valid = filterByDate(trip,
                     (long) filterSaved.get(Constants.dateStart),
                     (long) filterSaved.get(Constants.dateEnd));
@@ -246,7 +250,8 @@ public class AvailableTripsFragment extends Fragment {
         return valid;
     }
 
-    private boolean filterByDate(Trip trip, long dateDepartureFilter, long dateArrivalFilter) {
+    private boolean filterByDate(Trip trip, long dateDepartureFilter,
+                                 long dateArrivalFilter) {
         boolean valid;
         /*with only departure filter*/
         if ((dateDepartureFilter > 0) && (dateArrivalFilter == 0))

@@ -1,5 +1,6 @@
 package us.master.acme_explorer;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
+import us.master.acme_explorer.common.PermissionsService;
+
 import static us.master.acme_explorer.common.Util.checkInstance;
 import static us.master.acme_explorer.common.Util.currentUser;
 import static us.master.acme_explorer.common.Util.googleSignInOptions;
@@ -31,13 +34,15 @@ import static us.master.acme_explorer.common.Util.mAuth;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int PERMISSION_REQUEST_CODE_LOCATION = 0x134;
     private AppBarConfiguration mAppBarConfiguration;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
@@ -73,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         TextView uName = navView.findViewById(R.id.txv_name_profile),
                 uMail = navView.findViewById(R.id.txv_mail_profile);
         try {
-            Log.e(TAG, "updateUI: " + currentUser.getEmail());
+//            Log.e(TAG, "updateUI: " + currentUser.getEmail());
             checkInstance();
             if (mAuth == null) mAuth = FirebaseAuth.getInstance();
             if (currentUser == null) {
@@ -116,6 +121,21 @@ public class MainActivity extends AppCompatActivity {
         );
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public void findMe(MenuItem item) {
+        PermissionsService ps = new PermissionsService(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                new int[]{PERMISSION_REQUEST_CODE_LOCATION},
+                new int[]{R.string.location_rationale});
+        ps.checkPermissions(toolbar, this::navigate);
+    }
+
+    private void navigate() {
+        //TODO get location of user to send to map
+        // args latitude & longitude
+        Navigation.findNavController(this, R.id.nav_host_fragment)
+                .navigate(R.id.nav_maps, null);
     }
 
     public void close(MenuItem item) {

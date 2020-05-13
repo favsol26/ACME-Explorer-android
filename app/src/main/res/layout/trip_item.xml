@@ -118,7 +118,6 @@
                         android:textAlignment="center" />
                 </LinearLayout>
             </RelativeLayout>
-
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

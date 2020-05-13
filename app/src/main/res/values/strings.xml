@@ -11,7 +11,7 @@
     <string name="log_in_google">Continuar con Google</string>
     <string name="sign_in_up">¿Todavía no tienes cuenta? \n¡Regístrate!</string>
     <string name="user_registration">Registro de usuarios</string>
-    <string name="edit_profile">Editar perfil de usuario</string>
+    <string name="edit_profile">Editar Perfil</string>
     <string name="sign_in">Regístrate con tu E-mail</string>
     <string name="log_in_up">¿Ya tienes cuenta?\nInicia sesión</string>
     <string name="menu_main_menu">Menu Principal</string>
@@ -119,5 +119,7 @@
     <string name="folderTrips">Trips</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="find_me">Encuentrame</string>
+    <string name="find_me">Ubicación Actual</string>
+    <string name="where_i_am">¿Donde estoy?</string>
+    <string name="location_rationale">Necesitamos tu ubicación para mostrarte donde te encuentras.</string>
 </resources>
