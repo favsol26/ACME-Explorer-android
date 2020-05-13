@@ -117,4 +117,7 @@
     <string name="query_api_id_api_key"><![CDATA[&appid=439d4b804bc8187953eb36d2a8c26a02]]></string>
     <string name="base_url">https://openweathermap.org/data/2.5/weather?</string>
     <string name="folderTrips">Trips</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="find_me">Encuentrame</string>
 </resources>

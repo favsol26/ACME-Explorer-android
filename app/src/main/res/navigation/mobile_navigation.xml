@@ -82,5 +82,10 @@
             app:popUpTo="@id/nav_available_trips"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="us.master.acme_explorer.MapsFragment"
+        android:label="@string/find_me"
+        tools:layout="@layout/fragment_maps" />
 
 </navigation>
