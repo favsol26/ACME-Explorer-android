@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -337,6 +338,21 @@ public class TripsFragment extends Fragment {
         }, yy, mm, dd);
         dialog.show();
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (GALLERY_PERMISSION_REQUEST == requestCode) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (permissions[i].equals(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        pickOnePhoto();
+                    } else Snackbar.make(mFormLayout,
+                            R.string.gallery_permission_no_granted,
+                            Snackbar.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
 }
 //    private void checkPermissions() {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -357,24 +373,6 @@ public class TripsFragment extends Fragment {
 //                }
 //            } else {
 //                pickOnePhoto();
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        Toast.makeText(container.getContext(), "pr", Toast.LENGTH_SHORT).show();
-//        if (GALLERY_PERMISSION_REQUEST == requestCode) {
-//            for (int i = 0; i < permissions.length; i++) {
-//                if (permissions[i].equals(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-//                        pickOnePhoto();
-//                    } else Snack bar.make(mFormLayout,
-//                            R.string.gallery_permission_no_granted,
-//                            Snack bar.LENGTH_LONG).show();
-//                }
 //            }
 //        }
 //    }

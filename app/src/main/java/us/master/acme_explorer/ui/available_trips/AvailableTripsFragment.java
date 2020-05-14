@@ -242,7 +242,7 @@ public class AvailableTripsFragment extends Fragment {
                     (int) (long) filterSaved.get(Constants.maxPrice));
 
         if ((long) filterSaved.get(Constants.dateStart) > 0 ||
-                /**/(long) filterSaved.get(Constants.dateEnd) > 0)
+                (long) filterSaved.get(Constants.dateEnd) > 0)
             valid = filterByDate(trip,
                     (long) filterSaved.get(Constants.dateStart),
                     (long) filterSaved.get(Constants.dateEnd));

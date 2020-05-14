@@ -16,16 +16,16 @@ import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale;
 
 public class PermissionsService {
+    private Activity activity;
     private Context context;
     private String[] permissions;
-    private Activity activity;
     private int[] requestCode;
     private int[] explanation;
 
     public PermissionsService(Activity activity,
                               String[] permissions, int[] requestCode, int[] explanation) {
-        this.context = activity.getApplicationContext();
         this.activity = activity;
+        this.context = activity.getApplicationContext();
         this.permissions = permissions;
         this.requestCode = requestCode;
         this.explanation = explanation;

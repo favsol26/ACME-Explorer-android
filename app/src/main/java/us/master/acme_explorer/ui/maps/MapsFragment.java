@@ -9,6 +9,9 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import us.master.acme_explorer.R;
 
 import static us.master.acme_explorer.common.Util.navigateTo;
@@ -31,6 +34,16 @@ public class MapsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        View root = inflater.inflate(R.layout.fragment_maps, container, false);
+
+        FusedLocationProviderClient services
+                = LocationServices.getFusedLocationProviderClient(requireActivity());
+        services.getLastLocation().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                double latitude = task.getResult().getLatitude();
+                double longitude = task.getResult().getLongitude();
+            }
+        });
+        return root;
     }
 }

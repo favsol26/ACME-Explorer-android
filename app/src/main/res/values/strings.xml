@@ -122,4 +122,5 @@
     <string name="find_me">Ubicación Actual</string>
     <string name="where_i_am">¿Donde estoy?</string>
     <string name="location_rationale">Necesitamos tu ubicación para mostrarte donde te encuentras.</string>
+    <string name="location_permission_no_granted">No es posible mostrar donde estas sin acceder a la ubicación del dispositivo.</string>
 </resources>

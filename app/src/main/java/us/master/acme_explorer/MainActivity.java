@@ -2,6 +2,7 @@ package us.master.acme_explorer;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,6 +23,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 0x134;
     private AppBarConfiguration mAppBarConfiguration;
     private Toolbar toolbar;
+    private boolean enableLocation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -104,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 .error(R.mipmap.ic_launcher_acme_explorer_round)
                 .placeholder(android.R.drawable.ic_menu_myplaces)
                 .into(mImViewProf);
+        requestLocation();
     }
 
     @Override
@@ -124,11 +128,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void findMe(MenuItem item) {
-        PermissionsService ps = new PermissionsService(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                new int[]{PERMISSION_REQUEST_CODE_LOCATION},
-                new int[]{R.string.location_rationale});
-        ps.checkPermissions(toolbar, this::navigate);
+        if (enableLocation) {
+            navigate();
+        } else
+            requestLocation();
+    }
+
+    private void getLocation() {
+        enableLocation = true;
     }
 
     private void navigate() {
@@ -143,11 +150,36 @@ public class MainActivity extends AppCompatActivity {
         mAuth.signOut();
         // Google sign out
         GoogleSignInClient gsc = GoogleSignIn.getClient(this, googleSignInOptions);
-        gsc.signOut().addOnCompleteListener(this, task -> logOut());
+        gsc.signOut().addOnCompleteListener(this, task -> {
+            startActivity(new Intent(this, UserMainActivity.class));
+            finish();
+        });
     }
 
-    private void logOut() {
-        startActivity(new Intent(this, UserMainActivity.class));
-        finish();
+    private void requestLocation() {
+        PermissionsService ps = new PermissionsService(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                new int[]{PERMISSION_REQUEST_CODE_LOCATION},
+                new int[]{R.string.location_rationale});
+        ps.checkPermissions(toolbar, this::getLocation);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (PERMISSION_REQUEST_CODE_LOCATION == requestCode) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (permissions[i].equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        getLocation();
+                    } else {
+                        Snackbar.make(toolbar,
+                                R.string.location_permission_no_granted,
+                                Snackbar.LENGTH_LONG).show();
+                        enableLocation = false;
+                    }
+                }
+            }
+        }
     }
 }
