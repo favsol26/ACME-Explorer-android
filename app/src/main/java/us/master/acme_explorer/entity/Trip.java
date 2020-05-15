@@ -1,21 +1,11 @@
 package us.master.acme_explorer.entity;
 
-import android.util.Log;
-
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
-import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 
 import static java.util.Objects.hash;
-import static java.util.Objects.requireNonNull;
 
 public class Trip {
     private static final String TAG = Trip.class.getSimpleName();
@@ -25,6 +15,7 @@ public class Trip {
     private String arrivalPlace;
     private String departurePlace;
     private String description;
+    private String distance;
     private String country;
     private String urlImage;
     private List<String> selectedBy;
@@ -48,22 +39,7 @@ public class Trip {
         this.selectedBy = selectedBy;
     }
 
-  /*  private Trip(boolean selected, long departureDate, long arrivalDate, long price,
-                 long created, String arrivalPlace, String departurePlace, String description, String country,
-                 String urlImage, String userUid) {
-        this.selected = selected;
-        this.created = created;
-        this.userUid = userUid;
-        this.departureDate = departureDate;
-        this.arrivalDate = arrivalDate;
-        this.price = price;
-        this.arrivalPlace = arrivalPlace;
-        this.departurePlace = departurePlace;
-        this.description = description;
-        this.country = country;
-        this.urlImage = urlImage;
-    }*/
-
+/*
     public static Trip generateTrip(long amount, long min, long max) {
 //        List<Trip> trips = new ArrayList<>();
         Calendar departureDate, arrivalDate, calendarBase = Calendar.getInstance();
@@ -106,6 +82,31 @@ public class Trip {
 //        }
         Log.d(TAG, t1.toString() + " generate " + max + " Trips: " + amount);
         return t1;
+    }
+*/
+
+    /*  private Trip(boolean selected, long departureDate, long arrivalDate, long price,
+                   long created, String arrivalPlace, String departurePlace, String description, String country,
+                   String urlImage, String userUid) {
+          this.selected = selected;
+          this.created = created;
+          this.userUid = userUid;
+          this.departureDate = departureDate;
+          this.arrivalDate = arrivalDate;
+          this.price = price;
+          this.arrivalPlace = arrivalPlace;
+          this.departurePlace = departurePlace;
+          this.description = description;
+          this.country = country;
+          this.urlImage = urlImage;
+      }*/
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public long getPrice() {

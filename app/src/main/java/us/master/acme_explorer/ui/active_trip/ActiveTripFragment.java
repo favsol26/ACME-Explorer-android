@@ -139,10 +139,8 @@ public class ActiveTripFragment extends Fragment {
                         if (control) {
                             updateUI(trip);
                             GeoLocation location = new GeoLocation();
-                            location.getLocation(
-                                    trip.getArrivalPlace().concat(", " + trip.getCountry()),
-                                    "destiny", container.getContext(), new GeoHandler(),
-                                    trip, mTextViewArrivalPlace);
+                            location.getLocation("destiny", requireActivity(),
+                                    new GeoHandler(), trip, mTextViewArrivalPlace, null);
                         }
                         control = false;
                     }
@@ -241,7 +239,7 @@ public class ActiveTripFragment extends Fragment {
         fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
     }
 
-    private static class GeoHandler extends Handler {
+    public static class GeoHandler extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
             String address;

@@ -42,7 +42,7 @@ public class SelectedTripsFragment extends Fragment {
 
         myRecyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
-        tripAdapter = new TripAdapter(TAG, 1, container.getContext());
+        tripAdapter = new TripAdapter(TAG, requireActivity());
         myRecyclerView.setAdapter(tripAdapter);
         return root;
     }

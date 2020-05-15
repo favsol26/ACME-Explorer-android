@@ -43,7 +43,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class Util {
-//    private static final String TAG = Util.class.getSimpleName();
+    //    private static final String TAG = Util.class.getSimpleName();
     public static FirebaseAuth mAuth;
     public static GoogleSignInOptions googleSignInOptions;
     public static FirebaseUser currentUser;
@@ -125,7 +125,12 @@ public class Util {
         String text = mySwitch.isChecked()
                 ? ort == ORIENTATION_LANDSCAPE ? "\n" : "\n"
                 : ort != ORIENTATION_LANDSCAPE ? " " : " ";
-        tripAdapter.setColumn(column);
+
+        int size = mySwitch.isChecked()
+                ? ort == ORIENTATION_LANDSCAPE ? 1 : 1
+                : ort != ORIENTATION_LANDSCAPE ? 2 : 2;
+
+        tripAdapter.setSize(size);
         tripAdapter.setFormatText(text);
         GridLayoutManager layoutManager = new GridLayoutManager(context, column);
         myRecyclerView.setLayoutManager(layoutManager);

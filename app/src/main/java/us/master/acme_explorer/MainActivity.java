@@ -134,13 +134,11 @@ public class MainActivity extends AppCompatActivity {
             requestLocation();
     }
 
-    private void getLocation() {
+    private void locationEnabled() {
         enableLocation = true;
     }
 
     private void navigate() {
-        //TODO get location of user to send to map
-        // args latitude & longitude
         Navigation.findNavController(this, R.id.nav_host_fragment)
                 .navigate(R.id.nav_maps, null);
     }
@@ -156,12 +154,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void requestLocation() {
+    public void requestLocation() {
         PermissionsService ps = new PermissionsService(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 new int[]{PERMISSION_REQUEST_CODE_LOCATION},
                 new int[]{R.string.location_rationale});
-        ps.checkPermissions(toolbar, this::getLocation);
+        ps.checkPermissions(toolbar, this::locationEnabled);
     }
 
     @Override
@@ -171,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < permissions.length; i++) {
                 if (permissions[i].equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        getLocation();
+                        locationEnabled();
                     } else {
                         Snackbar.make(toolbar,
                                 R.string.location_permission_no_granted,

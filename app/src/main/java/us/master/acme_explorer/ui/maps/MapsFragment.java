@@ -118,7 +118,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         super.onStop();
         mMapView.onStop();
         client.removeLocationUpdates(locationCallback);
-        Log.i(TAG, "onMapReady: location disable");
+        Log.i(TAG, "onMapStop: location disable");
     }
 
     @Override

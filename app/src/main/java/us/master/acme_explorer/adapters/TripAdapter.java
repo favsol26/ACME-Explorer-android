@@ -1,5 +1,6 @@
 package us.master.acme_explorer.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,23 +22,25 @@ import java.util.List;
 
 import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Constants;
+import us.master.acme_explorer.common.GeoLocation;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
+import us.master.acme_explorer.ui.active_trip.ActiveTripFragment;
 
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder> {
-//    private static final String TAG = TripAdapter.class.getSimpleName();
-    private int column;
-
+    //    private static final String TAG = TripAdapter.class.getSimpleName();
+    private final Activity activity;
     private List<String> indexes;
     private Hashtable<String, Trip> dicTrips;
     private String aClass;
     private Context context;
     private String formatText = " ";
+    private int size = 2;
 
-    public TripAdapter(String aClass, int column, Context context) {
+    public TripAdapter(String aClass, Activity activity) {
+        this.activity = activity;
         this.aClass = aClass;
-        this.column = column;
-        this.context = context;
+        this.context = activity.getApplicationContext();
         this.dicTrips = new Hashtable<>();
         this.indexes = new ArrayList<>();
     }
@@ -77,16 +80,26 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
                         Toast.LENGTH_SHORT).show()
         );
 
-        setTextSize(holder, (column % 2 == 0) ? 17 : 20);
+        setTextSize(holder, (size == 1) ? 15 : 20);
 
         holder.mPriceTxv.setText(String.valueOf(trip.getPrice()).concat(" $"));
         holder.mArrivalPlaceTxv.setText(trip.getArrivalPlace());
 
-        holder.mDepartureDateTxv.setText(String.format("%s%s%s", context.getString(R.string.departure), formatText,
-                Util.dateFormatter(trip.getDepartureDate())));
+        holder.mDepartureDateTxv.setText(String.format("%s%s%s",
+                context.getString(R.string.departure), formatText, Util.dateFormatter(trip.getDepartureDate())));
 
-        holder.mArrivalDateTxv.setText(String.format("%s%s%s", context.getString(R.string.arrival), formatText,
-                Util.dateFormatter(trip.getArrivalDate())));
+        holder.mArrivalDateTxv.setText(String.format("%s%s%s",
+                context.getString(R.string.arrival), formatText, Util.dateFormatter(trip.getArrivalDate())));
+
+        GeoLocation geoLocation = new GeoLocation();
+        geoLocation.getLocation("origin", this.activity,
+                new ActiveTripFragment.GeoHandler(), trip, null, this);
+
+        holder.mDistanceTxv.setText(String.format("%s%s%s",
+                context.getString(R.string.distance), formatText,
+                trip.getDistance() == null
+                        ? context.getString(R.string.unavailable_location)
+                        : trip.getDistance()));
 
         holder.mCardView.setOnClickListener(V -> {
                     Bundle args = new Bundle();
@@ -137,24 +150,25 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         this.dicTrips.clear();
     }
 
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
     private void setTextSize(TripViewHolder holder, int i) {
         holder.mArrivalPlaceTxv.setTextSize(i + 2);
         holder.mPriceTxv.setTextSize(i - 2);
         holder.mArrivalDateTxv.setTextSize(i - 2);
         holder.mDepartureDateTxv.setTextSize(i - 2);
+        holder.mDistanceTxv.setTextSize(i - 2);
     }
 
     public void setFormatText(String formatText) {
         this.formatText = formatText;
     }
 
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     static class TripViewHolder extends RecyclerView.ViewHolder {
         ImageView mFlagImv, mSelectedImv, mBuyTripImv;
-        TextView mPriceTxv, mDepartureDateTxv, mArrivalDateTxv, mArrivalPlaceTxv;
+        TextView mPriceTxv, mDepartureDateTxv, mArrivalDateTxv, mArrivalPlaceTxv, mDistanceTxv;
         CardView mCardView;
 
         TripViewHolder(@NonNull View itemView) {
@@ -171,6 +185,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
             mPriceTxv = itemView.findViewById(R.id.my_trip_price_text_view);
             mDepartureDateTxv = itemView.findViewById(R.id.my_trip_departure_date_text_view);
             mArrivalDateTxv = itemView.findViewById(R.id.my_trip_arrival_date_text_view);
+            mDistanceTxv = itemView.findViewById(R.id.my_trip_departure_distance_text_view);
         }
     }
 }

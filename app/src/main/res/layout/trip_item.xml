@@ -70,12 +70,12 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="30dp">
+                    app:cardCornerRadius="20dp">
 
                     <ImageView
                         android:id="@+id/my_trip_image_view"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
                         android:contentDescription="@string/app_name"
                         android:src="@android:drawable/ic_menu_myplaces" />
                 </androidx.cardview.widget.CardView>
@@ -87,7 +87,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/my_trip_card_view"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="3dp">
 
                     <TextView
                         android:id="@+id/my_trip_price_text_view"
@@ -111,7 +111,7 @@
                         android:textAlignment="center" />
 
                     <TextView
-                        android:id="@+id/my_trip_departure__distance_text_view"
+                        android:id="@+id/my_trip_departure_distance_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/app_name"

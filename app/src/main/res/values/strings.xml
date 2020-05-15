@@ -24,6 +24,7 @@
     <string name="trips_details">Detalles del Viaje</string>
     <string name="departure">Salida:</string>
     <string name="arrival">Llegada:</string>
+    <string name="distance">Distancia:</string>
     <string name="trip_tag">Viaje</string>
     <string name="bought_tag">comprado</string>
     <string name="choose">Seleccionar</string>
@@ -123,4 +124,5 @@
     <string name="where_i_am">¿Donde estoy?</string>
     <string name="location_rationale">Necesitamos tu ubicación para mostrarte donde te encuentras.</string>
     <string name="location_permission_no_granted">No es posible mostrar donde estas sin acceder a la ubicación del dispositivo.</string>
+    <string name="unavailable_location">Ubicación no disponible</string>
 </resources>

@@ -47,24 +47,6 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/trips_destiny_country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="5dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/trips_destiny_country_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/trip_destiny_country"
-                    android:inputType="textCapSentences|textAutoCorrect|textAutoComplete"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-
                 android:id="@+id/trips_destiny_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,17 +64,17 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/trips_origin_country"
+                android:id="@+id/trips_destiny_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="5dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/trips_origin_country_et"
+                    android:id="@+id/trips_destiny_country_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/trip_origin_country"
+                    android:hint="@string/trip_destiny_country"
                     android:inputType="textCapSentences|textAutoCorrect|textAutoComplete"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -110,6 +92,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/trip_origin_city"
+                    android:inputType="textCapSentences|textAutoCorrect|textAutoComplete"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/trips_origin_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/trips_origin_country_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/trip_origin_country"
                     android:inputType="textCapSentences|textAutoCorrect|textAutoComplete"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -181,7 +180,6 @@
                     android:layout_marginStart="9dp"
                     android:contentDescription="@string/trip_arrival_date"
                     android:src="@drawable/ic_event" />
-
             </RelativeLayout>
 
             <RelativeLayout
@@ -206,7 +204,6 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@android:color/black" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageButton
@@ -218,7 +215,6 @@
                     android:layout_marginStart="9dp"
                     android:contentDescription="@string/trip_arrival_date"
                     android:src="@drawable/ic_event" />
-
             </RelativeLayout>
 
             <androidx.appcompat.widget.AppCompatButton

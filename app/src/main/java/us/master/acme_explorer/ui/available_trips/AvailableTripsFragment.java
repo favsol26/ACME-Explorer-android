@@ -53,7 +53,7 @@ public class AvailableTripsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        context = requireContext();
+        context = container.getContext();
         View root = inflater.inflate(R.layout.fragment_trips_base_view, container, false);
         setView(root);
         loadTrips(savedInstanceState);
@@ -157,7 +157,7 @@ public class AvailableTripsFragment extends Fragment {
 
         if (!subscribed)
             loadDatabase(null);
-        this.tripAdapter = new TripAdapter(TAG, mySwitch.isChecked() ? 2 : 1, this.context);
+        this.tripAdapter = new TripAdapter(TAG, requireActivity());
 
     }
 
