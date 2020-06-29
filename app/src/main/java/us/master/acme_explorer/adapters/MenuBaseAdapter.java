@@ -18,11 +18,11 @@ import us.master.acme_explorer.R;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Links;
 
-public class MenuAdapter extends BaseAdapter {
+public class MenuBaseAdapter extends BaseAdapter {
     private List<Links> linksList;
     private Context context;
 
-    public MenuAdapter(List<Links> linksList, Context context) {
+    public MenuBaseAdapter(List<Links> linksList, Context context) {
         this.linksList = linksList;
         this.context = context;
     }
@@ -47,7 +47,7 @@ public class MenuAdapter extends BaseAdapter {
         final Links link = linksList.get(position);
         if (convertView == null)
             convertView = LayoutInflater.from(context)
-                    .inflate(R.layout.link_item, parent, false);
+                    .inflate(R.layout.item_link, parent, false);
 
         TextView mTextView = convertView.findViewById(R.id.my_link_text_view);
         mTextView.setText(link.getDescription());

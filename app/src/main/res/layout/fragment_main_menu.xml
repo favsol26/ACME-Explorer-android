@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorShadow"
     android:layout_height="match_parent"
+    android:background="@color/colorShadow"
     tools:context=".ui.main_menu.MainMenuFragment">
 
     <GridView
         android:id="@+id/my_grid_view_main_menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_link" />
 </LinearLayout>

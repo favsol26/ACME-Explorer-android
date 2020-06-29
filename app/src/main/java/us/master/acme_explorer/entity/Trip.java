@@ -8,7 +8,7 @@ import us.master.acme_explorer.common.Util;
 import static java.util.Objects.hash;
 
 public class Trip {
-    private static final String TAG = Trip.class.getSimpleName();
+    //    private static final String TAG = Trip.class.getSimpleName();
     private String id;
     private String userUid;
     private long departureDate, arrivalDate, price, created;
@@ -23,9 +23,9 @@ public class Trip {
     public Trip() {
     }
 
-    private Trip(long departureDate, long arrivalDate, long price,
-                 long created, String arrivalPlace, String departurePlace, String description, String country,
-                 String urlImage, String userUid, List<String> selectedBy) {
+    private Trip(long departureDate, long arrivalDate, long price, long created,
+                 String arrivalPlace, String departurePlace, String description, String country,
+                 String urlImage, String userUid ) {
         this.userUid = userUid;
         this.departureDate = departureDate;
         this.arrivalDate = arrivalDate;
@@ -36,70 +36,7 @@ public class Trip {
         this.description = description;
         this.country = country;
         this.urlImage = urlImage;
-        this.selectedBy = selectedBy;
     }
-
-/*
-    public static Trip generateTrip(long amount, long min, long max) {
-//        List<Trip> trips = new ArrayList<>();
-        Calendar departureDate, arrivalDate, calendarBase = Calendar.getInstance();
-
-        //        for (int i = 0; i < amount; i++) {
-        departureDate = (Calendar) calendarBase.clone();
-        departureDate.add(
-                Calendar.DAY_OF_MONTH, (int) (
-                        ThreadLocalRandom
-                                .current()
-                                .nextLong(min % 10, (max * 2 / 80) - 15)
-                ));
-
-        arrivalDate = (Calendar) departureDate.clone();
-        arrivalDate.add(
-                Calendar.DAY_OF_MONTH,
-                1 + (int) (ThreadLocalRandom.current().nextLong(min, max) % min)
-        );
-
-        String arrivalPlace = Constants.cities[
-                (int) ThreadLocalRandom.current().nextLong(min, max) % Constants.cities.length];
-
-        arrivalPlace = arrivalPlace.substring(0, arrivalPlace.indexOf("-"));
-
-        String departurePlace = Constants.departurePlace[
-                (int) ThreadLocalRandom.current().nextLong(min, max)
-                        % Constants.departurePlace.length];
-
-        Trip t1 = new Trip(
-                Util.calendarToLong(departureDate),
-                Util.calendarToLong(arrivalDate),
-                ThreadLocalRandom.current().nextLong(min, max), -1 * (new Date().getTime() / 1000),
-                arrivalPlace,
-                departurePlace,
-                "V" + "iAje preCiOso por ".toLowerCase().concat(arrivalPlace),
-                Constants.citiesToCountry.get(arrivalPlace),
-                Constants.flagsLinks.get(Constants.citiesToCountry.get(arrivalPlace)),
-                requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), new ArrayList<>());
-//            trips.add(t1);
-//        }
-        Log.d(TAG, t1.toString() + " generate " + max + " Trips: " + amount);
-        return t1;
-    }
-*/
-
-    /*  private Trip(boolean selected, long departureDate, long arrivalDate, long price,
-                   long created, String arrivalPlace, String departurePlace, String description, String country,
-                   String urlImage, String userUid) {
-          this.selected = selected;
-          this.created = created;
-          this.userUid = userUid;
-          this.departureDate = departureDate;
-          this.arrivalDate = arrivalDate;
-          this.price = price;
-          this.arrivalPlace = arrivalPlace;
-          this.departurePlace = departurePlace;
-          this.description = description;
-          this.country = country;
-          this.urlImage = urlImage;
-      }*/
 
     public String getDistance() {
         return distance;

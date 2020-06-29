@@ -24,7 +24,8 @@
     <string name="trips_details">Detalles del Viaje</string>
     <string name="departure">Salida:</string>
     <string name="arrival">Llegada:</string>
-    <string name="distance">Distancia:</string>
+    <string name="arrival_place">Lugar de Llegada</string>
+    <string name="distance">Lugar de salida:</string>
     <string name="trip_tag">Viaje</string>
     <string name="bought_tag">comprado</string>
     <string name="choose">Seleccionar</string>
@@ -42,8 +43,8 @@
 
     <string name="apply_filters">Aplicar</string>
     <string name="date_message">Por favor elegir una fecha mayor o igual a la actual</string>
-    <string name="filter_alert">Error al aplicar filtros,
-        por favor verificar los filtros y vuelva  a intentarlo</string>
+    <string name="filter_alert">Error al aplicar filtros, por favor verificar los
+        filtros y vuelva  a intentarlo</string>
     <string name="clear_filters">Limpiar</string>
 
     <string name="hint_email">Correo</string>
@@ -93,15 +94,17 @@
     <string name="trip_origin_country">País de salida</string>
     <string name="trip_departure_date">Fecha de salida</string>
     <string name="trip_arrival_date">Fecha de llegada</string>
-    <string name="trip_price">precio</string>
+    <string name="trip_price">Precio</string>
     <string name="trip_description">Descripción</string>
     <string name="trip_save_data_trip">Guardar Viaje</string>
+    <string name="trip_edit_data_trip">Editar Viaje</string>
+    <string name="trip_delete_data_trip">Eliminar Viaje</string>
     <string name="trip_saved">Viaje guardado exitosamente.</string>
     <string name="new_trip_date_error_1">La fecha de salida tiene que ser mayor de la fecha actual.</string>
     <string name="new_trip_date_error_2">La fecha de llegada tiene que ser mayor de la fecha de salida.</string>
     <string name="new_trip_date_error_3">Fecha de salida vacía</string>
     <string name="trip_no_saved">Error al guardar el viaje</string>
-    <string name="description_date">publicado el</string>
+    <string name="description_date">Publicado el</string>
     <string name="confirmation_delete_trip">¿Seguro de que desea eliminar este viaje?</string>
     <string name="delete_trip_msg">Viaje eliminado exitosamente.</string>
     <string name="delete_trip_error">No se ha podido eliminar el viaje.</string>
@@ -113,16 +116,33 @@
     <string name="gallery_request_permission">Necesitamos acceder a tu galería para poder elegir una foto.</string>
     <string name="allow_permission">Permitir</string>
     <string name="gallery_permission_no_granted">No es posible elegir una foto sin acceder a la galería.</string>
+    <string name="gallery_permission_no_granted_2">El permiso para acceder a la galería esta denegado permanentemente,
+        debes acceder a los ajustes para poder otorgarlo.</string>
     <string name="error_message">Ha ocurrido un error al realizar la petición del clima</string>
     <string name="main">main</string>
     <string name="query_api_id_api_key"><![CDATA[&appid=439d4b804bc8187953eb36d2a8c26a02]]></string>
     <string name="base_url">https://openweathermap.org/data/2.5/weather?</string>
     <string name="folderTrips">Trips</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="find_me">Ubicación Actual</string>
     <string name="where_i_am">¿Donde estoy?</string>
-    <string name="location_rationale">Necesitamos tu ubicación para mostrarte donde te encuentras.</string>
-    <string name="location_permission_no_granted">No es posible mostrar donde estas sin acceder a la ubicación del dispositivo.</string>
-    <string name="unavailable_location">Ubicación no disponible</string>
+    <string name="location_rationale_1">Necesitamos tu ubicación para mostrarte donde te encuentras.</string>
+    <string name="location_rationale_2">Necesitamos su ubicación para calcular la distancia al punto de salida.</string>
+    <string name="location_permission_no_granted_1">No es posible mostrar donde estas sin acceder a la ubicación del dispositivo.</string>
+    <string name="location_permission_no_granted_2">No podemos saber la distancia sin acceder a la ubicación del dispositivo.</string>
+    <string name="loading_distance">Cargando distancia</string>
+    <string name="interest_sites">Sitios de Interés</string>
+    <string name="picture_no_picked">Foto no seleccionada</string>
+    <string name="dialog_permission_tittle">Perminso denegado</string>
+    <string name="location_permission_no_granted_3">El permiso para acceder a la ubicación del
+        dispositivo esta denegado permanentemente, debes acceder a los ajustes para poder otorgarlo.</string>
+    <string name="open_setting">Abrir ajustes</string>
+    <string name="to_back">Pulsa atras dos veces para volver a la etapa anterior.</string>
+    <string name="invalid_request_msg">Falta el parámetro de consulta requerido (ubicación o radio).</string>
+    <string name="over_query_limit_msg">la cuota de peticiones ha sido superada.</string>
+    <string name="unknown_error_msg">Error del lado del servidor; por favor intente de nuevo.</string>
+    <string name="zero_results_msg">La búsqueda fue exitosa pero no arrojó resultados</string>
+    <string name="places_api_url">https://maps.googleapis.com/maps/api/place/nearbysearch/json</string>
+    <string name="error_places_request_msg">Ha ocurrido un error con la consulta!!</string>
+    <string name="maps">Mapas</string>
 </resources>

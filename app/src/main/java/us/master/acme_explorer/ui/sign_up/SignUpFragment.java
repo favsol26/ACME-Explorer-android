@@ -145,7 +145,8 @@ public class SignUpFragment extends Fragment {
 
     private void onComplete(Task<AuthResult> task) {
         if (task.isSuccessful()) {
-            Toast.makeText(requireContext(), R.string.user_create_message, Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), R.string.user_create_message,
+                    Toast.LENGTH_LONG).show();
             FirebaseUser user = requireNonNull(task.getResult()).getUser();
             assert user != null;
             user.sendEmailVerification().addOnCompleteListener(task1 -> {

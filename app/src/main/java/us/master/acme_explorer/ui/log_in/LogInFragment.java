@@ -228,7 +228,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                         container, mProgressBar, mLayoutFormLogin);
 
         showDialogMessage(context,
-                R.string.login_verified_mail_error,
+                null, R.string.login_verified_mail_error,
                 R.string.login_verified_mail_error_ok,
                 R.string.login_verified_mail_error_cancel, posBtn, negBtn);
         showTransitionForm(true, container, mProgressBar, mLayoutFormLogin);

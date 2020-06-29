@@ -41,7 +41,7 @@ public class FirebaseStorageService {
                 Log.i(TAG, "getImageUrl: image saved");
                 this.mStorageRef.child(folder).child("images").child(fileName)
                         .getDownloadUrl().addOnCompleteListener(task1 -> {
-                    String url = (String.valueOf(task1.getResult()));
+                    String url = String.valueOf(task1.getResult());
                     photoImgVw.setContentDescription(url);
                     Glide.with(photoImgVw)
                             .load(url)
@@ -53,9 +53,10 @@ public class FirebaseStorageService {
         });
     }
 
-    public void deleteImageUrl(String folder, @Nullable String fileName) {
-        this.fileName = fileName != null
-                ? fileName
+    public void deleteImageUrl(String folder,
+                               @Nullable String urlImage) throws IndexOutOfBoundsException {
+        this.fileName = urlImage != null
+                ? urlImage.substring(urlImage.lastIndexOf("IMG"), urlImage.lastIndexOf("?"))
                 : this.fileName;
 
         Task<Void> task1 = this.mStorageRef

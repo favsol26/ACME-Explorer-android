@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -20,7 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +39,7 @@ import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.common.FirebaseStorageService;
 import us.master.acme_explorer.common.GeoLocation;
+import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
 import static java.util.Objects.requireNonNull;
@@ -48,24 +51,35 @@ import static us.master.acme_explorer.common.Util.setState;
 import static us.master.acme_explorer.common.Util.showDialogMessage;
 import static us.master.acme_explorer.common.Util.showTransitionForm;
 
-public class ActiveTripFragment extends Fragment {
+public class ActiveTripFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = ActiveTripFragment.class.getSimpleName();
-    private FloatingActionButton fab;
-    private TextView mTextViewDescription;
+    private static Double lon;
+    private static Double lat;
+    private boolean control = true;
+    private String weather = "";
+    private String tripId;
+
+    private Button mBtnArrivalPlacesSites;
+    private FloatingActionsMenu mainMenu;
+    private FloatingActionButton fabDelete;
     private ImageView mImageView;
-    private TextView mTextViewPrice;
-    private TextView mTextViewArrivalPlace;
+    private ImageView mImgVwStar;
     private TextView mTextViewDepartureDate;
     private TextView mTextViewArrivalDate;
+    private TextView mTextViewPrice;
+    private TextView mTextViewArrivalPlace;
     private TextView mTextViewDeparturePlace;
-    private ImageView mImgVwStar;
-    private FirebaseDatabaseService databaseService;
+    private TextView mTextViewDescription;
+
+    private ViewGroup container;
     private LinearLayout mLayoutForm;
     private ProgressBar mProgressBar;
-    private ViewGroup container;
+
+    private FirebaseDatabaseService databaseService;
     private ValueEventListener valueEventListener;
-    private boolean control = true;
+    //    private FloatingActionButton fabEdit;
+    //    private FloatingActionButton fab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,12 +112,13 @@ public class ActiveTripFragment extends Fragment {
         this.container = container;
         View root = inflater.inflate(R.layout.fragment_active_trip, container, false);
         setView(root);
+        mBtnArrivalPlacesSites.setEnabled(false);
+
         databaseService = FirebaseDatabaseService.getServiceInstance();
-
         valueEventListener = getValueEventListener(root);
+        tripId = requireArguments().getString(Constants.IntentTrip);
 
-        databaseService.getTravelById(requireArguments().getString(Constants.IntentTrip))
-                .addValueEventListener(valueEventListener);
+        databaseService.getTravelById(tripId).addValueEventListener(valueEventListener);
         return root;
     }
 
@@ -120,28 +135,20 @@ public class ActiveTripFragment extends Fragment {
                                 .placeholder(android.R.drawable.ic_menu_myplaces)
                                 .error(android.R.drawable.ic_menu_myplaces)
                                 .into(mImageView);
-                        fab.setOnClickListener(view -> {
-                            try {
-                                Log.i(TAG, "onDataChange: " + trip.getUrlImage());
-                                String fileName = trip.getUrlImage()
-                                        .substring(trip.getUrlImage().lastIndexOf("IMG"),
-                                                trip.getUrlImage().lastIndexOf("?"));
-                                deleteTrip(dataSnapshot.getKey(), fileName);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        setState(trip, mImgVwStar);
-                        mImgVwStar.setOnClickListener(v -> {
-                            setState(trip, mImgVwStar);
-                            updateTrip(trip, dataSnapshot.getKey());
-                        });
+
+                        setOnClickListeners(dataSnapshot, trip);
                         if (control) {
                             updateUI(trip);
                             GeoLocation location = new GeoLocation();
                             location.getLocation("destiny", requireActivity(),
-                                    new GeoHandler(), trip, mTextViewArrivalPlace, null);
+                                    new GeoHandler(), trip, mTextViewArrivalPlace,
+                                    mBtnArrivalPlacesSites, null);
+                        } else {
+                            String now = mTextViewArrivalPlace.getText().toString();
+                            weather = "\n" + now.substring(now.indexOf("("), now.indexOf(")") + 1);
+                            updateUI(trip);
                         }
+                        setState(trip, mImgVwStar);
                         control = false;
                     }
                 }
@@ -152,6 +159,19 @@ public class ActiveTripFragment extends Fragment {
 
             }
         };
+    }
+
+    private void setOnClickListeners(@NonNull DataSnapshot dataSnapshot, Trip trip) {
+        fabDelete.setOnClickListener(view ->
+                deleteTrip(dataSnapshot.getKey(), trip.getUrlImage())
+        );
+        mImgVwStar.setOnClickListener(v -> {
+            if (mainMenu.isExpanded()) mainMenu.collapse();
+            setState(trip, mImgVwStar);
+            updateTrip(trip, dataSnapshot.getKey());
+        });
+        mBtnArrivalPlacesSites.setEnabled(false);
+        mBtnArrivalPlacesSites.setOnClickListener(this);
     }
 
     private void updateTrip(Trip trip, String tripId) {
@@ -173,7 +193,7 @@ public class ActiveTripFragment extends Fragment {
                 .setValue(trip, getListener(false, selectedBy));
     }
 
-    private void deleteTrip(String tripId, String fileName) {
+    private void deleteTrip(String tripId, String urlImage) {
         showTransitionForm(false, this.container, mProgressBar, mLayoutForm);
         //TODO using removeValue method
         DialogInterface.OnClickListener posBut = (dialog, which) -> {
@@ -181,14 +201,13 @@ public class ActiveTripFragment extends Fragment {
                     .removeValue(getListener(true, true));
             FirebaseStorageService storageService =
                     new FirebaseStorageService(container.getContext());
-            storageService.deleteImageUrl(getString(R.string.folderTrips), fileName);
-
+            storageService.deleteImageUrl(getString(R.string.folderTrips), urlImage);
         };
 
         DialogInterface.OnClickListener negBut = (dialog, which) ->
                 showTransitionForm(true, this.container, mProgressBar, mLayoutForm);
 
-        showDialogMessage(requireContext(), R.string.confirmation_delete_trip,
+        showDialogMessage(requireContext(), null, R.string.confirmation_delete_trip,
                 android.R.string.ok, android.R.string.no, posBut, negBut);
     }
 
@@ -220,41 +239,62 @@ public class ActiveTripFragment extends Fragment {
         mTextViewDescription = root.findViewById(R.id.my_description_trip_t_v);
         mProgressBar = root.findViewById(R.id.my_active_trip_progress_bar);
         mLayoutForm = root.findViewById(R.id.my_active_trip_form);
-        fab = root.findViewById(R.id.my_active_trip_fab);
+        mainMenu = root.findViewById(R.id.my_active_trip_fab_menu);
+        fabDelete = root.findViewById(R.id.my_active_trip_fab_delete);
+        mBtnArrivalPlacesSites = root.findViewById(R.id.my_active_trip_sites_btn);
+
+        root.findViewById(R.id.my_active_trip_form).setOnClickListener(v -> {
+            if (mainMenu.isExpanded()) mainMenu.collapse();
+        });
     }
 
     private void updateUI(Trip trip) {
-        mTextViewArrivalPlace.setText(String.format("%s (%s) \n(%s)",
-                trip.getArrivalPlace(), "", trip.getCountry()));
+        mTextViewArrivalPlace.setText(String.format("%s %s \n(%s)",
+                trip.getArrivalPlace(), weather, trip.getCountry()));
         mTextViewArrivalPlace.setTypeface(mTextViewArrivalDate.getTypeface(), Typeface.BOLD);
         mTextViewPrice.setText(String.valueOf(trip.getPrice()).concat(" $"));
         mTextViewDepartureDate.setText(dateFormatter(trip.getDepartureDate()));
         mTextViewArrivalDate.setText(dateFormatter(trip.getArrivalDate()));
         mTextViewDeparturePlace.setText(trip.getDeparturePlace());
-        mTextViewDescription.setText(String.format("%s, %s %s.", trip.getDescription(),
+        mTextViewDescription.setText(String.format("%s \n%s %s.", trip.getDescription(),
                 getString(R.string.description_date), dateFormatter(-1 * trip.getCreated())));
 
         String uid = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-        fab.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
+        mainMenu.setVisibility(trip.getUserUid().equals(uid) ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, String.format("showPlaces: %s from long: %s lat: %s",
+                ((Button) v).getText().toString(), lon, lat));
+        Bundle bundle = new Bundle();
+        bundle.putDouble(Constants.longitude, lon);
+        bundle.putDouble(Constants.latitude, lat);
+        bundle.putString(Constants.maps, tripId);
+        Util.navigateTo(v, R.id.action_nav_active_trip_to_nav_maps, bundle);
+        control = true;
     }
 
     public static class GeoHandler extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            String address;
+//            String address;
             double latitude = 0D;
             double longitude = 0D;
             if (msg.what == 1) {
                 Bundle bundle = msg.getData();
-                address = bundle.getString("Address");
+//                address = bundle.getString("Address");
                 latitude = bundle.getDouble("latitude");
                 longitude = bundle.getDouble("longitude");
-            } else {
-                address = null;
             }
-            Log.i(TAG, String.format("handleMessage: address = %s latitude -> %s longitude -> %s",
-                    address, latitude, longitude));
+//            else {
+//                address = null;
+//            }
+//            Log.i(TAG, String.format("handleMessage: address = %s latitude -> %s longitude -> %s",
+//                    address, latitude, longitude));
+            lat = (latitude);
+            lon = (longitude);
         }
     }
 }

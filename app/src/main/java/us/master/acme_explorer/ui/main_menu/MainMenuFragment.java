@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import us.master.acme_explorer.R;
-import us.master.acme_explorer.adapters.MenuAdapter;
+import us.master.acme_explorer.adapters.MenuBaseAdapter;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.entity.Links;
 
@@ -26,10 +26,10 @@ public class MainMenuFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_main_menu, container, false);
         GridView mGridView = root.findViewById(R.id.my_grid_view_main_menu);
 
-        MenuAdapter menuAdapter = new MenuAdapter(Links.generateLinks(container.getContext()),
+        MenuBaseAdapter menuBaseAdapter = new MenuBaseAdapter(Links.generateLinks(container.getContext()),
                 container.getContext());
 
-        mGridView.setAdapter(menuAdapter);
+        mGridView.setAdapter(menuBaseAdapter);
         SharedPreferences sharedPreferences = container.getContext()
                 .getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPreferences.edit();

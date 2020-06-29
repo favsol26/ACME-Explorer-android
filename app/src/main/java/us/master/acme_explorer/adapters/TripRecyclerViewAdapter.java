@@ -27,7 +27,7 @@ import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 import us.master.acme_explorer.ui.active_trip.ActiveTripFragment;
 
-public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder> {
+public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerViewAdapter.TripViewHolder> {
     //    private static final String TAG = TripAdapter.class.getSimpleName();
     private final Activity activity;
     private List<String> indexes;
@@ -37,7 +37,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     private String formatText = " ";
     private int size = 2;
 
-    public TripAdapter(String aClass, Activity activity) {
+    public TripRecyclerViewAdapter(String aClass, Activity activity) {
         this.activity = activity;
         this.aClass = aClass;
         this.context = activity.getApplicationContext();
@@ -49,7 +49,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     @Override
     public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View tripView = inflater.inflate(R.layout.trip_item, parent, false);
+        View tripView = inflater.inflate(R.layout.item_trip, parent, false);
 
         return new TripViewHolder(tripView);
     }
@@ -93,19 +93,19 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
 
         GeoLocation geoLocation = new GeoLocation();
         geoLocation.getLocation("origin", this.activity,
-                new ActiveTripFragment.GeoHandler(), trip, null, this);
+                new ActiveTripFragment.GeoHandler(), trip, null, null, this);
 
         holder.mDistanceTxv.setText(String.format("%s%s%s",
                 context.getString(R.string.distance), formatText,
                 trip.getDistance() == null
-                        ? context.getString(R.string.unavailable_location)
+                        ? context.getString(R.string.loading_distance)
                         : trip.getDistance()));
 
         holder.mCardView.setOnClickListener(V -> {
                     Bundle args = new Bundle();
                     args.putString(Constants.IntentTrip, trip.getId());
                     args.putString(Constants.from, this.aClass);
-                    Util.navigateTo(V, R.id.nav_active_trip_fragment, args);
+                    Util.navigateTo(V, R.id.nav_active_trip, args);
                 }
         );
     }

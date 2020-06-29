@@ -1,5 +1,6 @@
 package us.master.acme_explorer.ui.selected_trips;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +18,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import us.master.acme_explorer.R;
-import us.master.acme_explorer.adapters.TripAdapter;
+import us.master.acme_explorer.adapters.TripRecyclerViewAdapter;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
+import us.master.acme_explorer.common.PermissionsService;
 import us.master.acme_explorer.entity.Trip;
 
 import static us.master.acme_explorer.common.Util.currentUser;
+import static us.master.acme_explorer.common.Util.locationEnabled;
 
 public class SelectedTripsFragment extends Fragment {
 
     private static final String TAG = SelectedTripsFragment.class.getSimpleName();
-    private TripAdapter tripAdapter;
+    private TripRecyclerViewAdapter tripRecyclerViewAdapter;
+    private RelativeLayout myLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -35,22 +39,23 @@ public class SelectedTripsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_trips_base_view,
                 container, false);
 
-        RelativeLayout myLayout = root.findViewById(R.id.myFilterSettings);
+        myLayout = root.findViewById(R.id.myFilterSettings);
         myLayout.setVisibility(View.GONE);
 
         RecyclerView myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
 
         myRecyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
-        tripAdapter = new TripAdapter(TAG, requireActivity());
-        myRecyclerView.setAdapter(tripAdapter);
+        tripRecyclerViewAdapter = new TripRecyclerViewAdapter(TAG, requireActivity());
+        myRecyclerView.setAdapter(tripRecyclerViewAdapter);
         return root;
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        loadDatabase();
+        if (locationEnabled) loadDatabase();
+        else requestLocation();
     }
 
     private void loadDatabase() {
@@ -68,7 +73,7 @@ public class SelectedTripsFragment extends Fragment {
                         if (trip.getSelectedBy().contains(currentUser.getUid())) {
 
                             trip.setId(dataSnapshot.getKey());
-                            tripAdapter.addItem(trip);
+                            tripRecyclerViewAdapter.addItem(trip);
                         }
                     }
                 }
@@ -80,8 +85,8 @@ public class SelectedTripsFragment extends Fragment {
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
                     if (trip.getSelectedBy() != null && trip.getSelectedBy().contains(currentUser.getUid())) {
-                        tripAdapter.addItem(trip);
-                    } else tripAdapter.removeItem(trip);
+                        tripRecyclerViewAdapter.addItem(trip);
+                    } else tripRecyclerViewAdapter.removeItem(trip);
                 }
             }
 
@@ -90,7 +95,7 @@ public class SelectedTripsFragment extends Fragment {
                 Trip trip = dataSnapshot.getValue(Trip.class);
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
-                    tripAdapter.removeItem(trip);
+                    tripRecyclerViewAdapter.removeItem(trip);
                 }
             }
 
@@ -106,4 +111,21 @@ public class SelectedTripsFragment extends Fragment {
         };
     }
 
+    private void requestLocation() {
+        PermissionsService permissionsService = new PermissionsService(
+                requireActivity(),
+                requireContext(),
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                null,
+                new int[]{R.string.location_rationale_2},
+                new int[]{R.string.location_permission_no_granted_2,
+                        R.string.location_permission_no_granted_3}
+        );
+        permissionsService.checkPermission(myLayout, this::enableLocation);
+    }
+
+    private void enableLocation() {
+        locationEnabled = true;
+        loadDatabase();
+    }
 }

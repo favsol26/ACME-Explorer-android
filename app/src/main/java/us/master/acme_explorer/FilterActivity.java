@@ -18,6 +18,8 @@ import java.util.HashMap;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.Util;
 
+import static java.util.Objects.requireNonNull;
+
 public class FilterActivity extends AppCompatActivity {
 
     //    private static final String TAG = FilterActivity.class.getSimpleName();
@@ -36,7 +38,7 @@ public class FilterActivity extends AppCompatActivity {
         mEditTextMaxPrice = findViewById(R.id.my_edt_max_price);
         mEditTextMinPrice = findViewById(R.id.my_edt_min_price);
 
-        HashMap filterSaved = Util.getSharedPreferenceFilters(this);
+        HashMap<String, Long> filterSaved = Util.getSharedPreferenceFilters(this);
 
         initView(filterSaved, Constants.dateStart, mTextViewDateStart);
         initView(filterSaved, Constants.dateEnd, mTextViewDateEnd);
@@ -106,16 +108,17 @@ public class FilterActivity extends AppCompatActivity {
         else return true;            // } else return true;
     }
 
-    private void initView(HashMap filterSaved, String tag, TextView textView) {
-        if ((long) filterSaved.get(tag) > 0) updateTextView((long) filterSaved.get(tag), textView);
+    private void initView(HashMap<String, Long>  filterSaved, String tag, TextView textView) {
+        if ( requireNonNull(filterSaved.get(tag)) > 0)
+            updateTextView( filterSaved.get(tag), textView);
     }
 
-    private void initView(HashMap filterSaved, String tag, EditText mEditText) {
-        if ((long) filterSaved.get(tag) > 0)
+    private void initView(HashMap<String, Long> filterSaved, String tag, EditText mEditText) {
+        if ( requireNonNull(filterSaved.get(tag)) > 0)
             mEditText.setText(String.valueOf(filterSaved.get(tag)));
     }
 
-    private void updateTextView(long longDate, TextView mTextViewDate) {
+    private void updateTextView(Long longDate, TextView mTextViewDate) {
         mTextViewDate.setTextColor(getResources().getColor(android.R.color.black));
         mTextViewDate.setText(Util.dateFormatter(longDate));
         if (mTextViewDate.getId() == R.id.my_txv_filter_date_start) dateStartToFilter = longDate;

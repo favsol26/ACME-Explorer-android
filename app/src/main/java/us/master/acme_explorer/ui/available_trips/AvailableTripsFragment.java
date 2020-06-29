@@ -1,5 +1,6 @@
 package us.master.acme_explorer.ui.available_trips;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,15 +25,18 @@ import java.util.HashMap;
 
 import us.master.acme_explorer.FilterActivity;
 import us.master.acme_explorer.R;
-import us.master.acme_explorer.adapters.TripAdapter;
+import us.master.acme_explorer.adapters.TripRecyclerViewAdapter;
 import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
+import us.master.acme_explorer.common.PermissionsService;
 import us.master.acme_explorer.common.Util;
 import us.master.acme_explorer.entity.Trip;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
+import static java.util.Objects.requireNonNull;
 import static us.master.acme_explorer.common.Util.getSharedPreferenceFilters;
+import static us.master.acme_explorer.common.Util.locationEnabled;
 import static us.master.acme_explorer.common.Util.navigateTo;
 import static us.master.acme_explorer.common.Util.setRecyclerView;
 
@@ -42,7 +46,7 @@ public class AvailableTripsFragment extends Fragment {
     private static final int PICK_FILTERS = 0x1d;
     private RecyclerView myRecyclerView;
     private Switch mySwitch;
-    private TripAdapter tripAdapter;
+    private TripRecyclerViewAdapter tripRecyclerViewAdapter;
     private RelativeLayout myLayout;
     private Context context;
     private FloatingActionButton mNewTripFAB;
@@ -56,15 +60,18 @@ public class AvailableTripsFragment extends Fragment {
         context = container.getContext();
         View root = inflater.inflate(R.layout.fragment_trips_base_view, container, false);
         setView(root);
-        loadTrips(savedInstanceState);
-//        getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
-
-        //TODO optimize recycler layout manager state
-        setRecyclerView(context, mySwitch, myRecyclerView, this.tripAdapter);
-
-        myRecyclerView.setAdapter(tripAdapter);
-        setOnClicksListeners();
+        setRV();
+        if (locationEnabled) loadTrips(savedInstanceState);
+        else requestLocation();
         return root;
+    }
+
+    private void setRV() {
+        this.tripRecyclerViewAdapter = new TripRecyclerViewAdapter(TAG, requireActivity());
+        //TODO optimize recycler layout manager state
+        setRecyclerView(context, mySwitch, myRecyclerView, this.tripRecyclerViewAdapter);
+        myRecyclerView.setAdapter(tripRecyclerViewAdapter);
+//        getToast(this.context, this.tripListToShow.size(), R.string.menu_available_trips);
     }
 
     private void loadDatabase(@Nullable Intent data) {
@@ -90,7 +97,7 @@ public class AvailableTripsFragment extends Fragment {
                 Trip trip = dataSnapshot.getValue(Trip.class);
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
-                    tripAdapter.updateItem(trip);
+                    tripRecyclerViewAdapter.updateItem(trip);
                     showItems(dataSnapshot, trip);
                 }
             }
@@ -100,7 +107,7 @@ public class AvailableTripsFragment extends Fragment {
                 Trip trip = dataSnapshot.getValue(Trip.class);
                 if (trip != null) {
                     trip.setId(dataSnapshot.getKey());
-                    tripAdapter.removeItem(trip);
+                    tripRecyclerViewAdapter.removeItem(trip);
                 }
             }
 
@@ -109,23 +116,23 @@ public class AvailableTripsFragment extends Fragment {
                     if (data != null) {
                         if (verificationFilters(trip, data)) {
                             trip.setId(dataSnapshot.getKey());
-                            tripAdapter.addItem(trip);
+                            tripRecyclerViewAdapter.addItem(trip);
                         } else {
                             trip.setId(dataSnapshot.getKey());
-                            tripAdapter.removeItem(trip);
+                            tripRecyclerViewAdapter.removeItem(trip);
                         }
                     } else {
                         if (verificationFilters(trip)) {
                             trip.setId(dataSnapshot.getKey());
-                            tripAdapter.addItem(trip);
+                            tripRecyclerViewAdapter.addItem(trip);
                         } else {
                             trip.setId(dataSnapshot.getKey());
-                            tripAdapter.removeItem(trip);
+                            tripRecyclerViewAdapter.removeItem(trip);
                         }
                     }
                 } else {
                     trip.setId(dataSnapshot.getKey());
-                    tripAdapter.addItem(trip);
+                    tripRecyclerViewAdapter.addItem(trip);
                 }
             }
 
@@ -148,6 +155,7 @@ public class AvailableTripsFragment extends Fragment {
         myRecyclerView = root.findViewById(R.id.my_trips_base_view_recyclerview);
 
         mNewTripFAB.setVisibility(View.VISIBLE);
+        setOnClicksListeners();
     }
 
     private void loadTrips(Bundle savedInstanceState) {
@@ -157,8 +165,6 @@ public class AvailableTripsFragment extends Fragment {
 
         if (!subscribed)
             loadDatabase(null);
-        this.tripAdapter = new TripAdapter(TAG, requireActivity());
-
     }
 
     private void setOnClicksListeners() {
@@ -166,10 +172,13 @@ public class AvailableTripsFragment extends Fragment {
                 new Intent(this.context, FilterActivity.class), PICK_FILTERS));
 
         mySwitch.setOnClickListener(v -> setRecyclerView(
-                this.context, mySwitch, myRecyclerView, this.tripAdapter));
+                this.context, mySwitch, myRecyclerView, this.tripRecyclerViewAdapter));
 
-        mNewTripFAB.setOnClickListener(v ->
-                navigateTo(v, R.id.action_nav_available_trips_to_nav_trips, null)
+        mNewTripFAB.setOnClickListener(v -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.from, "create");
+                    navigateTo(v, R.id.action_nav_available_trips_to_nav_trips, bundle);
+                }
         );
     }
 
@@ -182,7 +191,7 @@ public class AvailableTripsFragment extends Fragment {
                 assert data != null;
                 this.controlFilter = true;
                 Util.controlFilter = true;
-                tripAdapter.clearLists();
+                tripRecyclerViewAdapter.clearLists();
                 loadDatabase(data);
             }
     }
@@ -196,9 +205,11 @@ public class AvailableTripsFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        mySwitch.setChecked(false);
         subscribed = false;
-        tripAdapter.clearLists();
+        if (tripRecyclerViewAdapter != null) {
+            mySwitch.setChecked(false);
+            tripRecyclerViewAdapter.clearLists();
+        }
     }
 
     private void saveSharePreferFilters(int minPrice, int maxPrice,
@@ -233,19 +244,19 @@ public class AvailableTripsFragment extends Fragment {
 
     private boolean verificationFilters(Trip trip) {
         boolean valid = true;
-        HashMap filterSaved = getSharedPreferenceFilters(context);
+        HashMap<String, Long> filterSaved = getSharedPreferenceFilters(context);
 
-        if ((long) filterSaved.get(Constants.minPrice) > 0 ||
-                (long) filterSaved.get(Constants.maxPrice) > 0)
+        if (requireNonNull(filterSaved.get(Constants.minPrice)) > 0 ||
+                requireNonNull(filterSaved.get(Constants.maxPrice)) > 0)
             valid = filterByPrice(trip,
-                    (int) (long) filterSaved.get(Constants.minPrice),
-                    (int) (long) filterSaved.get(Constants.maxPrice));
+                    (int) (long) requireNonNull(filterSaved.get(Constants.minPrice)),
+                    (int) (long) requireNonNull(filterSaved.get(Constants.maxPrice)));
 
-        if ((long) filterSaved.get(Constants.dateStart) > 0 ||
-                (long) filterSaved.get(Constants.dateEnd) > 0)
+        if (requireNonNull(filterSaved.get(Constants.dateStart)) > 0 ||
+                requireNonNull(filterSaved.get(Constants.dateEnd)) > 0)
             valid = filterByDate(trip,
-                    (long) filterSaved.get(Constants.dateStart),
-                    (long) filterSaved.get(Constants.dateEnd));
+                    requireNonNull(filterSaved.get(Constants.dateStart)),
+                    requireNonNull(filterSaved.get(Constants.dateEnd)));
 
         return valid;
     }
@@ -275,5 +286,22 @@ public class AvailableTripsFragment extends Fragment {
         else valid = (trip.getPrice() > minPrice) && (trip.getPrice() < maxPrice);
 
         return valid;
+    }
+
+    private void requestLocation() {
+        PermissionsService permissionsService = new PermissionsService(
+                requireActivity(),
+                requireContext(),
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                null,
+                new int[]{R.string.location_rationale_2},
+                new int[]{R.string.location_permission_no_granted_2,
+                        R.string.location_permission_no_granted_3});
+        permissionsService.checkPermission(myLayout, this::enableLocation);
+    }
+
+    private void enableLocation() {
+        locationEnabled = true;
+        loadTrips(null);
     }
 }

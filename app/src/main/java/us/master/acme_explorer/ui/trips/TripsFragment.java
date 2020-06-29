@@ -2,9 +2,7 @@ package us.master.acme_explorer.ui.trips;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -34,12 +31,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import us.master.acme_explorer.R;
+import us.master.acme_explorer.common.Constants;
 import us.master.acme_explorer.common.FirebaseDatabaseService;
 import us.master.acme_explorer.common.FirebaseStorageService;
 import us.master.acme_explorer.common.PermissionsService;
 import us.master.acme_explorer.entity.Trip;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.DialogInterface.OnClickListener;
 import static us.master.acme_explorer.common.Util.calendarToLong;
 import static us.master.acme_explorer.common.Util.dateFormatter;
 import static us.master.acme_explorer.common.Util.getValue;
@@ -51,8 +50,9 @@ import static us.master.acme_explorer.common.Util.showTransitionForm;
 
 
 public class TripsFragment extends Fragment {
+    public static final int GALLERY_PERMISSION_REQUEST = 0x512;
+    public static final int PICK_PHOTO_CODE = 0x512;
     private static final String TAG = TripsFragment.class.getSimpleName();
-    private static final int GALLERY_PERMISSION_REQUEST = 0x512;
     private String folder;
     private long mNewTripDepartureDateLong = 0, mNewTripArrivalDateLong = 0;
     private TextInputLayout mNewTripDepartureDate;
@@ -80,6 +80,7 @@ public class TripsFragment extends Fragment {
     private ProgressBar mProgressBar;
     private LinearLayout mFormLayout;
     private FirebaseStorageService mStorageService;
+    private String from;
 
 
     @Override
@@ -88,22 +89,33 @@ public class TripsFragment extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                DialogInterface.OnClickListener posBut = (dialog, which) -> {
-                    if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
-                            getString(R.string.app_name))) {
-                        mStorageService.deleteImageUrl(folder, null);
+                OnClickListener negBut = (dialog, which) -> {
+                }, posBut = (dialog, which) -> {
+                    if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(), getString(R.string.app_name))
+                            && TextUtils.equals(from, "create")) {
+                        mStorageService.deleteImageUrl(folder,
+                                String.valueOf(mNewTripFlagIV.getContentDescription()));
                     }
                     navigateTo(mProgressBar,
                             R.id.action_nav_new_trips_to_nav_available_trips, null);
                 };
-                DialogInterface.OnClickListener negBut = (dialog, which) -> {
-                };
-                showDialogMessage(container.getContext(),
-                        R.string.cancel_create_trip,
-                        R.string.exit, android.R.string.no, posBut, negBut);
+                if (hasData(getValues()) > 0) {
+                    showDialogMessage(container.getContext(),
+                            null, R.string.cancel_create_trip,
+                            R.string.exit, android.R.string.no, posBut, negBut);
+                } else navigateTo(mProgressBar,
+                        R.id.action_nav_new_trips_to_nav_available_trips, null);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    private int hasData(String... values) {
+        int valid = values.length;
+        for (String s : values)
+            if (TextUtils.equals(s, getString(R.string.app_name)) || TextUtils.equals(s, ""))
+                valid--;
+        return valid;
     }
 
     @Override
@@ -113,7 +125,7 @@ public class TripsFragment extends Fragment {
         mStorageService = new FirebaseStorageService(container.getContext());
         folder = getString(R.string.folderTrips);
         View root = inflater.inflate(R.layout.fragment_trips, container, false);
-
+        from = requireArguments().getString(Constants.from);
         setView(root);
         mNewTripILs = new TextInputLayout[]{
                 mNewTripArrivalCountry, mNewTripArrivalCity, mNewTripDepartureCountry,
@@ -128,17 +140,23 @@ public class TripsFragment extends Fragment {
         setTextWatcher();
         root.findViewById(R.id.trips_departure_date_ib).setOnClickListener(this::pickOneDate);
         root.findViewById(R.id.trips_arrival_date_ib).setOnClickListener(this::pickOneDate);
-        root.findViewById(R.id.trips_button_save).setOnClickListener(v -> saveTrip());
+        root.findViewById(R.id.trips_button_save).setOnClickListener(this::onClick);
         mNewTripFlagIV.setOnClickListener(v -> {
             PermissionsService service = new PermissionsService(
-                    requireActivity(),
+                    requireActivity(), requireContext(),
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    new int[]{GALLERY_PERMISSION_REQUEST},
-                    new int[]{R.string.gallery_request_permission}
+                    null,
+                    new int[]{R.string.gallery_request_permission},
+                    new int[]{R.string.gallery_permission_no_granted,
+                            R.string.gallery_permission_no_granted_2}
             );
-            service.checkPermissions(mProgressBar, this::pickOnePhoto);
+            service.checkPermission(mProgressBar, this::pickOnePhoto);
         });
         return root;
+    }
+
+    private void updateTrip(String string) {
+        Log.d(TAG, "updateTrip: " + string);
     }
 
     private void setView(View root) {
@@ -165,25 +183,25 @@ public class TripsFragment extends Fragment {
         mProgressBar = root.findViewById(R.id.trips_progress_bar);
     }
 
-
-    private void pickOnePhoto() {
+    public void pickOnePhoto() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, GALLERY_PERMISSION_REQUEST);
-        mNewTripFlag.setError(null);
+        startActivityForResult(pickPhoto, PICK_PHOTO_CODE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
         String selectedImagePath;
-        if (requestCode == GALLERY_PERMISSION_REQUEST && resultCode == RESULT_OK) {
+        mNewTripFlag.setError(null);
+        if (requestCode == PICK_PHOTO_CODE && resultCode == RESULT_OK) {
             if (resultData != null) {
                 Uri uriPickedImg = resultData.getData();
                 if (uriPickedImg != null) {
                     if (!TextUtils.equals(mNewTripFlagIV.getContentDescription(),
                             getString(R.string.app_name))) {
-                        mStorageService.deleteImageUrl(folder, null);
+                        mStorageService.deleteImageUrl(folder,
+                                String.valueOf(mNewTripFlagIV.getContentDescription()));
                     }
                     Log.i(TAG, "Uri: " + uriPickedImg.toString());
                     // Let's read picked image path using content resolver
@@ -193,7 +211,8 @@ public class TripsFragment extends Fragment {
                                     null, null);
                     try {
                         if (cursor != null && cursor.moveToFirst()) {
-                            selectedImagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                            selectedImagePath =
+                                    cursor.getString(cursor.getColumnIndex(filePath[0]));
                             mStorageService.getImageUrl(mNewTripFlagIV, folder, selectedImagePath);
                         }
                     } finally {// At the end remember to close the cursor or you will end with
@@ -202,9 +221,9 @@ public class TripsFragment extends Fragment {
                         cursor.close();
                     }
                 }
-            } else {
-                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            Snackbar.make(mFormLayout, R.string.picture_no_picked, Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -221,15 +240,14 @@ public class TripsFragment extends Fragment {
             Log.d(TAG, "saveTrip: " + mNewTripFlagIV.getContentDescription());
             showTransitionForm(false, container, mProgressBar, mFormLayout);
 
-            DialogInterface.OnClickListener posBut = (dialog, which) -> {
+            OnClickListener posBut = (dialog, which) -> {
                 Trip trip = getNewTrip(values[0], values[1], values[2].concat(", " + values[3]),
                         values[4], values[5]);
                 saveTripInDatabase(trip);
-            };
-            DialogInterface.OnClickListener negBut = (dialog, which) ->
+            }, negBut = (dialog, which) ->
                     showTransitionForm(true, container, mProgressBar, mFormLayout);
 
-            showDialogMessage(container.getContext(), R.string.trip_to_save,
+            showDialogMessage(container.getContext(), null, R.string.trip_to_save,
                     android.R.string.ok, android.R.string.no, posBut, negBut);
         }
     }
@@ -273,11 +291,13 @@ public class TripsFragment extends Fragment {
                             String departurePlace, String price, String description) {
         Trip trip = new Trip();
         trip.setUserUid(FirebaseAuth.getInstance().getUid());
+
         trip.setCountry(country);
         trip.setArrivalPlace(city);
         trip.setDeparturePlace(departurePlace);
         trip.setPrice(Long.parseLong(getValue(price)));
         trip.setDescription(description);
+
         trip.setUrlImage(String.valueOf(mNewTripFlagIV.getContentDescription()));
         trip.setDepartureDate(mNewTripDepartureDateLong);
         trip.setArrivalDate(mNewTripArrivalDateLong);
@@ -338,41 +358,14 @@ public class TripsFragment extends Fragment {
         }, yy, mm, dd);
         dialog.show();
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (GALLERY_PERMISSION_REQUEST == requestCode) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (permissions[i].equals(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        pickOnePhoto();
-                    } else Snackbar.make(mFormLayout,
-                            R.string.gallery_permission_no_granted,
-                            Snackbar.LENGTH_LONG).show();
-                }
-            }
+
+    private void onClick(View v) {
+
+        if (TextUtils.equals(from, "create")) {
+            saveTrip();
+        } else {
+            Log.d(TAG, "onClick: " + v.getId());
+            updateTrip(requireArguments().getString(Constants.IntentTrip));
         }
     }
 }
-//    private void checkPermissions() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(requireActivity(),
-//                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
-//                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//
-//                    Snack bar.make(mFormLayout, R.string.gallery_request_permission,
-//                            Snack bar.LENGTH_LONG).setAction(R.string.allow_permission,
-//                            click -> ActivityCompat.requestPermissions(requireActivity(),
-//                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                                    GALLERY_PERMISSION_REQUEST)).show();
-//                } else {
-//                    ActivityCompat.requestPermissions(requireActivity(),
-//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                            GALLERY_PERMISSION_REQUEST);
-//                }
-//            } else {
-//                pickOnePhoto();
-//            }
-//        }
-//    }

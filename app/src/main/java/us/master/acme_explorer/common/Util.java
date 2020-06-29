@@ -29,6 +29,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONArray;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,18 +38,19 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-import us.master.acme_explorer.adapters.TripAdapter;
+import us.master.acme_explorer.adapters.TripRecyclerViewAdapter;
 import us.master.acme_explorer.entity.Trip;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class Util {
-    //    private static final String TAG = Util.class.getSimpleName();
-    public static FirebaseAuth mAuth;
-    public static GoogleSignInOptions googleSignInOptions;
-    public static FirebaseUser currentUser;
     public static boolean controlFilter = false;
+    public static boolean locationEnabled = false;
+    public static FirebaseAuth mAuth;
+    public static FirebaseUser currentUser;
+    public static GoogleSignInOptions googleSignInOptions;
+    public static JSONArray jsonArrayResults;
 
     public static String dateFormatter(Calendar calendar) {
         int yy = calendar.get(Calendar.YEAR);
@@ -67,12 +70,6 @@ public class Util {
         Date chosenDate = calendar.getTime();
         return (dateFormat.format(chosenDate));
     }
-//    public static void getToast(Context context, int size, int message) {
-//        String text1 = String.format("Hay %s %s", size, context.getString(message));
-//        String text2 = String.format(" No hay %s", context.getString(message));
-//        Toast.makeText(context, size > 0 ? text1 : text2, Toast.LENGTH_LONG).show();
-
-//    }
 
     public static long calendarToLong(Calendar date) {
         return (date.getTimeInMillis() / 1000);
@@ -88,7 +85,7 @@ public class Util {
         Snackbar.make(v, context.getString(text), length).show();
     }
 
-    public static HashMap getSharedPreferenceFilters(Context context) {
+    public static HashMap<String, Long> getSharedPreferenceFilters(Context context) {
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(Constants.filterPreferences, MODE_PRIVATE);
 
@@ -116,7 +113,7 @@ public class Util {
     }
 
     public static void setRecyclerView(Context context, Switch mySwitch,
-                                       RecyclerView myRecyclerView, TripAdapter tripAdapter) {
+                                       RecyclerView myRecyclerView, TripRecyclerViewAdapter tripRecyclerViewAdapter) {
         int ort = context.getResources().getConfiguration().orientation;
         int column = mySwitch.isChecked()
                 ? ort == ORIENTATION_LANDSCAPE ? 3 : 2
@@ -130,16 +127,17 @@ public class Util {
                 ? ort == ORIENTATION_LANDSCAPE ? 1 : 1
                 : ort != ORIENTATION_LANDSCAPE ? 2 : 2;
 
-        tripAdapter.setSize(size);
-        tripAdapter.setFormatText(text);
+        tripRecyclerViewAdapter.setSize(size);
+        tripRecyclerViewAdapter.setFormatText(text);
         GridLayoutManager layoutManager = new GridLayoutManager(context, column);
         myRecyclerView.setLayoutManager(layoutManager);
     }
 
-    public static void showDialogMessage(Context context, int msg, int posMsg, int negMsg,
+    public static void showDialogMessage(Context context, @Nullable Integer tittle, int msg, int posMsg, int negMsg,
                                          DialogInterface.OnClickListener positiveListener,
                                          DialogInterface.OnClickListener negativeListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        if (tittle != null) builder.setTitle(tittle);
         builder.setMessage(msg)
                 .setPositiveButton(posMsg, positiveListener)
                 .setNegativeButton(negMsg, negativeListener)
